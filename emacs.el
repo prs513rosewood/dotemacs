@@ -50,6 +50,9 @@ Return a list of installed packages or nil for every skipped package."
 ;; Backups
 (setq backup-directory-alist `(("." . "~/.emacs.d/backup_files/")))
 
+;; Tell emacs to always follow symbolic links
+(setq-default vc-follow-symlinks t)
+
 ;; Helm
 (use-package helm
   :config
@@ -57,7 +60,15 @@ Return a list of installed packages or nil for every skipped package."
   (global-set-key (kbd "M-x") 'helm-M-x))
 
 ;; Org-mode
-(use-package org)
+(use-package org
+  :config
+  (setq org-agenda-files '("~/Dropbox/orgs"))
+  (setq org-directory "~/Dropbox/orgs")
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               '((python . t)))
+  :bind (:map evil-normal-state-map
+	      ("t" . org-todo))
+  )
 
 ;; Which-key
 (use-package which-key
@@ -71,7 +82,9 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Company
 (use-package company
-  :config (add-hook 'after-init-hook 'global-company-mode))
+  :config
+  (add-hook 'after-init-hook 'global-company-mode)
+  (add-hook 'org-mode-hook (lambda () (company-mode -1))))
 
 ;; Evil mode
 (use-package evil
@@ -98,12 +111,25 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Leader keybindings
 (evil-leader/set-leader "<SPC>")
-(evil-leader/set-key "é" 'helm-M-x)
-(evil-leader/set-key "b" 'helm-buffers-list)
-(evil-leader/set-key "cc" 'compile)
-(evil-leader/set-key "cr" 'recompile)
+(evil-leader/set-key "é" #'helm-M-x)
+(evil-leader/set-key "b" #'helm-buffers-list)
+;; compile bindings
+(evil-leader/set-key "cc" #'compile)
+(evil-leader/set-key "cr" #'recompile)
+(evil-leader/set-key "ck" #'kill-compilation)
+(evil-leader/set-key "cq" (lambda ()
+			    (interactive)
+			    (kill-buffer "*compilation*")))
 (evil-leader/set-key "TAB" 'mode-line-other-buffer)
 (evil-leader/set-key "lp" 'list-packages)
+(evil-leader/set-key "ev" (lambda () "Edit config file"
+			    (interactive)
+			    (find-file "~/.emacs.el")))
+(evil-leader/set-key "sv" (lambda () "Source confi file"
+			    (interactive)
+			    (eval "~/.emacs.el")))
+;; org bindings
+(evil-leader/set-key "oa" 'org-agenda)
 ;; ein bindings
 (evil-leader/set-key "il" 'ein:notebooklist-open)
 ;; ein save when ex :w is called
@@ -148,12 +174,13 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Remove useless GUI stuff
 (tool-bar-mode 0)
+(menu-bar-mode 0)
 (scroll-bar-mode 0)
 
 ;; Maximize frame
 (toggle-frame-maximized)
 
-;; Custom variables
+;; Custom variables (generated automatically by emacs)
 ;; -----------------------------------------------
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -163,7 +190,7 @@ Return a list of installed packages or nil for every skipped package."
  '(custom-enabled-themes (quote (spacemacs-dark)))
  '(custom-safe-themes
    (quote
-    ("fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default))))
+    ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
