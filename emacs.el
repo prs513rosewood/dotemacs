@@ -45,7 +45,8 @@ Return a list of installed packages or nil for every skipped package."
 			  'solarized-theme
 			  'doremi
 			  'doremi-cmd
-			  'ein)
+			  'ein
+			  'linum-relative)
 
 ;; Backups
 (setq backup-directory-alist `(("." . "~/.emacs.d/backup_files/")))
@@ -57,7 +58,8 @@ Return a list of installed packages or nil for every skipped package."
 (use-package helm
   :config
   (helm-mode 1)
-  (global-set-key (kbd "M-x") 'helm-M-x))
+  (global-set-key (kbd "M-x") 'helm-M-x)
+  (global-set-key (kbd "C-x C-f") 'helm-find-files))
 
 ;; Org-mode
 (use-package org
@@ -66,8 +68,6 @@ Return a list of installed packages or nil for every skipped package."
   (setq org-directory "~/Dropbox/orgs")
   (org-babel-do-load-languages 'org-babel-load-languages
                                '((python . t)))
-  :bind (:map evil-normal-state-map
-	      ("t" . org-todo))
   )
 
 ;; Which-key
@@ -78,7 +78,8 @@ Return a list of installed packages or nil for every skipped package."
 (use-package flycheck
   :config
   (global-flycheck-mode)
-  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+  )
 
 ;; Company
 (use-package company
@@ -92,7 +93,13 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Yasnippet
 (use-package yasnippet
-  :config (yas-global-mode 1))
+  :config (yas-global-mode 0))
+
+;; Linum relative
+(use-package linum-relative
+  :config
+  (global-linum-mode)
+  (linum-relative-mode))
 
 ;; Evil extensions
 (mapc (lambda (package) (use-package package))
@@ -105,14 +112,24 @@ Return a list of installed packages or nil for every skipped package."
 (global-evil-surround-mode)
 
 ;; Evil keybindings
-(define-key evil-normal-state-map "é" 'evil-ex)
-(define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up)
-(define-key evil-normal-state-map (kbd "TAB") 'indent-for-tab-command)
+(define-key evil-normal-state-map "é" #'evil-ex)
+(define-key evil-normal-state-map (kbd "C-u") #'evil-scroll-up)
+(define-key evil-normal-state-map (kbd "TAB") #'indent-for-tab-command)
 
 ;; Leader keybindings
 (evil-leader/set-leader "<SPC>")
 (evil-leader/set-key "é" #'helm-M-x)
 (evil-leader/set-key "b" #'helm-buffers-list)
+(evil-leader/set-key "d" #'dired)
+(evil-leader/set-key "f" #'helm-find-files)
+(evil-leader/set-key "TAB" #'mode-line-other-buffer)
+(evil-leader/set-key "lp" #'list-packages)
+(evil-leader/set-key "ev" (lambda () "Edit config file"
+			    (interactive)
+			    (find-file "~/.emacs.el")))
+(evil-leader/set-key "sv" (lambda () "Source config file"
+			    (interactive)
+			    (eval "~/.emacs.el")))
 ;; compile bindings
 (evil-leader/set-key "cc" #'compile)
 (evil-leader/set-key "cr" #'recompile)
@@ -120,18 +137,15 @@ Return a list of installed packages or nil for every skipped package."
 (evil-leader/set-key "cq" (lambda ()
 			    (interactive)
 			    (kill-buffer "*compilation*")))
-(evil-leader/set-key "TAB" 'mode-line-other-buffer)
-(evil-leader/set-key "lp" 'list-packages)
-(evil-leader/set-key "ev" (lambda () "Edit config file"
-			    (interactive)
-			    (find-file "~/.emacs.el")))
-(evil-leader/set-key "sv" (lambda () "Source confi file"
-			    (interactive)
-			    (eval "~/.emacs.el")))
+(evil-leader/set-key "cn" #'flycheck-next-error)
 ;; org bindings
-(evil-leader/set-key "oa" 'org-agenda)
+(evil-leader/set-key "oa" #'org-agenda)
+;; magit bindings
+(evil-leader/set-key "gs" #'magit-status)
+(evil-leader/set-key "gp" #'magit-pull)
+(evil-leader/set-key "gP" #'magit-push)
 ;; ein bindings
-(evil-leader/set-key "il" 'ein:notebooklist-open)
+(evil-leader/set-key "il" #'ein:notebooklist-open)
 ;; ein save when ex :w is called
 (defun ein-evil-save (old-fun &rest args)
   (if (eq major-mode 'ein:notebook-multilang-mode)
@@ -179,6 +193,10 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Maximize frame
 (toggle-frame-maximized)
+
+;; Safe directory variables
+(add-to-list 'safe-local-variable-values
+	     '(flycheck-clang-args . ("-std=c++11" "-Wno-unused-variable" "-DTAMAAS_DEBUG")))
 
 ;; Custom variables (generated automatically by emacs)
 ;; -----------------------------------------------
