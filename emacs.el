@@ -121,7 +121,8 @@ Return a list of installed packages or nil for every skipped package."
 (evil-leader/set-key "é" #'helm-M-x)
 (evil-leader/set-key "b" #'helm-buffers-list)
 (evil-leader/set-key "d" #'dired)
-(evil-leader/set-key "f" #'helm-find-files)
+(evil-leader/set-key "ff" #'helm-find-files)
+(evil-leader/set-key "fr" #'helm-recentf)
 (evil-leader/set-key "TAB" #'mode-line-other-buffer)
 (evil-leader/set-key "lp" #'list-packages)
 (evil-leader/set-key "ev" (lambda () "Edit config file"
@@ -134,10 +135,11 @@ Return a list of installed packages or nil for every skipped package."
 (evil-leader/set-key "cc" #'compile)
 (evil-leader/set-key "cr" #'recompile)
 (evil-leader/set-key "ck" #'kill-compilation)
-(evil-leader/set-key "cq" (lambda ()
+(evil-leader/set-key "cq" (lambda () "kill compile buffer"
 			    (interactive)
 			    (kill-buffer "*compilation*")))
 (evil-leader/set-key "cn" #'flycheck-next-error)
+(evil-leader/set-key "cb" #'flycheck-previous-error)
 ;; org bindings
 (evil-leader/set-key "oa" #'org-agenda)
 ;; magit bindings
@@ -178,6 +180,10 @@ Return a list of installed packages or nil for every skipped package."
   (powerline-reset))
 
 (global-set-key (kbd "<f12>") 'cycle-custom-themes)
+
+;; recentf mode
+(require 'recentf)
+(recentf-mode 1)
 
 ;; Set compile command for python scripts
 (add-hook 'python-mode-hook
