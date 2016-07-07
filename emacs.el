@@ -33,8 +33,15 @@ Return a list of installed packages or nil for every skipped package."
 			  'evil-leader
 			  'evil-magit
 			  'evil-org
+			  'evil-avy
+			  'evil-snipe
+			  'vi-tilde-fringe
 			  'helm
+			  'helm-gtags
 			  'org
+			  'org-bullets
+			  'ggtags
+			  'magit
 			  'which-key
 			  'flycheck
 			  'company
@@ -46,13 +53,18 @@ Return a list of installed packages or nil for every skipped package."
 			  'doremi
 			  'doremi-cmd
 			  'ein
-			  'linum-relative)
+			  'linum-relative
+			  'rainbow-delimiters
+			  'avy)
 
 ;; Backups
 (setq backup-directory-alist `(("." . "~/.emacs.d/backup_files/")))
 
 ;; Tell emacs to always follow symbolic links
 (setq-default vc-follow-symlinks t)
+
+;; Wrap lines on words for text
+(add-hook 'text-mode-hook (lambda () (visual-line-mode t)))
 
 ;; Helm
 (use-package helm
@@ -66,9 +78,27 @@ Return a list of installed packages or nil for every skipped package."
   :config
   (setq org-agenda-files '("~/Dropbox/orgs"))
   (setq org-directory "~/Dropbox/orgs")
+  (setq org-startup-indented t)
+  (setq org-startup-truncated nil)
+  (setq org-src-fontify-natively t)
+  (add-hook 'org-mode-hook (lambda () (visual-line-mode t)))
+  (setq org-latex-pdf-process (quote ("rubber -df %f")))
   (org-babel-do-load-languages 'org-babel-load-languages
                                '((python . t)))
   )
+(use-package org-bullets
+  :config
+  ;;(setq org-bullets-bullet-list '("■" "◆" "▲" "▶"))
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+;; GNU Global
+(use-package ggtags
+  :config (add-hook 'c-mode-common-hook (lambda () (ggtags-mode 1))))
+(use-package helm-gtags
+  :config (add-hook 'c-mode-common-hook #'helm-gtags-mode))
+
+;; Magit
+(use-package magit)
 
 ;; Which-key
 (use-package which-key
@@ -99,17 +129,26 @@ Return a list of installed packages or nil for every skipped package."
 (use-package linum-relative
   :config
   (global-linum-mode)
-  (linum-relative-mode))
+  (linum-relative-mode)
+  (add-hook 'org-mode (lambda () (linum-mode -1))))
+
+;; Rainbow delimiters
+(use-package rainbow-delimiters
+  :config (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+
+;; Avy
+(use-package avy)
 
 ;; Evil extensions
-(mapc (lambda (package) (use-package package))
-	'(evil-surround
-	  evil-magit
-	  evil-org
-	  evil-leader))
-
-(global-evil-leader-mode)
-(global-evil-surround-mode)
+(use-package evil-magit)
+(use-package evil-org
+  :config (add-hook #'org-mode #'evil-org-mode))
+(use-package evil-leader
+  :config (global-evil-leader-mode))
+(use-package evil-surround
+  :config (global-evil-surround-mode))
+(use-package evil-snipe
+  :config (evil-snipe-override-mode 1))
 
 ;; Evil keybindings
 (define-key evil-normal-state-map "é" #'evil-ex)
@@ -124,6 +163,7 @@ Return a list of installed packages or nil for every skipped package."
 (evil-leader/set-key "ff" #'helm-find-files)
 (evil-leader/set-key "fr" #'helm-recentf)
 (evil-leader/set-key "TAB" #'mode-line-other-buffer)
+(evil-leader/set-key "<SPC>" #'avy-goto-char)
 (evil-leader/set-key "lp" #'list-packages)
 (evil-leader/set-key "ev" (lambda () "Edit config file"
 			    (interactive)
@@ -135,7 +175,7 @@ Return a list of installed packages or nil for every skipped package."
 (evil-leader/set-key "cc" #'compile)
 (evil-leader/set-key "cr" #'recompile)
 (evil-leader/set-key "ck" #'kill-compilation)
-(evil-leader/set-key "cq" (lambda () "kill compile buffer"
+(evil-leader/set-key "cq" (lambda () "Kill compile buffer"
 			    (interactive)
 			    (kill-buffer "*compilation*")))
 (evil-leader/set-key "cn" #'flycheck-next-error)
@@ -155,6 +195,10 @@ Return a list of installed packages or nil for every skipped package."
     (apply old-fun args)))
 (advice-add #'evil-save :around #'ein-evil-save)
 
+;; Vi fringe
+(use-package vi-tilde-fringe
+  :config (add-hook 'prog-mode-hook #'vi-tilde-fringe-mode))
+
 ;; Powerline
 (use-package powerline)
 (use-package spaceline)
@@ -163,7 +207,11 @@ Return a list of installed packages or nil for every skipped package."
 (spaceline-toggle-minor-modes-off)
 
 ;; Themes
-(use-package spacemacs-theme)
+(use-package spacemacs-theme
+  :config
+  (load-theme 'spacemacs-light t)
+  (load-theme 'spacemacs-dark t)
+  (enable-theme 'spacemacs-dark))
 (use-package solarized-theme)
 
 ;; Do Re Mi
@@ -179,7 +227,7 @@ Return a list of installed packages or nil for every skipped package."
   (doremi-custom-themes+)
   (powerline-reset))
 
-(global-set-key (kbd "<f12>") 'cycle-custom-themes)
+(global-set-key (kbd "<f12>") #'cycle-custom-themes)
 
 ;; recentf mode
 (require 'recentf)
@@ -202,7 +250,8 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Safe directory variables
 (add-to-list 'safe-local-variable-values
-	     '(flycheck-clang-args . ("-std=c++11" "-Wno-unused-variable" "-DTAMAAS_DEBUG")))
+	     '(flycheck-clang-args . ("-std=c++11" "-Wno-unused-variable" "-DTAMAAS_DEBUG"
+				      "-I/home/frerot/Documents/tamaas/src")))
 
 ;; Custom variables (generated automatically by emacs)
 ;; -----------------------------------------------
@@ -214,7 +263,7 @@ Return a list of installed packages or nil for every skipped package."
  '(custom-enabled-themes (quote (spacemacs-dark)))
  '(custom-safe-themes
    (quote
-    ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default))))
+    ("bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
