@@ -38,6 +38,7 @@ Return a list of installed packages or nil for every skipped package."
 			  'vi-tilde-fringe
 			  'helm
 			  'helm-gtags
+			  'helm-flyspell
 			  'org
 			  'org-bullets
 			  'ggtags
@@ -63,8 +64,11 @@ Return a list of installed packages or nil for every skipped package."
 ;; Tell emacs to always follow symbolic links
 (setq-default vc-follow-symlinks t)
 
-;; Wrap lines on words for text
-(add-hook 'text-mode-hook (lambda () (visual-line-mode t)))
+;; Usefull minor modes for text
+(add-hook 'text-mode-hook (lambda ()
+			    (visual-line-mode t)
+			    (flyspell-mode t)))
+;;(add-hook 'prog-mode-hook #'flyspell-prog-mode)
 
 ;; Helm
 (use-package helm
@@ -72,6 +76,7 @@ Return a list of installed packages or nil for every skipped package."
   (helm-mode 1)
   (global-set-key (kbd "M-x") 'helm-M-x)
   (global-set-key (kbd "C-x C-f") 'helm-find-files))
+(use-package helm-flyspell)
 
 ;; Org-mode
 (use-package org
@@ -81,7 +86,9 @@ Return a list of installed packages or nil for every skipped package."
   (setq org-startup-indented t)
   (setq org-startup-truncated nil)
   (setq org-src-fontify-natively t)
-  (add-hook 'org-mode-hook (lambda () (visual-line-mode t)))
+  (add-hook 'org-mode-hook (lambda ()
+			     (visual-line-mode t)
+			     (flyspell-mode t)))
   (setq org-latex-pdf-process (quote ("rubber -df %f")))
   (org-babel-do-load-languages 'org-babel-load-languages
                                '((python . t)))
@@ -119,7 +126,7 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Evil mode
 (use-package evil
-  :config (global-evil-leader-mode) (evil-mode t))
+  :config (evil-mode t))
 
 ;; Yasnippet
 (use-package yasnippet
@@ -171,6 +178,7 @@ Return a list of installed packages or nil for every skipped package."
 (evil-leader/set-key "sv" (lambda () "Source config file"
 			    (interactive)
 			    (eval "~/.emacs.el")))
+(evil-leader/set-key (kbd "C-s") #'helm-flyspell-correct)
 ;; compile bindings
 (evil-leader/set-key "cc" #'compile)
 (evil-leader/set-key "cr" #'recompile)
