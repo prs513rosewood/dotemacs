@@ -260,6 +260,9 @@ Return a list of installed packages or nil for every skipped package."
 (add-to-list 'safe-local-variable-values
 	     '(flycheck-clang-args . ("-std=c++11" "-Wno-unused-variable" "-DTAMAAS_DEBUG"
 				      "-I/home/frerot/Documents/tamaas/src")))
+(add-to-list 'safe-local-variable-values
+	     '(flycheck-gcc-args . ("-std=c++11" "-Wno-unused-variable" "-DTAMAAS_DEBUG"
+				      "-fopenmp" "-I/home/frerot/Documents/tamaas/src")))
 
 ;; Custom variables (generated automatically by emacs)
 ;; -----------------------------------------------
