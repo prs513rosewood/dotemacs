@@ -46,6 +46,8 @@ Return a list of installed packages or nil for every skipped package."
 			  'which-key
 			  'flycheck
 			  'company
+			  'company-jedi
+			  'eldoc
 			  'yasnippet
 			  'powerline
 			  'spaceline
@@ -69,6 +71,9 @@ Return a list of installed packages or nil for every skipped package."
 			    (visual-line-mode t)
 			    (flyspell-mode t)))
 ;;(add-hook 'prog-mode-hook #'flyspell-prog-mode)
+
+;; Restore dead keys because of input method-after
+(require 'iso-transl)
 
 ;; Helm
 (use-package helm
@@ -114,7 +119,7 @@ Return a list of installed packages or nil for every skipped package."
 ;; Flycheck
 (use-package flycheck
   :config
-  (global-flycheck-mode)
+  (add-hook 'after-init-hook #'global-flycheck-mode)
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
   )
 
@@ -123,6 +128,17 @@ Return a list of installed packages or nil for every skipped package."
   :config
   (add-hook 'after-init-hook 'global-company-mode)
   (add-hook 'org-mode-hook (lambda () (company-mode -1))))
+
+(use-package company-jedi
+  :config
+  (add-to-list 'company-backends 'company-jedi)
+  (setq jedi:server-args
+      '("--sys-path" "/home/frerot/Documents/tamaas/build/python")))
+
+;; Eldoc
+(use-package eldoc
+  :config
+  (eldoc-mode t))
 
 ;; Evil mode
 (use-package evil
@@ -178,7 +194,8 @@ Return a list of installed packages or nil for every skipped package."
 (evil-leader/set-key "sv" (lambda () "Source config file"
 			    (interactive)
 			    (eval "~/.emacs.el")))
-(evil-leader/set-key (kbd "C-s") #'helm-flyspell-correct)
+(evil-leader/set-key "sn" #'flyspell-goto-next-error)
+(evil-leader/set-key "ss" #'helm-flyspell-correct)
 ;; compile bindings
 (evil-leader/set-key "cc" #'compile)
 (evil-leader/set-key "cr" #'recompile)
@@ -258,11 +275,9 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Safe directory variables
 (add-to-list 'safe-local-variable-values
-	     '(flycheck-clang-args . ("-std=c++11" "-Wno-unused-variable" "-DTAMAAS_DEBUG"
+	     '(flycheck-clang-args . ("-std=c++11" "-Wno-unused-variable" "-Wall"
+				      "-DTAMAAS_DEBUG"
 				      "-I/home/frerot/Documents/tamaas/src")))
-(add-to-list 'safe-local-variable-values
-	     '(flycheck-gcc-args . ("-std=c++11" "-Wno-unused-variable" "-DTAMAAS_DEBUG"
-				      "-fopenmp" "-I/home/frerot/Documents/tamaas/src")))
 
 ;; Custom variables (generated automatically by emacs)
 ;; -----------------------------------------------
