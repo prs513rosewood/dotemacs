@@ -27,40 +27,7 @@ Return a list of installed packages or nil for every skipped package."
     (package-refresh-contents))
 
 ;; List of packages
-(ensure-package-installed 'use-package
-			  'evil
-			  'evil-surround
-			  'evil-leader
-			  'evil-magit
-			  'evil-org
-			  'evil-avy
-			  'evil-snipe
-			  'vi-tilde-fringe
-			  'helm
-			  'helm-gtags
-			  'helm-flyspell
-			  'org
-			  'org-bullets
-			  'ggtags
-			  'magit
-			  'which-key
-			  'flycheck
-			  'company
-			  'company-jedi
-			  'eldoc
-			  'yasnippet
-			  'powerline
-			  'spaceline
-			  'spacemacs-theme
-			  'solarized-theme
-			  'dracula-theme
-			  'color-theme-sanityinc-tomorrow
-			  'doremi
-			  'doremi-cmd
-			  'ein
-			  'linum-relative
-			  'rainbow-delimiters
-			  'avy)
+(ensure-package-installed 'use-package)
 
 ;; Backups
 (setq backup-directory-alist `(("." . "~/.emacs.d/backup_files/")))
@@ -79,14 +46,17 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Helm
 (use-package helm
+  :ensure t
   :config
   (helm-mode 1)
   (global-set-key (kbd "M-x") 'helm-M-x)
   (global-set-key (kbd "C-x C-f") 'helm-find-files))
-(use-package helm-flyspell)
+(use-package helm-flyspell
+  :ensure t)
 
 ;; Org-mode
 (use-package org
+  :ensure t
   :config
   (setq org-agenda-files '("~/Dropbox/orgs"))
   (setq org-directory "~/Dropbox/orgs")
@@ -101,25 +71,31 @@ Return a list of installed packages or nil for every skipped package."
                                '((python . t)))
   )
 (use-package org-bullets
+  :ensure t
   :config
   ;;(setq org-bullets-bullet-list '("■" "◆" "▲" "▶"))
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
 ;; GNU Global
 (use-package ggtags
+  :ensure t
   :config (add-hook 'c-mode-common-hook (lambda () (ggtags-mode 1))))
 (use-package helm-gtags
+  :ensure t
   :config (add-hook 'c-mode-common-hook #'helm-gtags-mode))
 
 ;; Magit
-(use-package magit)
+(use-package magit
+  :ensure t)
 
 ;; Which-key
 (use-package which-key
+  :ensure t
   :config (which-key-mode))
 
 ;; Flycheck
 (use-package flycheck
+  :ensure t
   :config
   (add-hook 'after-init-hook #'global-flycheck-mode)
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
@@ -127,11 +103,13 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Company
 (use-package company
+  :ensure t
   :config
   (add-hook 'after-init-hook 'global-company-mode)
   (add-hook 'org-mode-hook (lambda () (company-mode -1))))
 
 (use-package company-jedi
+  :ensure t
   :config
   (add-to-list 'company-backends 'company-jedi)
   (setq jedi:server-args
@@ -139,19 +117,23 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Eldoc
 (use-package eldoc
+  :ensure t
   :config
   (eldoc-mode t))
 
 ;; Evil mode
 (use-package evil
+  :ensure t
   :config (evil-mode t))
 
 ;; Yasnippet
 (use-package yasnippet
+  :ensure t
   :config (yas-global-mode 0))
 
 ;; Linum relative
 (use-package linum-relative
+  :ensure t
   :config
   (global-linum-mode)
   (linum-relative-mode)
@@ -159,20 +141,27 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Rainbow delimiters
 (use-package rainbow-delimiters
+  :ensure t
   :config (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 ;; Avy
-(use-package avy)
+(use-package avy
+  :ensure t)
 
 ;; Evil extensions
-(use-package evil-magit)
+(use-package evil-magit
+  :ensure t)
 (use-package evil-org
+  :ensure t
   :config (add-hook #'org-mode #'evil-org-mode))
 (use-package evil-leader
+  :ensure t
   :config (global-evil-leader-mode))
 (use-package evil-surround
+  :ensure t
   :config (global-evil-surround-mode))
 (use-package evil-snipe
+  :ensure t
   :config (evil-snipe-override-mode 1))
 
 ;; Evil keybindings
@@ -187,6 +176,7 @@ Return a list of installed packages or nil for every skipped package."
 (evil-leader/set-key "d" #'dired)
 (evil-leader/set-key "ff" #'helm-find-files)
 (evil-leader/set-key "fr" #'helm-recentf)
+(evil-leader/set-key "/" #'comment-or-uncomment-region)
 (evil-leader/set-key "TAB" #'mode-line-other-buffer)
 (evil-leader/set-key "<SPC>" #'avy-goto-char)
 (evil-leader/set-key "lp" #'list-packages)
@@ -224,34 +214,44 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Vi fringe
 (use-package vi-tilde-fringe
+  :ensure t
   :config (add-hook 'prog-mode-hook #'vi-tilde-fringe-mode))
 
 ;; Powerline
-(use-package powerline)
-(use-package spaceline)
+(use-package powerline
+  :ensure t)
+(use-package spaceline
+  :ensure t)
 (require 'spaceline-config)
 (spaceline-spacemacs-theme)
 (spaceline-toggle-minor-modes-off)
 
 ;; Themes
 (use-package spacemacs-theme
+  :ensure t
   :config
   (load-theme 'spacemacs-light t)
   (load-theme 'spacemacs-dark t))
-(use-package solarized-theme)
+(use-package solarized-theme
+  :ensure t)
 (use-package dracula-theme
+  :ensure t
   :config
   (load-theme 'dracula t)
   (enable-theme 'dracula))
-(use-package color-theme-sanityinc-tomorrow)
+(use-package color-theme-sanityinc-tomorrow
+  :ensure t)
 
 ;; Do Re Mi
-(use-package doremi)
+(use-package doremi
+  :ensure t)
 (use-package doremi-cmd
+  :ensure t
   :config (setq doremi-custom-themes '(spacemacs-dark spacemacs-light dracula)))
 
 ;; Ein
-(use-package ein)
+(use-package ein
+  :ensure t)
 
 (defun cycle-custom-themes()
   (interactive)
@@ -275,8 +275,8 @@ Return a list of installed packages or nil for every skipped package."
 (add-hook 'latex-mode-hook
 	  (lambda ()
 	    (set (make-local-variable 'compile-command)
-		 (concat "latexmk -quiet -pdf " (if buffer-file-name
-						    (shell-quote-argument buffer-file-name))))))
+		 (concat "latexmk -g -pdf " (if buffer-file-name
+						(shell-quote-argument buffer-file-name))))))
 
 ;; Remove useless GUI stuff
 (tool-bar-mode 0)
