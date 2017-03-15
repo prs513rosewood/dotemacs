@@ -99,7 +99,7 @@ Return a list of installed packages or nil for every skipped package."
   :config
   (add-hook 'after-init-hook #'global-flycheck-mode)
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-  )
+  (setq-default flycheck-flake8-maximum-line-length 100))
 
 ;; Company
 (use-package company
@@ -124,7 +124,9 @@ Return a list of installed packages or nil for every skipped package."
 ;; Evil mode
 (use-package evil
   :ensure t
-  :config (evil-mode t))
+  :config
+  (evil-mode t)
+  (setq evil-ex-search-vim-style-regexp t))
 
 ;; Yasnippet
 (use-package yasnippet
