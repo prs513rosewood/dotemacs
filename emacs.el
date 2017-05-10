@@ -277,8 +277,8 @@ Return a list of installed packages or nil for every skipped package."
 (add-hook 'latex-mode-hook
 	  (lambda ()
 	    (set (make-local-variable 'compile-command)
-		 (concat "latexmk -g -pdf " (if buffer-file-name
-						(shell-quote-argument buffer-file-name))))))
+		 (concat "latexmk -g " (if buffer-file-name
+					   (shell-quote-argument buffer-file-name))))))
 
 ;; Remove useless GUI stuff
 (tool-bar-mode 0)
@@ -287,6 +287,23 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Maximize frame
 (toggle-frame-maximized)
+
+;; Close/Switch to compile buffer after compilation
+(defun bury-compile-buffer-if-successful (buffer string)
+  "Bury a compilation buffer if succeeded without warnings "
+  (if (and
+       (string-match "compilation" (buffer-name buffer))
+       (string-match "finished" string)
+       (not
+        (with-current-buffer buffer
+          (goto-char 1)
+          (search-forward "warning" nil t))))
+      (run-with-timer 1 nil
+                      (lambda (buf)
+                        (bury-buffer buf)
+                        (switch-to-prev-buffer (get-buffer-window buf) 'kill))
+                      buffer)))
+(add-hook 'compilation-finish-functions 'bury-compile-buffer-if-successful)
 
 ;; Safe directory variables
 (add-to-list 'safe-local-variable-values
