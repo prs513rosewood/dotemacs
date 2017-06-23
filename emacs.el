@@ -240,16 +240,32 @@ Return a list of installed packages or nil for every skipped package."
   :ensure t
   :config
   (load-theme 'dracula t)
-  (enable-theme 'dracula))
+  )
 (use-package color-theme-sanityinc-tomorrow
   :ensure t)
+(use-package base16-theme
+  :ensure t
+  :config
+  (load-theme 'base16-tomorrow-night t)
+  (enable-theme 'base16-tomorrow-night)
+  )
+;; (defvar my/base16-colors base16-default-dark-colors)
+;; (setq evil-emacs-state-cursor   `(,(plist-get my/base16-colors :base0D) box)
+;;       evil-insert-state-cursor  `(,(plist-get my/base16-colors :base0D) bar)
+;;       evil-motion-state-cursor  `(,(plist-get my/base16-colors :base0E) box)
+;;       evil-normal-state-cursor  `(,(plist-get my/base16-colors :base0B) box)
+;;       evil-replace-state-cursor `(,(plist-get my/base16-colors :base08) bar)
+;;       evil-visual-state-cursor  `(,(plist-get my/base16-colors :base09) box))
 
 ;; Do Re Mi
 (use-package doremi
   :ensure t)
 (use-package doremi-cmd
   :ensure t
-  :config (setq doremi-custom-themes '(spacemacs-dark spacemacs-light dracula)))
+  :config (setq doremi-custom-themes '(spacemacs-dark
+				       spacemacs-light
+				       dracula
+				       base16-tomorrow-night)))
 
 ;; Ein
 (use-package ein
@@ -289,27 +305,31 @@ Return a list of installed packages or nil for every skipped package."
 (toggle-frame-maximized)
 
 ;; Close/Switch to compile buffer after compilation
-(defun bury-compile-buffer-if-successful (buffer string)
-  "Bury a compilation buffer if succeeded without warnings "
-  (if (and
-       (string-match "compilation" (buffer-name buffer))
-       (string-match "finished" string)
-       (not
-        (with-current-buffer buffer
-          (goto-char 1)
-          (search-forward "warning" nil t))))
-      (run-with-timer 1 nil
-                      (lambda (buf)
-                        (bury-buffer buf)
-                        (switch-to-prev-buffer (get-buffer-window buf) 'kill))
-                      buffer)))
-(add-hook 'compilation-finish-functions 'bury-compile-buffer-if-successful)
+;; (defun bury-compile-buffer-if-successful (buffer string)
+;;   "Bury a compilation buffer if succeeded without warnings "
+;;   (if (and
+;;        (string-match "compilation" (buffer-name buffer))
+;;        (string-match "finished" string)
+;;        (not
+;;         (with-current-buffer buffer
+;;           (goto-char 1)
+;;           (search-forward "warning" nil t))))
+;;       (run-with-timer 1 nil
+;;                       (lambda (buf)
+;;                         (bury-buffer buf)
+;;                         (switch-to-prev-buffer (get-buffer-window buf) 'kill))
+;;                       buffer)))
+;; (add-hook 'compilation-finish-functions 'bury-compile-buffer-if-successful)
 
 ;; Safe directory variables
 (add-to-list 'safe-local-variable-values
 	     '(flycheck-clang-args . ("-std=c++11" "-Wno-unused-variable" "-Wall"
 				      "-DTAMAAS_DEBUG"
 				      "-I/home/frerot/Documents/tamaas/src")))
+(add-to-list 'safe-local-variable-values
+	     '(flycheck-gcc-args . ("-std=c++11" "-Wno-unused-variable" "-Wall"
+				    "-DTAMAAS_DEBUG"
+				    "-I/home/frerot/Documents/tamaas/src")))
 
 ;; Custom variables (generated automatically by emacs)
 ;; -----------------------------------------------
@@ -327,10 +347,10 @@ Return a list of installed packages or nil for every skipped package."
  '(cua-normal-cursor-color "#657b83")
  '(cua-overwrite-cursor-color "#b58900")
  '(cua-read-only-cursor-color "#859900")
- '(custom-enabled-themes (quote (dracula)))
+ '(custom-enabled-themes (quote (base16-tomorrow-night)))
  '(custom-safe-themes
    (quote
-    ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "345f8f92edc3508574c61850b98a2e0a7a3f5ba3bb9ed03a50f6e41546fe2de0" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+    ("3380a2766cf0590d50d6366c5a91e976bdc3c413df963a0ab9952314b4577299" "16dd114a84d0aeccc5ad6fd64752a11ea2e841e3853234f19dc02a7b91f5d661" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "345f8f92edc3508574c61850b98a2e0a7a3f5ba3bb9ed03a50f6e41546fe2de0" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(fci-rule-color "#eee8d5")
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
  '(highlight-symbol-colors
@@ -359,8 +379,16 @@ Return a list of installed packages or nil for every skipped package."
  '(nrepl-message-colors
    (quote
     ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
+ '(package-selected-packages
+   (quote
+    (yasnippet which-key vi-tilde-fringe use-package spacemacs-theme spaceline solarized-theme rainbow-delimiters org-bullets linum-relative helm-gtags helm-flyspell ggtags flycheck evil-surround evil-snipe evil-org evil-magit evil-leader evil-avy ein dracula-theme doremi-cmd company-jedi color-theme-sanityinc-tomorrow)))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
+ '(safe-local-variable-values
+   (quote
+    ((flycheck-clang-include-path . "/home/frerot/Documents/tamaas/src")
+     (flycheck-gcc-args "-std=c++11" "-Wno-unused-variable" "-Wall" "-DTAMAAS_DEBUG" "-I/home/frerot/Documents/tamaas/src")
+     (flycheck-clang-args "-std=c++11" "-Wno-unused-variable" "-Wall" "-DTAMAAS_DEBUG" "-I/home/frerot/Documents/tamaas/src"))))
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))
  '(term-default-bg-color "#fdf6e3")
  '(term-default-fg-color "#657b83")
