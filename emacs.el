@@ -331,6 +331,10 @@ Return a list of installed packages or nil for every skipped package."
 				    "-DTAMAAS_DEBUG"
 				    "-I/home/frerot/Documents/tamaas/src")))
 
+;; Setting PYTHONPATH
+(setenv "SHELL" "zsh")
+(setenv "PYTHONPATH" (shell-command-to-string "$SHELL --login -c 'echo -n $PYTHONPATH'"))
+
 ;; Custom variables (generated automatically by emacs)
 ;; -----------------------------------------------
 (custom-set-variables
