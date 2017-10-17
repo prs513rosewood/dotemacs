@@ -44,6 +44,19 @@ Return a list of installed packages or nil for every skipped package."
 ;; Restore dead keys because of input method-after
 (require 'iso-transl)
 
+;; Displaying ansi colors
+(require 'ansi-color)
+(defun display-ansi-colors ()
+  (interactive)
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region (point-min) (point-max))))
+(ignore-errors
+  (require 'ansi-color)
+  (defun my-colorize-compilation-buffer ()
+    (when (eq major-mode 'compilation-mode)
+      (ansi-color-apply-on-region compilation-filter-start (point-max))))
+  (add-hook 'compilation-filter-hook 'my-colorize-compilation-buffer))
+
 ;; Helm
 (use-package helm
   :ensure t
@@ -53,6 +66,16 @@ Return a list of installed packages or nil for every skipped package."
   (global-set-key (kbd "C-x C-f") 'helm-find-files))
 (use-package helm-flyspell
   :ensure t)
+
+;; Projectile
+(use-package projectile
+  :ensure t
+  :config
+  (projectile-mode 1))
+(use-package helm-projectile
+  :ensure t
+  :config
+  (helm-projectile-on))
 
 ;; Org-mode
 (use-package org
@@ -170,6 +193,10 @@ Return a list of installed packages or nil for every skipped package."
 (define-key evil-normal-state-map "é" #'evil-ex)
 (define-key evil-normal-state-map (kbd "C-u") #'evil-scroll-up)
 (define-key evil-normal-state-map (kbd "TAB") #'indent-for-tab-command)
+;; Visual lines for wraped files
+(define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
+(define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
+
 
 ;; Leader keybindings
 (evil-leader/set-leader "<SPC>")
@@ -177,6 +204,7 @@ Return a list of installed packages or nil for every skipped package."
 (evil-leader/set-key "b" #'helm-buffers-list)
 (evil-leader/set-key "d" #'dired)
 (evil-leader/set-key "ff" #'helm-find-files)
+(evil-leader/set-key "p" #'helm-projectile)
 (evil-leader/set-key "fr" #'helm-recentf)
 (evil-leader/set-key "/" #'comment-or-uncomment-region)
 (evil-leader/set-key "TAB" #'mode-line-other-buffer)
@@ -190,6 +218,9 @@ Return a list of installed packages or nil for every skipped package."
 			    (eval "~/.emacs.el")))
 (evil-leader/set-key "sn" #'flyspell-goto-next-error)
 (evil-leader/set-key "ss" #'helm-flyspell-correct)
+;; changing some helm behavior
+(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+(define-key helm-map (kbd "C-z") 'helm-select-action)
 ;; compile bindings
 (evil-leader/set-key "cc" #'compile)
 (evil-leader/set-key "cr" #'recompile)
@@ -242,6 +273,8 @@ Return a list of installed packages or nil for every skipped package."
   (load-theme 'dracula t)
   )
 (use-package color-theme-sanityinc-tomorrow
+  :ensure t)
+(use-package xresources-theme
   :ensure t)
 (use-package base16-theme
   :ensure t
@@ -303,6 +336,9 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Maximize frame
 (toggle-frame-maximized)
+
+;; Add .cu files to c++-mode
+(add-to-list 'auto-mode-alist '("\\.cu\\'" . c++-mode))
 
 ;; Close/Switch to compile buffer after compilation
 ;; (defun bury-compile-buffer-if-successful (buffer string)
@@ -385,12 +421,16 @@ Return a list of installed packages or nil for every skipped package."
     ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
  '(package-selected-packages
    (quote
-    (yasnippet which-key vi-tilde-fringe use-package spacemacs-theme spaceline solarized-theme rainbow-delimiters org-bullets linum-relative helm-gtags helm-flyspell ggtags flycheck evil-surround evil-snipe evil-org evil-magit evil-leader evil-avy ein dracula-theme doremi-cmd company-jedi color-theme-sanityinc-tomorrow)))
+    (cmake-font-lock cmake-mode helm-projectile projectile yasnippet which-key vi-tilde-fringe use-package spacemacs-theme spaceline solarized-theme rainbow-delimiters org-bullets linum-relative helm-gtags helm-flyspell ggtags flycheck evil-surround evil-snipe evil-org evil-magit evil-leader evil-avy ein dracula-theme doremi-cmd company-jedi color-theme-sanityinc-tomorrow)))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
  '(safe-local-variable-values
    (quote
-    ((flycheck-clang-include-path . "/home/frerot/Documents/tamaas/src")
+    ((flycheck-clang-include-path quote
+				  (list "src/core" "src/model" "src/surface" "src/bem"))
+     (flycheck-clang-include-path list "src/core" "src/model" "src/surface" "src/bem")
+     (flycheck-clang-include-path . "src/core")
+     (flycheck-clang-include-path . "/home/frerot/Documents/tamaas/src")
      (flycheck-gcc-args "-std=c++11" "-Wno-unused-variable" "-Wall" "-DTAMAAS_DEBUG" "-I/home/frerot/Documents/tamaas/src")
      (flycheck-clang-args "-std=c++11" "-Wno-unused-variable" "-Wall" "-DTAMAAS_DEBUG" "-I/home/frerot/Documents/tamaas/src"))))
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))
