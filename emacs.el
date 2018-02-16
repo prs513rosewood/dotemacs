@@ -129,7 +129,13 @@ Return a list of installed packages or nil for every skipped package."
   :ensure t
   :config
   (add-hook 'after-init-hook 'global-company-mode)
+  (add-hook 'c++-mode-hook
+	    (lambda () (setq company-clang-insert-arguments "-std=c++11")))
   (add-hook 'org-mode-hook (lambda () (company-mode -1))))
+
+;; Loading clang-format
+(load "/usr/share/emacs/site-lisp/clang-format-4.0/clang-format.el")
+(fset 'c-indent-region 'clang-format-region)
 
 (use-package company-jedi
   :ensure t
@@ -137,6 +143,29 @@ Return a list of installed packages or nil for every skipped package."
   (add-to-list 'company-backends 'company-jedi)
   (setq jedi:server-args
       '("--sys-path" "/home/frerot/Documents/tamaas/build/python")))
+
+;; Irony
+(use-package irony
+  :ensure t
+  :config
+  (add-hook 'c++-mode-hook 'irony-mode)
+  (add-hook 'c-mode-hook 'irony-mode)
+  (add-hook 'objc-mode-hook 'irony-mode)
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+
+;; Company-Irony
+(use-package company-irony
+  :ensure t
+  :config
+  (eval-after-load 'company
+    '(add-to-list 'company-backends 'company-irony)))
+
+;; Flycheck-Irony
+(use-package flycheck-irony
+  :ensure t
+  :config
+  (eval-after-load 'flycheck
+    '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup)))
 
 ;; Eldoc
 (use-package eldoc
@@ -193,6 +222,7 @@ Return a list of installed packages or nil for every skipped package."
 (define-key evil-normal-state-map "é" #'evil-ex)
 (define-key evil-normal-state-map (kbd "C-u") #'evil-scroll-up)
 (define-key evil-normal-state-map (kbd "TAB") #'indent-for-tab-command)
+(define-key evil-normal-state-map (kbd "<C-tab>") #'clang-format-region)
 ;; Visual lines for wraped files
 (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
 (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
@@ -223,6 +253,7 @@ Return a list of installed packages or nil for every skipped package."
 (define-key helm-map (kbd "C-z") 'helm-select-action)
 ;; compile bindings
 (evil-leader/set-key "cc" #'compile)
+(evil-leader/set-key "cp" #'projectile-compile-project)
 (evil-leader/set-key "cr" #'recompile)
 (evil-leader/set-key "ck" #'kill-compilation)
 (evil-leader/set-key "cq" (lambda () "Kill compile buffer"
@@ -245,6 +276,9 @@ Return a list of installed packages or nil for every skipped package."
     (apply old-fun args)))
 (advice-add #'evil-save :around #'ein-evil-save)
 
+;; GDB Many windows setup
+(setq gdb-many-windows 1)
+
 ;; Vi fringe
 (use-package vi-tilde-fringe
   :ensure t
@@ -260,11 +294,11 @@ Return a list of installed packages or nil for every skipped package."
 (spaceline-toggle-minor-modes-off)
 
 ;; Themes
-(use-package spacemacs-theme
-  :ensure t
-  :config
-  (load-theme 'spacemacs-light t)
-  (load-theme 'spacemacs-dark t))
+;; (use-package spacemacs-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'spacemacs-light t)
+;;   (load-theme 'spacemacs-dark t))
 (use-package solarized-theme
   :ensure t)
 (use-package dracula-theme
@@ -274,8 +308,8 @@ Return a list of installed packages or nil for every skipped package."
   )
 (use-package color-theme-sanityinc-tomorrow
   :ensure t)
-(use-package xresources-theme
-  :ensure t)
+;(use-package xresources-theme
+;  :ensure t)
 (use-package base16-theme
   :ensure t
   :config
@@ -302,6 +336,19 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; Ein
 (use-package ein
+  :ensure t)
+
+;; Markdown
+(use-package markdown-mode
+  :ensure t)
+
+;; Rust
+(use-package rust-mode
+  :ensure t
+  :config (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode)))
+
+;; Rust for flycheck
+(use-package flycheck-rust
   :ensure t)
 
 (defun cycle-custom-themes()
@@ -367,8 +414,11 @@ Return a list of installed packages or nil for every skipped package."
 				    "-DTAMAAS_DEBUG"
 				    "-I/home/frerot/Documents/tamaas/src")))
 
+;; Setting shell to bash
+(setenv "SHELL" "/bin/bash")
+(setq shell-file-name "/bin/bash")
+
 ;; Setting PYTHONPATH
-(setenv "SHELL" "zsh")
 (setenv "PYTHONPATH" (shell-command-to-string "$SHELL --login -c 'echo -n $PYTHONPATH'"))
 
 ;; Custom variables (generated automatically by emacs)
@@ -421,12 +471,18 @@ Return a list of installed packages or nil for every skipped package."
     ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
  '(package-selected-packages
    (quote
-    (cmake-font-lock cmake-mode helm-projectile projectile yasnippet which-key vi-tilde-fringe use-package spacemacs-theme spaceline solarized-theme rainbow-delimiters org-bullets linum-relative helm-gtags helm-flyspell ggtags flycheck evil-surround evil-snipe evil-org evil-magit evil-leader evil-avy ein dracula-theme doremi-cmd company-jedi color-theme-sanityinc-tomorrow)))
+    (cmake-font-lock cmake-mode helm-projectile projectile yasnippet which-key vi-tilde-fringe use-package spaceline solarized-theme rainbow-delimiters org-bullets linum-relative helm-gtags helm-flyspell ggtags flycheck evil-surround evil-snipe evil-org evil-magit evil-leader evil-avy ein dracula-theme doremi-cmd company-jedi color-theme-sanityinc-tomorrow)))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
  '(safe-local-variable-values
    (quote
-    ((flycheck-clang-include-path quote
+    ((company-clang-arguments "-std=c++11" "-I/home/frerot/Documents/tamaas/src/core" "-I/home/frerot/Documents/tamaas/src/model" "-I/home/frerot/Documents/tamaas/src/surface" "-I/home/frerot/Documents/tamaas/src/bem" "-I/home/frerot/Documents/tamaas/src/gpu" "-I/opt/cuda/include" "-I/home/frerot/Documents/tamaas/third-party/Criterion/include")
+     (company-clang-arguments "-std=c+11" "-I/home/frerot/Documents/tamaas/src/core" "-I/home/frerot/Documents/tamaas/src/model" "-I/home/frerot/Documents/tamaas/src/surface" "-I/home/frerot/Documents/tamaas/src/bem" "-I/home/frerot/Documents/tamaas/src/gpu" "-I/opt/cuda/include" "-I/home/frerot/Documents/tamaas/third-party/Criterion/include")
+     (company-clang-arguments "-I/home/frerot/Documents/tamaas/src/core" "-I/home/frerot/Documents/tamaas/src/model" "-I/home/frerot/Documents/tamaas/src/surface" "-I/home/frerot/Documents/tamaas/src/bem" "-I/home/frerot/Documents/tamaas/src/gpu" "-I/opt/cuda/include" "-I/home/frerot/Documents/tamaas/third-party/Criterion/include")
+     (company-clang-arguments "-I/home/frerot/Documents/tamaas/src/core" "-I/home/frerot/Documents/tamaas/src/model" "-I/home/frerot/Documents/tamaas/src/surface" "-I/home/frerot/Documents/tamaas/src/bem" "-I/home/frerot/Documents/tamaas/src/gpu" "-I/opt/cuda/include")
+     (company-clang-arguments "-I/home/frerot/Documents/tamaas/src/core" "-I/home/frerot/Documents/tamaas/src/model" "-I/home/frerot/Documents/tamaas/src/surface" "-I/home/frerot/Documents/tamaas/src/bem" "-I/home/frerot/Documents/tamaas/src/gpu")
+     (company-clang-arguments "-I/home/frerot/Documents/tamaas/src" "-I/home/frerot/Documents/tamaas/src/model" "-I/home/frerot/Documents/tamaas/src/surface" "-I/home/frerot/Documents/tamaas/src/bem")
+     (flycheck-clang-include-path quote
 				  (list "src/core" "src/model" "src/surface" "src/bem"))
      (flycheck-clang-include-path list "src/core" "src/model" "src/surface" "src/bem")
      (flycheck-clang-include-path . "src/core")
