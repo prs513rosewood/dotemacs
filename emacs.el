@@ -143,7 +143,7 @@ Return a list of installed packages or nil for every skipped package."
   (add-hook 'org-mode-hook (lambda () (company-mode -1))))
 
 ;; Loading clang-format
-(load "/usr/share/emacs/site-lisp/clang-format-4.0/clang-format.el")
+;(load "/usr/share/emacs/site-lisp/clang-format-4.0/clang-format.el")
 (fset 'c-indent-region 'clang-format-region)
 
 ;; No indentation in namespaces
@@ -341,14 +341,14 @@ Return a list of installed packages or nil for every skipped package."
 ;;       evil-visual-state-cursor  `(,(plist-get my/base16-colors :base09) box))
 
 ;; Do Re Mi
-(use-package doremi
-  :ensure t)
-(use-package doremi-cmd
-  :ensure t
-  :config (setq doremi-custom-themes '(spacemacs-dark
-				       spacemacs-light
-				       dracula
-				       base16-tomorrow-night)))
+;; (use-package doremi
+;;   :ensure t)
+;; (use-package doremi-cmd
+;;   :ensure t
+;;   :config (setq doremi-custom-themes '(spacemacs-dark
+;; 				       spacemacs-light
+;; 				       dracula
+;; 				       base16-tomorrow-night)))
 
 ;; Ein
 (use-package ein
@@ -395,7 +395,8 @@ Return a list of installed packages or nil for every skipped package."
 ;; Remove useless GUI stuff
 (tool-bar-mode 0)
 (menu-bar-mode 0)
-(scroll-bar-mode 0)
+(when (display-graphic-p)
+  (scroll-bar-mode 0))
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Maximize frame
