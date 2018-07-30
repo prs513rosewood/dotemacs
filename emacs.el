@@ -16,10 +16,10 @@ Return a list of installed packages or nil for every skipped package."
   (mapcar
    (lambda (package)
      (if (package-installed-p package)
-         nil
+	 nil
        (if (y-or-n-p (format "Package %s is missing. Install it? " package))
-           (package-install package)
-         package)))
+	   (package-install package)
+	 package)))
    packages))
 
 ;; Make sure to have downloaded archive description.
@@ -81,18 +81,27 @@ Return a list of installed packages or nil for every skipped package."
 (use-package org
   :ensure t
   :config
-  (setq org-agenda-files '("~/Dropbox/orgs"))
-  (setq org-directory "~/Dropbox/orgs")
+  (setq org-agenda-files '("~/Nextcloud/orgs"))
+  (setq org-directory "~/Nextcloud/orgs")
   (setq org-startup-indented t)
   (setq org-startup-truncated nil)
   (setq org-src-fontify-natively t)
   (add-hook 'org-mode-hook (lambda ()
 			     (visual-line-mode t)
 			     (flyspell-mode t)))
-  (setq org-latex-pdf-process (quote ("rubber -df %f")))
+  (setq org-latex-pdf-process (quote ("latexmk %f")))
   (org-babel-do-load-languages 'org-babel-load-languages
-                               '((python . t)))
+			       '((python . t)))
+  (with-eval-after-load 'ox-latex (add-to-list 'org-latex-classes
+					       '("talk"
+						 "\\documentclass{talk}
+						 [NO-DEFAULT-PACKAGES]
+						 [PACKAGES]
+						 [EXTRA]"
+						 ("\\section{%s}" . "\\section*{%s}"))
+			)
   )
+)
 (use-package org-bullets
   :ensure t
   :config
@@ -136,6 +145,11 @@ Return a list of installed packages or nil for every skipped package."
 ;; Loading clang-format
 (load "/usr/share/emacs/site-lisp/clang-format-4.0/clang-format.el")
 (fset 'c-indent-region 'clang-format-region)
+
+;; No indentation in namespaces
+(defun my-c-setup ()
+   (c-set-offset 'innamespace [0]))
+(add-hook 'c++-mode-hook 'my-c-setup)
 
 (use-package company-jedi
   :ensure t
@@ -251,6 +265,8 @@ Return a list of installed packages or nil for every skipped package."
 ;; changing some helm behavior
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
 (define-key helm-map (kbd "C-z") 'helm-select-action)
+;; make frame
+(evil-leader/set-key "mf" #'make-frame)
 ;; compile bindings
 (evil-leader/set-key "cc" #'compile)
 (evil-leader/set-key "cp" #'projectile-compile-project)
@@ -366,7 +382,7 @@ Return a list of installed packages or nil for every skipped package."
 (add-hook 'python-mode-hook
 	  (lambda ()
 	    (set (make-local-variable 'compile-command)
-		 (concat "python " (if buffer-file-name
+		 (concat "python3 " (if buffer-file-name
 				       (shell-quote-argument buffer-file-name))))))
 
 ;; Set compile command for latex documents
@@ -380,9 +396,10 @@ Return a list of installed packages or nil for every skipped package."
 (tool-bar-mode 0)
 (menu-bar-mode 0)
 (scroll-bar-mode 0)
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Maximize frame
-(toggle-frame-maximized)
+;; (toggle-frame-maximized)
 
 ;; Add .cu files to c++-mode
 (add-to-list 'auto-mode-alist '("\\.cu\\'" . c++-mode))
@@ -476,7 +493,9 @@ Return a list of installed packages or nil for every skipped package."
  '(pos-tip-foreground-color "#586e75")
  '(safe-local-variable-values
    (quote
-    ((company-clang-arguments "-std=c++11" "-I/home/frerot/Documents/tamaas/src/core" "-I/home/frerot/Documents/tamaas/src/model" "-I/home/frerot/Documents/tamaas/src/surface" "-I/home/frerot/Documents/tamaas/src/bem" "-I/home/frerot/Documents/tamaas/src/gpu" "-I/opt/cuda/include" "-I/home/frerot/Documents/tamaas/third-party/Criterion/include")
+    ((projectile-project-compilation-cmd . "scons -j4")
+     (company-clang-arguments "-std=c++11" "-I/home/frerot/Documents/tamaas/src/core" "-I/home/frerot/Documents/tamaas/src/model" "-I/home/frerot/Documents/tamaas/src/surface" "-I/home/frerot/Documents/tamaas/src/solvers" "-I/home/frerot/Documents/tamaas/src/percolation" "-I/home/frerot/Documents/tamaas/src/bem" "-I/home/frerot/Documents/tamaas/src/gpu")
+     (company-clang-arguments "-std=c++11" "-I/home/frerot/Documents/tamaas/src/core" "-I/home/frerot/Documents/tamaas/src/model" "-I/home/frerot/Documents/tamaas/src/surface" "-I/home/frerot/Documents/tamaas/src/bem" "-I/home/frerot/Documents/tamaas/src/gpu" "-I/opt/cuda/include" "-I/home/frerot/Documents/tamaas/third-party/Criterion/include")
      (company-clang-arguments "-std=c+11" "-I/home/frerot/Documents/tamaas/src/core" "-I/home/frerot/Documents/tamaas/src/model" "-I/home/frerot/Documents/tamaas/src/surface" "-I/home/frerot/Documents/tamaas/src/bem" "-I/home/frerot/Documents/tamaas/src/gpu" "-I/opt/cuda/include" "-I/home/frerot/Documents/tamaas/third-party/Criterion/include")
      (company-clang-arguments "-I/home/frerot/Documents/tamaas/src/core" "-I/home/frerot/Documents/tamaas/src/model" "-I/home/frerot/Documents/tamaas/src/surface" "-I/home/frerot/Documents/tamaas/src/bem" "-I/home/frerot/Documents/tamaas/src/gpu" "-I/opt/cuda/include" "-I/home/frerot/Documents/tamaas/third-party/Criterion/include")
      (company-clang-arguments "-I/home/frerot/Documents/tamaas/src/core" "-I/home/frerot/Documents/tamaas/src/model" "-I/home/frerot/Documents/tamaas/src/surface" "-I/home/frerot/Documents/tamaas/src/bem" "-I/home/frerot/Documents/tamaas/src/gpu" "-I/opt/cuda/include")
