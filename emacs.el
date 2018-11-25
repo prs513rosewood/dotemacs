@@ -131,7 +131,8 @@ Return a list of installed packages or nil for every skipped package."
   :config
   (add-hook 'after-init-hook #'global-flycheck-mode)
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-  (setq-default flycheck-flake8-maximum-line-length 100))
+  (setq-default flycheck-flake8-maximum-line-length 80)
+  (setq flycheck-gcc-openmp t))
 
 ;; Company
 (use-package company
@@ -143,8 +144,10 @@ Return a list of installed packages or nil for every skipped package."
   (add-hook 'org-mode-hook (lambda () (company-mode -1))))
 
 ;; Loading clang-format
-;(load "/usr/share/emacs/site-lisp/clang-format-4.0/clang-format.el")
-(fset 'c-indent-region 'clang-format-region)
+(use-package clang-format
+  :ensure t
+  :config
+  (fset 'c-indent-region 'clang-format-region))
 
 ;; No indentation in namespaces
 (defun my-c-setup ()
@@ -395,8 +398,7 @@ Return a list of installed packages or nil for every skipped package."
 ;; Remove useless GUI stuff
 (tool-bar-mode 0)
 (menu-bar-mode 0)
-(when (display-graphic-p)
-  (scroll-bar-mode 0))
+(scroll-bar-mode 0)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Maximize frame
@@ -494,7 +496,8 @@ Return a list of installed packages or nil for every skipped package."
  '(pos-tip-foreground-color "#586e75")
  '(safe-local-variable-values
    (quote
-    ((projectile-project-compilation-cmd . "scons -j4")
+    ((company-clang-arguments "-std=c++11" "-I/home/frerot/Documents/tamaas/src/core" "-I/home/frerot/Documents/tamaas/src/model" "-I/home/frerot/Documents/tamaas/src/surface" "-I/home/frerot/Documents/tamaas/src/solvers" "-I/home/frerot/Documents/tamaas/src/percolation" "-I/home/frerot/Documents/tamaas/src/bem" "-I/home/frerot/Documents/tamaas/src/gpu" "-Ithird-party/benchmark/include")
+     (projectile-project-compilation-cmd . "scons -j4")
      (company-clang-arguments "-std=c++11" "-I/home/frerot/Documents/tamaas/src/core" "-I/home/frerot/Documents/tamaas/src/model" "-I/home/frerot/Documents/tamaas/src/surface" "-I/home/frerot/Documents/tamaas/src/solvers" "-I/home/frerot/Documents/tamaas/src/percolation" "-I/home/frerot/Documents/tamaas/src/bem" "-I/home/frerot/Documents/tamaas/src/gpu")
      (company-clang-arguments "-std=c++11" "-I/home/frerot/Documents/tamaas/src/core" "-I/home/frerot/Documents/tamaas/src/model" "-I/home/frerot/Documents/tamaas/src/surface" "-I/home/frerot/Documents/tamaas/src/bem" "-I/home/frerot/Documents/tamaas/src/gpu" "-I/opt/cuda/include" "-I/home/frerot/Documents/tamaas/third-party/Criterion/include")
      (company-clang-arguments "-std=c+11" "-I/home/frerot/Documents/tamaas/src/core" "-I/home/frerot/Documents/tamaas/src/model" "-I/home/frerot/Documents/tamaas/src/surface" "-I/home/frerot/Documents/tamaas/src/bem" "-I/home/frerot/Documents/tamaas/src/gpu" "-I/opt/cuda/include" "-I/home/frerot/Documents/tamaas/third-party/Criterion/include")
