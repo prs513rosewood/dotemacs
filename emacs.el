@@ -200,6 +200,10 @@
    "cn" #'flycheck-next-error
    "cb" #'flycheck-previous-error))
 
+;; Helm extension for flycheck
+(use-package helm-flycheck :ensure t
+  :commands helm-flycheck)
+
 ;; Org-mode: it's org-mode
 (use-package org :ensure t
   :mode ("\\.org\\'" . org-mode)
@@ -366,7 +370,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (markdown-mode base16-theme spaceline powerline vi-tilde-fringe helm-flyspell evil-snipe evil-surround evil-org evil-magit avy rainbow-delimiters linum-relative flycheck-irony company-irony irony company-jedi clang-format company flycheck helm-projectile projectile magit evil helm general which-key use-package))))
+    (helm-company helm-flycheck markdown-mode base16-theme spaceline powerline vi-tilde-fringe helm-flyspell evil-snipe evil-surround evil-org evil-magit avy rainbow-delimiters linum-relative flycheck-irony company-irony irony company-jedi clang-format company flycheck helm-projectile projectile magit evil helm general which-key use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
