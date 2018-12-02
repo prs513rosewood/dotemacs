@@ -17,6 +17,11 @@
 (add-hook 'text-mode-hook (lambda ()
 			    (visual-line-mode t)))
 
+;; Display relative line numbers
+(with-eval-after-load 'display-line-numbers
+  (setq display-line-numbers-type 'relative
+	display-line-numbers-width-start t))
+
 ;; Recentf mode
 (require 'recentf)
 (recentf-mode 1)
@@ -154,11 +159,11 @@
 
 ;; Magit: git made awesome
 (use-package magit :ensure t
-  :commands magit-status
+  :commands (magit-status)
   :general
   (tyrant-def
    "g" '(:ignore t :which-key "git")
-   "gs" #'magit-status))
+   "gs" 'magit-status))
 
 ;; Projectile: project management
 (use-package projectile :ensure t
@@ -181,14 +186,13 @@
   (tyrant-def
    "p" 'helm-projectile))
 
-;; Flycheck
-(use-package flycheck
-  :ensure t
+;; Flycheck: on-the-fly syntax checking
+(use-package flycheck :ensure t
   :init
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
   (setq-default flycheck-flake8-maximum-line-length 80)
   (setq flycheck-gcc-openmp t)
-  :ghook ('prog-mode-hook 'latex-mode-hook)
+  :ghook ('(prog-mode-hook tex-mode-hook))
   :config
   (global-flycheck-mode)
   :general
@@ -206,9 +210,6 @@
 	org-startup-truncated nil
 	org-src-fontify-natively t
 	org-latex-pdf-process (quote ("latexmk %f")))
-  (add-hook 'org-mode-hook (lambda ()
-			     (visual-line-mode t)
-			     (flyspell-mode t)))
   (org-babel-do-load-languages 'org-babel-load-languages
 			       '((python . t)))
   (with-eval-after-load 'ox-latex (add-to-list 'org-latex-classes
@@ -220,18 +221,40 @@
 						 ("\\section{%s}" . "\\section*{%s}"))
 			)
   )
+  :gfhook ('org-mode-hook (lambda ()
+			    (visual-line-mode t)
+			    (flyspell-mode t)))
 )
 
+;; Evil extensions
+(use-package evil-magit :ensure t
+  :after evil magit
+  :ghook ('magit-mode 'evil-magit-init))
+(use-package evil-org :ensure t
+  :after evil org
+  :ghook 'org-mode)
+(use-package evil-surround :ensure t
+  :after evil
+  :config (global-evil-surround-mode))
+(use-package evil-snipe :ensure t
+  :after evil
+  :config (evil-snipe-override-mode 1))
 
-
-
-;; Company
+;; Company: global auto-completion
 (use-package company :ensure t
   :config (global-company-mode)
-  :init
-  (general-add-hook 'org-mode-hook (lambda () (company-mode -1))))
+  :gfhook ('org-mode-hook (lambda () (company-mode -1))))
 
-;; Loading clang-format
+;; Company extension for python
+(use-package company-jedi :ensure t
+  :after company
+  :ghook 'python-mode-hook
+  :config
+  (add-to-list 'company-backends 'company-jedi)
+  (setq jedi:server-args
+      '("--sys-path" "/home/frerot/Documents/tamaas/build/python")))
+
+;; clang-format: cool
 (use-package clang-format :ensure t
   :commands clang-format-region
   :init
@@ -240,24 +263,11 @@
   ('normal
    "<C-tab>" 'clang-format-region))
 
-;; No indentation in namespaces
-(defun my-c-setup ()
-   (c-set-offset 'innamespace [0]))
-(general-add-hook 'c++-mode-hook 'my-c-setup)
-
-(use-package company-jedi :ensure t
-  :after company
-  :ghook python-mode-hook
-  :config
-  (add-to-list 'company-backends 'company-jedi)
-  (setq jedi:server-args
-      '("--sys-path" "/home/frerot/Documents/tamaas/build/python")))
-
-;; Irony
+;; Irony: backend for company and flycheck
 (use-package irony :ensure t
-  :ghook ('c++-mode-hook 'c-mode-hook 'objc-mode-hook)
+  :ghook ('(c++-mode-hook c-mode-hook objc-mode-hook))
   :config
-  (general-add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+  :gfhook ('irony-mode-hook 'irony-cdb-autosetup-compile-options))
 
 ;; Company-Irony
 (use-package company-irony :ensure t
@@ -268,9 +278,9 @@
 ;; Flycheck-Irony
 (use-package flycheck-irony :ensure t
   :after irony flycheck
-  :ghook ('flycheck-mode-hook . 'flycheck-irony-setup))
+  :ghook ('flycheck-mode-hook 'flycheck-irony-setup))
 
-;; Eldoc
+;; Eldoc: documentation for elisp
 (use-package eldoc :ensure t
   :config
   (eldoc-mode t))
@@ -281,7 +291,7 @@
   :config
   (global-linum-mode)
   (linum-relative-mode)
-  (add-hook 'org-mode (lambda () (linum-mode -1))))
+  :gfhook ('org-mode (lambda () (linum-mode -1))))
 
 ;; Rainbow delimiters
 (use-package rainbow-delimiters :ensure t
@@ -293,21 +303,7 @@
   (tyrant-def
    "SPC" #'avy-goto-char))
 
-;; Evil extensions
-(use-package evil-magit :ensure t
-  :after evil magit
-  :ghook ('magit-mode . 'evil-magit-init))
-(use-package evil-org :ensure t
-  :after evil org
-  :ghook ('org-mode . 'evil-org-mode))
-(use-package evil-surround :ensure t
-  :after evil
-  :config (global-evil-surround-mode))
-(use-package evil-snipe :ensure t
-  :after evil
-  :config (evil-snipe-override-mode 1))
-
-
+;; Helm extension for flyspell
 (use-package helm-flyspell :ensure t
   :general
   (tyrant-def
@@ -324,8 +320,7 @@
   :config (powerline-default-theme))
 
 ;; Base16 theme
-(use-package base16-theme
-  :ensure t
+(use-package base16-theme :ensure t
   :config
   (load-theme 'base16-tomorrow-night t)
   (enable-theme 'base16-tomorrow-night)
@@ -340,15 +335,21 @@
 ;; GDB Many windows setup
 (setq gdb-many-windows 1)
 
+;; No indentation in namespaces
+(defun my-c-setup ()
+   (c-set-offset 'innamespace [0]))
+(general-add-hook 'c++-mode-hook 'my-c-setup)
+
+
 ;; Set compile command for python scripts
-(add-hook 'python-mode-hook
+(general-add-hook 'python-mode-hook
 	  (lambda ()
 	    (set (make-local-variable 'compile-command)
 		 (concat "python3 " (if buffer-file-name
 				       (shell-quote-argument buffer-file-name))))))
 
 ;; Set compile command for latex documents
-(add-hook 'latex-mode-hook
+(general-add-hook 'latex-mode-hook
 	  (lambda ()
 	    (set (make-local-variable 'compile-command)
 		 (concat "latexmk -g " (if buffer-file-name
