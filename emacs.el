@@ -145,7 +145,7 @@
   (tyrant-def
    "ff" 'helm-find-files
    "fr" 'helm-recentf
-   "b" 'helm-buffer-list)
+   "b" #'helm-buffers-list)
   :delight)
 
 ;; Evil mode
@@ -244,7 +244,7 @@
 ;; Evil extensions
 (use-package evil-magit :ensure t
   :after evil magit
-  :ghook ('magit-mode 'evil-magit-init))
+  :hook (magit-mode . evil-magit-init))
 (use-package evil-org :ensure t
   :after evil org
   :ghook 'org-mode)
