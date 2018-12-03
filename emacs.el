@@ -73,9 +73,15 @@
 
 ;; ----------- Core packages -----------
 
+;; Delight: change mode description in mode line
+(use-package delight :ensure t
+  :commands delight
+  :config (delight 'undo-tree-mode "" "undo-tree"))
+
 ;; Which-key: describes key shortcuts on-the-fly
 (use-package which-key :ensure t
-  :config (which-key-mode 1))
+  :config (which-key-mode 1)
+  :delight)
 
 
 ;; General.el: keybindings definition
@@ -139,13 +145,14 @@
   (tyrant-def
    "ff" 'helm-find-files
    "fr" 'helm-recentf
-   "b" 'helm-buffer-list))
+   "b" 'helm-buffer-list)
+  :delight)
 
 ;; Evil mode
 (use-package evil :ensure t
   :hook (after-init . evil-mode)
-  :config
-  (setq evil-ex-search-vim-style-regexp t)
+  :custom
+  (evil-ex-search-vim-style-regexp t "Regex in vim search")
   :general
   (general-define-key
    :states 'normal
@@ -175,7 +182,9 @@
   (projectile-mode 1)
   :general
   (tyrant-def
-   "cp" #'projectile-compile-project))
+    "cp" #'projectile-compile-project
+    "fp" #'projectile-find-file)
+  :delight '(:eval (concat " " (projectile-project-name))))
 
 ;; Helm-projectile: helm extenstion to projectile
 (use-package helm-projectile :ensure t
@@ -191,14 +200,16 @@
   :init
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
   (setq-default flycheck-flake8-maximum-line-length 80)
-  (setq flycheck-gcc-openmp t)
+  :custom
+  (flycheck-gcc-openmp t "Activate OpenMP awareness")
   :ghook ('(prog-mode-hook tex-mode-hook))
   :config
   (global-flycheck-mode)
   :general
   (tyrant-def
    "cn" #'flycheck-next-error
-   "cb" #'flycheck-previous-error))
+   "cb" #'flycheck-previous-error)
+  :delight)
 
 ;; Helm extension for flycheck
 (use-package helm-flycheck :ensure t
@@ -247,7 +258,8 @@
 ;; Company: global auto-completion
 (use-package company :ensure t
   :config (global-company-mode)
-  :gfhook ('org-mode-hook (lambda () (company-mode -1))))
+  :gfhook ('org-mode-hook (lambda () (company-mode -1)))
+  :delight)
 
 ;; Company extension for python
 (use-package company-jedi :ensure t
@@ -255,8 +267,9 @@
   :ghook 'python-mode-hook
   :config
   (add-to-list 'company-backends 'company-jedi)
-  (setq jedi:server-args
-      '("--sys-path" "/home/frerot/Documents/tamaas/build/python")))
+  :custom
+  (jedi:server-args
+   '("--sys-path" "/home/frerot/Documents/tamaas/build/python")))
 
 ;; clang-format: cool
 (use-package clang-format :ensure t
@@ -320,8 +333,12 @@
   :ghook 'prog-mode-hook)
 
 ;; Powerline
-(use-package powerline :ensure t
-  :config (powerline-default-theme))
+;; (use-package powerline :ensure t
+;;   :config (powerline-default-theme))
+
+;; Spaceline
+(use-package spaceline :ensure t
+  :config (spaceline-spacemacs-theme))
 
 ;; Base16 theme
 (use-package base16-theme :ensure t
@@ -370,7 +387,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (helm-company helm-flycheck markdown-mode base16-theme spaceline powerline vi-tilde-fringe helm-flyspell evil-snipe evil-surround evil-org evil-magit avy rainbow-delimiters linum-relative flycheck-irony company-irony irony company-jedi clang-format company flycheck helm-projectile projectile magit evil helm general which-key use-package))))
+    (helm-company helm-flycheck markdown-mode base16-theme spaceline vi-tilde-fringe helm-flyspell evil-snipe evil-surround evil-org evil-magit avy rainbow-delimiters linum-relative flycheck-irony company-irony irony company-jedi clang-format company flycheck helm-projectile projectile magit evil helm general which-key use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
