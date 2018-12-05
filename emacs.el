@@ -10,6 +10,7 @@
 
 ;; Backups
 (setq backup-directory-alist `(("." . "~/.emacs.d/backup_files/")))
+(setq delete-old-versions -1)		; delete excess backup versions silently
 
 ;; Version control for backups
 (setq version-control t)
@@ -280,10 +281,10 @@
 ;; Company extension for python
 (use-package company-jedi :ensure t
   :after company
-  :ghook 'python-mode-hook
-  :config
-  (add-to-list 'company-backends 'company-jedi)
+  :ghook ('python-mode-hook
+	  (lambda () (jedi:setup) (add-to-list 'company-backends 'company-jedi)))
   :custom
+  (jedi:complete-on-dot t)
   (jedi:server-args
    '("--sys-path" "/home/frerot/Documents/tamaas/build/python")))
 
@@ -312,10 +313,16 @@
   :after irony flycheck
   :ghook ('irony-mode-hook 'flycheck-irony-setup))
 
+;; Better C++ syntax highlighting
+(use-package modern-cpp-font-lock :ensure t
+  :ghook ('c++-mode-hook #'modern-c++-font-lock-mode)
+  :delight)
+
 ;; Eldoc: documentation for elisp
 (use-package eldoc :ensure t
   :config
-  (eldoc-mode t))
+  (eldoc-mode t)
+  :delight)
 
 ;; Irony-eldoc: irony extension for eldoc
 (use-package irony-eldoc :ensure t
@@ -407,9 +414,10 @@
  ;; If there is more than one, they won't work right.
  '(evil-ex-search-vim-style-regexp t t)
  '(flycheck-gcc-openmp t t)
+ '(jedi:complete-on-dot t)
  '(jedi:server-args
    (quote
-    ("--sys-path" "/home/frerot/Documents/tamaas/build/python")) t)
+    ("--sys-path" "/home/frerot/Documents/tamaas/build/python")))
  '(package-selected-packages
    (quote
     (helm-company helm-flycheck markdown-mode base16-theme spaceline vi-tilde-fringe helm-flyspell evil-snipe evil-surround evil-org evil-magit avy rainbow-delimiters linum-relative flycheck-irony company-irony irony company-jedi clang-format company flycheck helm-projectile projectile magit evil helm general which-key use-package))))
