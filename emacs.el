@@ -1,14 +1,25 @@
 ;; .emacs.el
 ;;
 ;; @author: Lucas Frérot
+;;
+;; Created with inspiration from
+;; https://sam217pa.github.io/2016/09/02/how-to-build-your-own-spacemacs/
+;; https://github.com/suyashbire1/emacs.d
 
 ;; ----------- Sane defalts -----------
 
 ;; Backups
 (setq backup-directory-alist `(("." . "~/.emacs.d/backup_files/")))
 
+;; Version control for backups
+(setq version-control t)
+
+;; No startup screen
+(setq inhibit-startup-screen t)
+
 ;; Tell emacs to always follow symbolic links
 (setq-default vc-follow-symlinks t)
+
 
 ;; Restore dead keys because of input method-after
 (require 'iso-transl)
@@ -91,9 +102,10 @@
   (general-override-mode 1)
   ;; Define shortcut of all modes with leader key
   (general-create-definer tyrant-def
-			  :states '(normal visual insert motion emacs)
-			  :prefix "SPC"
-			  :non-normal-prefix "C-SPC")
+    :states '(normal visual insert motion emacs)
+    :keymaps 'override
+    :prefix "SPC"
+    :non-normal-prefix "C-SPC")
 
   ;; Define ESC <-> C-g
   (general-define-key
@@ -115,7 +127,7 @@
 	  (kill-buffer "*compilation*"))
 
    "/" 'comment-or-uncomment-region
-   "TAB" 'other-buffer
+   "TAB" 'mode-line-other-buffer
    "d" 'dired
 
    "lp" 'list-packages
@@ -178,6 +190,10 @@
   (helm-projectile
    projectile-find-file
    projectile-compile)
+  :init
+  (put 'projectile-project-compilation-cmd 'safe-local-variable
+       (lambda (a) (and (stringp a) (or (not (boundp 'compilation-read-command))
+					compilation-read-command))))
   :config
   (projectile-mode 1)
   :general
@@ -283,8 +299,7 @@
 ;; Irony: backend for company and flycheck
 (use-package irony :ensure t
   :ghook ('(c++-mode-hook c-mode-hook objc-mode-hook))
-  :config
-  :gfhook ('irony-mode-hook 'irony-cdb-autosetup-compile-options))
+  :gfhook ('irony-mode-hook #'irony-cdb-autosetup-compile-options))
 
 ;; Company-Irony
 (use-package company-irony :ensure t
@@ -295,12 +310,17 @@
 ;; Flycheck-Irony
 (use-package flycheck-irony :ensure t
   :after irony flycheck
-  :ghook ('flycheck-mode-hook 'flycheck-irony-setup))
+  :ghook ('irony-mode-hook 'flycheck-irony-setup))
 
 ;; Eldoc: documentation for elisp
 (use-package eldoc :ensure t
   :config
   (eldoc-mode t))
+
+;; Irony-eldoc: irony extension for eldoc
+(use-package irony-eldoc :ensure t
+  :after eldoc irony
+  :ghook ('irony-mode-hook #'irony-eldoc))
 
 ;; Linum relative
 (use-package linum-relative
@@ -385,6 +405,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(evil-ex-search-vim-style-regexp t t)
+ '(flycheck-gcc-openmp t t)
+ '(jedi:server-args
+   (quote
+    ("--sys-path" "/home/frerot/Documents/tamaas/build/python")) t)
  '(package-selected-packages
    (quote
     (helm-company helm-flycheck markdown-mode base16-theme spaceline vi-tilde-fringe helm-flyspell evil-snipe evil-surround evil-org evil-magit avy rainbow-delimiters linum-relative flycheck-irony company-irony irony company-jedi clang-format company flycheck helm-projectile projectile magit evil helm general which-key use-package))))
