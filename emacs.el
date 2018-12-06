@@ -21,6 +21,9 @@
 ;; Tell emacs to always follow symbolic links
 (setq-default vc-follow-symlinks t)
 
+;; Put custom variables elsewhere
+(setq custom-file (concat dotfiles-dir "custom.el"))
+(load custom-file 'noerror)
 
 ;; Restore dead keys because of input method-after
 (require 'iso-transl)
@@ -443,28 +446,3 @@
 
 ;; Add .cu files to c++-mode
 (add-to-list 'auto-mode-alist '("\\.cu\\'" . c++-mode))
-
-;; -----------------------------------------------
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("cea3ec09c821b7eaf235882e6555c3ffa2fd23de92459751e18f26ad035d2142" default)))
- '(evil-ex-search-vim-style-regexp t)
- '(flycheck-gcc-openmp t)
- '(jedi:complete-on-dot t)
- '(jedi:server-args
-   (quote
-    ("--sys-path" "/home/frerot/Documents/tamaas/build/python")))
- '(package-selected-packages
-   (quote
-    (rtags helm-company helm-flycheck markdown-mode base16-theme spaceline vi-tilde-fringe helm-flyspell evil-snipe evil-surround evil-org evil-magit avy rainbow-delimiters linum-relative flycheck-irony company-irony irony company-jedi clang-format company flycheck helm-projectile projectile magit evil helm general which-key use-package))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
