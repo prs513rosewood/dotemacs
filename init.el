@@ -9,7 +9,8 @@
 ;; ----------- Sane defalts -----------
 
 ;; Backups
-(setq backup-directory-alist `(("." . "~/.emacs.d/backup_files/")))
+; (setq my-backup-dir (concat user-emacs-directory "backup_files"))
+(setq backup-directory-alist '(("." . "~/.emacs.d/backup_files"))) ;
 (setq delete-old-versions -1)		; delete excess backup versions silently
 
 ;; Version control for backups
@@ -145,10 +146,10 @@
 
    "ev" (lambda () "Edit config file"
 	  (interactive)
-	  (find-file "~/.emacs.el"))
+	  (find-file (locate-user-emacs-file "init.el")))
    "sv" (lambda () "Source config file"
 	  (interactive)
-	  (eval "~/.emacs.el"))
+	  (eval (locate-user-emacs-file "init.el")))
 
    "mf" 'make-frame
    "kf" 'delete-frame
