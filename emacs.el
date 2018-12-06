@@ -64,6 +64,13 @@
       (ansi-color-apply-on-region compilation-filter-start (point-max))))
   (add-hook 'compilation-filter-hook 'my-colorize-compilation-buffer))
 
+;; Running a hook after a theme loads
+(defvar after-load-theme-hook nil
+    "Hook run after a color theme is loaded using `load-theme'.")
+  (defadvice load-theme (after run-after-load-theme-hook activate)
+    "Run `after-load-theme-hook'."
+    (run-hooks 'after-load-theme-hook))
+
 ;; ----------- Package configuration -----------
 
 (require 'package)
@@ -374,24 +381,40 @@
 (use-package vi-tilde-fringe :ensure t
   :ghook 'prog-mode-hook)
 
-;; Powerline
-;; (use-package powerline :ensure t
-;;   :config (powerline-default-theme))
-
 ;; Spaceline
 (use-package spaceline :ensure t
-  :config (spaceline-spacemacs-theme))
+  :config (spaceline-spacemacs-theme)
+  :gfhook ('after-load-theme-hook 'powerline-reset))
 
 ;; Base16 theme
-(use-package base16-theme :ensure t
-  :config
-  (load-theme 'base16-tomorrow-night t)
-  (enable-theme 'base16-tomorrow-night)
-  )
+(use-package base16-theme :ensure t)
 
 ;; Markdown
 (use-package markdown-mode :ensure t
   :mode "\\.md\\'")
+
+;; ----------- Themes Management -----------
+;; based on: https://emacs.stackexchange.com/a/26981
+
+(setq ivan/themes '(base16-tomorrow-night base16-tomorrow))
+(setq ivan/themes-index 0)
+
+(defun ivan/cycle-theme ()
+  (interactive)
+  (setq ivan/themes-index (% (1+ ivan/themes-index) (length ivan/themes)))
+  (ivan/load-indexed-theme))
+
+(defun ivan/load-indexed-theme ()
+  (ivan/try-load-theme (nth ivan/themes-index ivan/themes)))
+
+(defun ivan/try-load-theme (theme)
+  (if (ignore-errors (load-theme theme :no-confirm))
+      (mapcar #'disable-theme (remove theme custom-enabled-themes))
+    (message "Unable to find theme file for ‘%s’" theme)))
+
+(ivan/load-indexed-theme)
+(general-define-key
+ "<f12>" #'ivan/cycle-theme)
 
 ;; ----------- Programming convenience -----------
 
@@ -427,15 +450,18 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(evil-ex-search-vim-style-regexp t t)
- '(flycheck-gcc-openmp t t)
+ '(custom-safe-themes
+   (quote
+    ("cea3ec09c821b7eaf235882e6555c3ffa2fd23de92459751e18f26ad035d2142" default)))
+ '(evil-ex-search-vim-style-regexp t)
+ '(flycheck-gcc-openmp t)
  '(jedi:complete-on-dot t)
  '(jedi:server-args
    (quote
     ("--sys-path" "/home/frerot/Documents/tamaas/build/python")))
  '(package-selected-packages
    (quote
-    (helm-company helm-flycheck markdown-mode base16-theme spaceline vi-tilde-fringe helm-flyspell evil-snipe evil-surround evil-org evil-magit avy rainbow-delimiters linum-relative flycheck-irony company-irony irony company-jedi clang-format company flycheck helm-projectile projectile magit evil helm general which-key use-package))))
+    (rtags helm-company helm-flycheck markdown-mode base16-theme spaceline vi-tilde-fringe helm-flyspell evil-snipe evil-surround evil-org evil-magit avy rainbow-delimiters linum-relative flycheck-irony company-irony irony company-jedi clang-format company flycheck helm-projectile projectile magit evil helm general which-key use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
