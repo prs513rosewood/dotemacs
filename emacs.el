@@ -117,9 +117,9 @@
   (tyrant-def
    "" nil
 
-   "f" '(:ignore t :which-key "files")
+   "f"  '(:ignore t :which-key "files")
 
-   "c" '(:ignore t :which-key "compile")
+   "c"  '(:ignore t :which-key "compile")
    "cc" 'compile
    "cr" 'recompile
    "ck" 'kill-compilation
@@ -313,10 +313,20 @@
   :after irony flycheck
   :ghook ('irony-mode-hook 'flycheck-irony-setup))
 
+;; RTags: tag system
+(use-package rtags :ensure t
+  :ghook ('(c-mode-hook c++-mode-hook objc-mode-hook) 'rtags-start-process-unless-running)
+  :general
+  (tyrant-def
+    "r"  '(:ignore t :which-key "rtags")
+    "rf" 'rtags-find-symbol-at-point
+    "rv" 'rtags-find-virtuals-at-point
+    "ri" 'rtags-imenu))
+
 ;; Better C++ syntax highlighting
 (use-package modern-cpp-font-lock :ensure t
   :ghook ('c++-mode-hook #'modern-c++-font-lock-mode)
-  :delight)
+  :delight modern-c++-font-lock-mode)
 
 ;; Eldoc: documentation for elisp
 (use-package eldoc :ensure t
@@ -346,6 +356,11 @@
   :general
   (tyrant-def
    "SPC" #'avy-goto-char))
+
+;; Flyspell
+(use-package flyspell :ensure t
+  :ghook ('text-mode 'flyspell-mode)
+  :ghook ('prog-mode 'flyspell-prog-mode))
 
 ;; Helm extension for flyspell
 (use-package helm-flyspell :ensure t
