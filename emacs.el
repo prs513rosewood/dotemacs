@@ -22,7 +22,7 @@
 (setq-default vc-follow-symlinks t)
 
 ;; Put custom variables elsewhere
-(setq custom-file (concat dotfiles-dir "custom.el"))
+(setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file 'noerror)
 
 ;; Restore dead keys because of input method-after
