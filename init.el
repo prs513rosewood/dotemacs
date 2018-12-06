@@ -167,6 +167,7 @@
 	 ("C-z" . helm-select-action))
   :general
   (tyrant-def
+   "x"  'helm-M-x
    "ff" 'helm-find-files
    "fr" 'helm-recentf
    "b" #'helm-buffers-list)
