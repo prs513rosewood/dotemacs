@@ -311,7 +311,7 @@
 
 ;; Irony: backend for company and flycheck
 (use-package irony :ensure t
-  :ghook ('(c++-mode-hook c-mode-hook objc-mode-hook))
+  :ghook 'c-mode-common-hook
   :gfhook ('irony-mode-hook #'irony-cdb-autosetup-compile-options))
 
 ;; Company-Irony
@@ -327,7 +327,7 @@
 
 ;; RTags: tag system
 (use-package rtags :ensure t
-  :ghook ('(c-mode-hook c++-mode-hook objc-mode-hook) 'rtags-start-process-unless-running)
+  :ghook ('c-mode-common-hook 'rtags-start-process-unless-running)
   :general
   (tyrant-def
     "r"  '(:ignore t :which-key "rtags")
