@@ -398,6 +398,10 @@
 (use-package markdown-mode :ensure t
   :mode "\\.md\\'")
 
+;; Fic-mode: show TODO, FIXME, etc.
+(use-package fic-mode :ensure t
+  :ghook 'c-mode-common-hook)
+
 ;; ----------- Themes Management -----------
 ;; based on: https://emacs.stackexchange.com/a/26981
 
