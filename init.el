@@ -167,10 +167,11 @@
 	 ("C-z" . helm-select-action))
   :general
   (tyrant-def
-   "x"  'helm-M-x
-   "ff" 'helm-find-files
-   "fr" 'helm-recentf
-   "b" #'helm-buffers-list)
+    "x"  'helm-M-x
+    "X" 'execute-extended-command
+    "ff" 'helm-find-files
+    "fr" 'helm-recentf
+    "b" #'helm-buffers-list)
   :delight)
 
 ;; Evil mode
@@ -195,7 +196,8 @@
   :general
   (tyrant-def
    "g" '(:ignore t :which-key "git")
-   "gs" 'magit-status))
+   "gs" 'magit-status
+   "gr" 'magit-file-delete))
 
 ;; Projectile: project management
 (use-package projectile :ensure t
