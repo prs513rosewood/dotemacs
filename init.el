@@ -118,6 +118,11 @@
     :keymaps 'override
     :prefix "SPC"
     :non-normal-prefix "C-SPC")
+  (general-create-definer despot-def
+    :states '(normal visual motion emacs)
+    :keymaps 'override
+    :prefix "m"
+    :non-normal-prefix "C-m")
 
   ;; Define ESC <-> C-g
   (general-define-key
@@ -259,14 +264,22 @@
   (org-babel-do-load-languages 'org-babel-load-languages
 			       '((python . t)))
   (with-eval-after-load 'ox-latex (add-to-list 'org-latex-classes
-					       '("talk"
-						 "\\documentclass{talk}
-						 [NO-DEFAULT-PACKAGES]
-						 [PACKAGES]
-						 [EXTRA]"
-						 ("\\section{%s}" . "\\section*{%s}"))
-			)
-  )
+			 '("talk"
+			   "\\documentclass{talk}
+			    [NO-DEFAULT-PACKAGES]
+			    [PACKAGES]
+			    [EXTRA]"
+			   ("\\section{%s}" . "\\section*{%s}"))))
+  (with-eval-after-load 'ox-latex (add-to-list 'org-latex-classes
+			 '("mythesis"
+			   "\\documentclass{mythesis}
+			    [NO-DEFAULT-PACKAGES]
+			    [PACKAGES]
+			    [EXTRA]"
+			   ("\\chapter{%s}" . "\\chapter*{%s}")
+			   ("\\section{%s}" . "\\section*{%s}")
+			   ("\\subsection{%s}" . "\\subsection*{%s}")
+			   ("\\subsubsection{%s}" . "\subsubsection*{%s}"))))
   :gfhook ('org-mode-hook (lambda ()
 			    (visual-line-mode t)
 			    (flyspell-mode t)))
@@ -363,7 +376,7 @@
 
 ;; Rainbow delimiters
 (use-package rainbow-delimiters :ensure t
-  :ghook 'prog-mode-hook)
+  :ghook 'prog-mode-hook 'LaTeX-mode-hook)
 
 ;; Avy
 (use-package avy :ensure t
@@ -403,6 +416,59 @@
 ;; Fic-mode: show TODO, FIXME, etc.
 (use-package fic-mode :ensure t
   :ghook 'c-mode-common-hook)
+
+;; ----------- LaTeX related packages -----------
+
+;; AUCTeX
+(use-package tex-mode :ensure auctex
+  :mode "\\.tex\\'"
+  :custom
+  (TeX-auto-save t)
+  (TeX-parse-self t)
+  (TeX-save-query nil)
+  (TeX-PDF-mode t)
+  :general
+  (despot-def TeX-mode-map
+    "TAB" 'LaTeX-fill-section
+    "p" 'preview-section))
+
+;; Reftex for reference management
+(use-package reftex :ensure t
+  :ghook ('LaTeX-mode-hook 'turn-on-reftex)
+  :custom
+  (reftex-plug-into-AUCTex t)
+  (reftex-label-alist '(AMSTeX))
+  :general
+  (despot-def TeX-mode-map
+    "r"  '(:ignore t :which-key "reftex")
+    "rl" 'reftex-label
+    "rc" 'reftex-citation
+    "rr" 'reftex-reference
+    "rt" 'reftex-toc))
+
+;; Couple AUCTeX w/ latexmk
+(use-package auctex-latexmk
+  :after auctex
+  :ghook ('LaTeX-mode 'auctex-latexmk-setup)
+  :custom
+  (auctex-latexmk-inherit-TeX-PDF-mode t))
+
+;; Completion for references
+(use-package company-reftex :ensure t
+  :after company reftex
+  :ghook ('reftex-mode-hook 'load-company-reftex)
+  :config
+  (add-to-list 'company-backends
+	       '(company-reftex-citations
+		 company-reftex-labels)))
+
+;; Completion for bibtex
+(use-package company-bibtex :ensure t
+  :after company
+  :ghook ('LaTeX-mode-hook 'load-company-bibtex)
+  :config
+  (add-to-list 'company-backends
+	       'company-bibtex))
 
 ;; ----------- Themes Management -----------
 ;; based on: https://emacs.stackexchange.com/a/26981
