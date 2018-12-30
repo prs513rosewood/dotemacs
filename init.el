@@ -430,7 +430,7 @@
 
 ;; AUCTeX
 (use-package tex-mode :ensure auctex
-  :mode "\\.tex\\'"
+  :mode ("\\.tex\\'" . LaTeX-mode)
   :config
   (setq-default TeX-master nil)
   :custom
@@ -462,28 +462,29 @@
     "rt" 'reftex-toc))
 
 ;; Couple AUCTeX w/ latexmk
-(use-package auctex-latexmk
-  :after auctex
-  :ghook ('LaTeX-mode 'auctex-latexmk-setup)
+(use-package auctex-latexmk :ensure t
+  :ghook ('LaTeX-mode-hook 'auctex-latexmk-setup)
   :custom
   (auctex-latexmk-inherit-TeX-PDF-mode t))
 
 ;; Completion for references
 (use-package company-reftex :ensure t
-  :after company reftex
-  :ghook ('reftex-mode-hook 'load-company-reftex)
-  :config
-  (add-to-list 'company-backends
-	       '(company-reftex-citations
-		 company-reftex-labels)))
+  :defer t
+  :init
+  (general-add-hook 'reftex-mode-hook
+		    (lambda () (add-to-list 'company-backends
+					    '(company-reftex-citations
+					      company-reftext-labels)))))
+
 
 ;; Completion for bibtex
 (use-package company-bibtex :ensure t
-  :after company
-  :ghook ('LaTeX-mode-hook 'load-company-bibtex)
-  :config
-  (add-to-list 'company-backends
-	       'company-bibtex))
+  :defer t
+  :init
+  (general-add-hook 'LaTeX-mode-hook
+		    (lambda ()
+		      (add-to-list 'company-backends
+				   'company-bibtex))))
 
 ;; ----------- Themes Management -----------
 ;; based on: https://emacs.stackexchange.com/a/26981
