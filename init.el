@@ -75,6 +75,13 @@
     "Run `after-load-theme-hook'."
     (run-hooks 'after-load-theme-hook))
 
+;; Gracefully shutdown emacs server
+(defun server-shutdown ()
+  "Save buffers, Quit, and Shutdown (kill) server"
+  (interactive)
+  (save-some-buffers)
+  (kill-emacs))
+
 ;; ----------- Package configuration -----------
 
 (require 'package)
@@ -158,6 +165,8 @@
 
    "mf" 'make-frame
    "kf" 'delete-frame
+   "q"  '(:ignore t :which-key "quit")
+   "qs" 'server-shutdown
    ))
 
 ;; Helm: global completion
@@ -422,6 +431,8 @@
 ;; AUCTeX
 (use-package tex-mode :ensure auctex
   :mode "\\.tex\\'"
+  :config
+  (setq-default TeX-master nil)
   :custom
   (TeX-auto-save t)
   (TeX-parse-self t)
@@ -430,7 +441,11 @@
   :general
   (despot-def TeX-mode-map
     "TAB" 'LaTeX-fill-section
-    "p" 'preview-section))
+    "p" 'preview-section
+    "i" '(:ignore t :whick-key "insert")
+    "ie" 'LaTeX-environment
+    "is" 'LaTeX-section
+    "im" 'TeX-insert-macro))
 
 ;; Reftex for reference management
 (use-package reftex :ensure t
