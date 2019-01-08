@@ -42,6 +42,9 @@
 (require 'recentf)
 (recentf-mode 1)
 
+;; Open related files in another window
+(setq ff-always-in-other-window t)
+
 ;; Remove useless GUI stuff
 (tool-bar-mode 0)
 (menu-bar-mode 0)
@@ -141,14 +144,16 @@
    "" nil
 
    "f"  '(:ignore t :which-key "files")
+   "fo" 'ff-find-other-file
 
    "c"  '(:ignore t :which-key "compile")
    "cc" 'compile
    "cr" 'recompile
    "ck" 'kill-compilation
-   "cq" (lambda () "Kill compile buffer"
+   "cq" '((lambda ()
 	  (interactive)
 	  (kill-buffer "*compilation*"))
+	  :which-key "Kill compile buffer")
 
    "/" 'comment-or-uncomment-region
    "TAB" 'mode-line-other-buffer
@@ -156,12 +161,14 @@
 
    "lp" 'list-packages
 
-   "ev" (lambda () "Edit config file"
+   "ev" '((lambda ()
 	  (interactive)
 	  (find-file (locate-user-emacs-file "init.el")))
-   "sv" (lambda () "Source config file"
+	  :which-key "Edit config file")
+   "sv" '((lambda () "Source config file"
 	  (interactive)
 	  (eval (locate-user-emacs-file "init.el")))
+	  :which-key "Source config file")
 
    "mf" 'make-frame
    "kf" 'delete-frame
@@ -185,7 +192,8 @@
     "X" 'execute-extended-command
     "ff" 'helm-find-files
     "fr" 'helm-recentf
-    "b" #'helm-buffers-list)
+    "b" #'helm-buffers-list
+    "h" #'helm-mini)
   :delight)
 
 ;; Evil mode
