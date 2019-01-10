@@ -33,7 +33,8 @@
 (add-hook 'text-mode-hook (lambda ()
 			    (visual-line-mode t)))
 
-;; Display relative line numbers
+;; Display relative line numbers (Emacs 26.1+)
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (with-eval-after-load 'display-line-numbers
   (setq display-line-numbers-type 'relative
 	display-line-numbers-width-start t))
@@ -382,14 +383,6 @@
 (use-package irony-eldoc :ensure t
   :after eldoc irony
   :ghook ('irony-mode-hook #'irony-eldoc))
-
-;; Linum relative
-(use-package linum-relative
-  :ensure t
-  :config
-  (global-linum-mode)
-  (linum-relative-mode)
-  :gfhook ('org-mode (lambda () (linum-mode -1))))
 
 ;; Rainbow delimiters
 (use-package rainbow-delimiters :ensure t
