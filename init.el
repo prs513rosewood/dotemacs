@@ -340,7 +340,9 @@
   (fset 'c-indent-region 'clang-format-region)
   :general
   ('normal
-   "<C-tab>" 'clang-format-region))
+   "<C-tab>" 'clang-format-region)
+  (tyrant-def
+    "cf" 'clang-format-buffer))
 
 ;; Irony: backend for company and flycheck
 (use-package irony :ensure t
@@ -360,6 +362,7 @@
 
 ;; RTags: tag system
 (use-package rtags :ensure t
+  :disabled
   :ghook ('c-mode-common-hook 'rtags-start-process-unless-running)
   :general
   (tyrant-def
