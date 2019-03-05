@@ -430,6 +430,17 @@
 (use-package fic-mode :ensure t
   :ghook 'c-mode-common-hook)
 
+;; Snippets
+(use-package yasnippet :ensure t
+  :config (yas-reload-all)
+  :custom (yas-snippet-dirs
+	   '("~/.emacs.d/snippets"
+	     yasnippet-snippets-dir))
+  :ghook ('prog-mode-hook #'yas-minor-mode)
+  :delight)
+
+(use-package yasnippet-snippets :ensure t)
+
 ;; ----------- LaTeX related packages -----------
 
 ;; AUCTeX
