@@ -132,7 +132,7 @@
   (general-create-definer despot-def
     :states '(normal visual motion emacs)
     :keymaps 'override
-    :prefix "m"
+    :prefix "C-m"
     :non-normal-prefix "C-m")
 
   ;; Define ESC <-> C-g
@@ -206,6 +206,7 @@
   (general-define-key
    :states 'normal
    "é" #'evil-ex
+   ";" #'evil-ex
    "C-u" #'evil-scroll-up
    "TAB" #'indent-for-tab-command
    "j" 'evil-next-visual-line
@@ -389,7 +390,7 @@
 
 ;; Rainbow delimiters
 (use-package rainbow-delimiters :ensure t
-  :ghook 'prog-mode-hook 'LaTeX-mode-hook)
+  :ghook ('(prog-mode-hook LaTeX-mode-hook)))
 
 ;; Avy
 (use-package avy :ensure t
@@ -399,7 +400,7 @@
 
 ;; Flyspell
 (use-package flyspell :ensure t
-  :ghook ('text-mode 'flyspell-mode)
+  :ghook ('(text-mode LaTeX-mode-hook))
   :ghook ('prog-mode 'flyspell-prog-mode))
 
 ;; Helm extension for flyspell
@@ -448,11 +449,17 @@
   :mode ("\\.tex\\'" . LaTeX-mode)
   :config
   (setq-default TeX-master nil)
+  (turn-on-auto-fill)
   :custom
   (TeX-auto-save t)
   (TeX-parse-self t)
   (TeX-save-query nil)
   (TeX-PDF-mode t)
+  (LaTeX-amsmath-label "eqn:")
+  (LaTeX-equation-label "eqn:")
+  (LaTeX-figure-label "fig:")
+  (TeX-view-program-selection '((output-pdf "xdg-open")))
+  (TeX-command-default "LatexMk")
   :general
   (despot-def TeX-mode-map
     "TAB" 'LaTeX-fill-section
@@ -522,7 +529,8 @@
 
 (ivan/load-indexed-theme)
 (general-define-key
- "<f12>" #'ivan/cycle-theme)
+ "<f12>" #'ivan/cycle-theme
+ "M-<f12>" #'disable-theme)
 
 ;; ----------- Programming convenience -----------
 
