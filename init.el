@@ -431,7 +431,7 @@
 
 ;; Fic-mode: show TODO, FIXME, etc.
 (use-package fic-mode :ensure t
-  :ghook 'c-mode-common-hook)
+  :ghook 'prog-mode-hook)
 
 ;; Snippets
 (use-package yasnippet :ensure t
@@ -477,6 +477,7 @@
   :custom
   (reftex-plug-into-AUCTex t)
   (reftex-label-alist '(AMSTeX))
+  (reftex-include-file-commands '("include" "input" "myimport"))
   :general
   (despot-def TeX-mode-map
     "r"  '(:ignore t :which-key "reftex")
