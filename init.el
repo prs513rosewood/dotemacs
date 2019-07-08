@@ -530,8 +530,10 @@
       (mapcar #'disable-theme (remove theme custom-enabled-themes))
     (message "Unable to find theme file for ‘%s’" theme)))
 
-(when (display-graphic-p)
-  (progn (ivan/load-indexed-theme)))
+;; Load theme even when in terminal
+(ivan/load-indexed-theme)
+
+;; Shortcuts for theme management
 (general-define-key
  "<f12>" #'ivan/cycle-theme
  "M-<f12>" #'disable-theme)
