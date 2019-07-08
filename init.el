@@ -135,10 +135,12 @@
     :prefix "C-m"
     :non-normal-prefix "C-m")
 
-  ;; Define ESC <-> C-g
-  (general-define-key
-   :keymaps 'key-translation-map
-   "ESC" (kbd "C-g"))
+;; Define ESC <-> C-g only in GUI
+  (when (display-graphic-p)
+    (progn
+      (general-define-key
+       :keymaps 'key-translation-map
+       "ESC" (kbd "C-g"))))
 
   ;; Definition of general shortcuts and categories
   (tyrant-def
@@ -190,7 +192,7 @@
   :general
   (tyrant-def
     "x"  'helm-M-x
-    "X" 'execute-extended-command
+    "X"  'execute-extended-command
     "ff" 'helm-find-files
     "fr" 'helm-recentf
     "b" #'helm-buffers-list
@@ -527,7 +529,8 @@
       (mapcar #'disable-theme (remove theme custom-enabled-themes))
     (message "Unable to find theme file for ‘%s’" theme)))
 
-(ivan/load-indexed-theme)
+(when (display-graphic-p)
+  (progn (ivan/load-indexed-theme)))
 (general-define-key
  "<f12>" #'ivan/cycle-theme
  "M-<f12>" #'disable-theme)
