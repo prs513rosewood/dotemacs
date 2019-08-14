@@ -363,8 +363,11 @@
 
 ;; RTags: tag system
 (use-package rtags :ensure t
-  :disabled
+  ;;:disabled
   :ghook ('c-mode-common-hook 'rtags-start-process-unless-running)
+  :custom
+  (rtags-rc-binary-name "rtags-rc")
+  (rtags-rdm-binary-name "rtags-rdm")
   :general
   (tyrant-def
     "r"  '(:ignore t :which-key "rtags")
