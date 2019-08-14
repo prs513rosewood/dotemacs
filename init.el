@@ -332,9 +332,7 @@
   :ghook ('python-mode-hook
 	  (lambda () (jedi:setup) (add-to-list 'company-backends 'company-jedi)))
   :custom
-  (jedi:complete-on-dot t)
-  (jedi:server-args
-   '("--sys-path" "/home/frerot/Documents/tamaas/build/python")))
+  (jedi:complete-on-dot t))
 
 ;; clang-format: cool
 (use-package clang-format :ensure t
