@@ -243,6 +243,14 @@
     "fp" #'projectile-find-file)
   :delight '(:eval (concat " " (projectile-project-name))))
 
+;; Ripgrep: faster and project aware grep
+(use-package projectile-ripgrep :ensure t
+  :commands projectile-ripgrep
+  :general
+  (general-define-key
+   :states 'normal
+   "<f8>" #'projectile-ripgrep))
+
 ;; Helm-projectile: helm extenstion to projectile
 (use-package helm-projectile :ensure t
   :commands helm-projectile
