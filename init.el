@@ -138,8 +138,8 @@
   (general-create-definer despot-def
     :states '(normal visual motion emacs)
     :keymaps 'override
-    :prefix "C-m"
-    :non-normal-prefix "C-m")
+    :prefix "SPC m"
+    :non-normal-prefix "C-SPC m")
 
 ;; Define ESC <-> C-g only in GUI
   (when (display-graphic-p)
@@ -179,8 +179,8 @@
 	  (eval (locate-user-emacs-file "init.el")))
 	  :which-key "Source config file")
 
-   "mf" 'make-frame
-   "kf" 'delete-frame
+   "fm" 'make-frame
+   "fk" 'delete-frame
    "q"  '(:ignore t :which-key "quit")
    "qs" 'server-shutdown
    ))
@@ -377,13 +377,13 @@
 
 ;; RTags: tag system
 (use-package rtags :ensure t
-  ;;:disabled
   :ghook ('c-mode-common-hook 'rtags-start-process-unless-running)
   :custom
   (rtags-rc-binary-name "rtags-rc")
   (rtags-rdm-binary-name "rtags-rdm")
   :general
   (tyrant-def
+    :keymaps 'c-mode-base-map
     "r"  '(:ignore t :which-key "rtags")
     "rf" 'rtags-find-symbol-at-point
     "rv" 'rtags-find-virtuals-at-point
@@ -446,7 +446,11 @@
 
 ;; Fic-mode: show TODO, FIXME, etc.
 (use-package fic-mode :ensure t
-  :ghook 'prog-mode-hook)
+  :ghook ('(prog-mode-hook tex-mode-hook)))
+
+;; Magit-todos: shows TODO in git window
+(use-package magit-todos :ensure t
+  :ghook 'magit-status)
 
 ;; Snippets
 (use-package yasnippet :ensure t
@@ -478,13 +482,18 @@
   (TeX-view-program-selection '((output-pdf "xdg-open")))
   (TeX-command-default "LatexMk")
   :general
-  (despot-def TeX-mode-map
+  (despot-def
+    :states 'normal
+    :keymaps 'TeX-mode-map
     "TAB" 'LaTeX-fill-section
     "p" 'preview-section
     "i" '(:ignore t :whick-key "insert")
     "ie" 'LaTeX-environment
     "is" 'LaTeX-section
-    "im" 'TeX-insert-macro))
+    "im" 'TeX-insert-macro)
+  (tyrant-def
+    :keymaps 'TeX-mode-map
+    "cc" 'TeX-command-master))
 
 ;; Reftex for reference management
 (use-package reftex :ensure t
