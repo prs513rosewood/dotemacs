@@ -123,7 +123,6 @@
   :config (which-key-mode 1)
   :delight)
 
-
 ;; General.el: keybindings definition
 (use-package general :ensure t
   :after which-key
@@ -141,7 +140,7 @@
     :prefix "SPC m"
     :non-normal-prefix "C-SPC m")
 
-;; Define ESC <-> C-g only in GUI
+  ;; Define ESC <-> C-g only in GUI
   (when (display-graphic-p)
     (progn
       (general-define-key
