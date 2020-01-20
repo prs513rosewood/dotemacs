@@ -89,6 +89,9 @@
   (save-some-buffers)
   (kill-emacs))
 
+;; Consider a single space for the end of sentences
+(setf sentence-end-double-space nil)
+
 ;; ----------- Package configuration -----------
 
 (require 'package)
