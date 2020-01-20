@@ -290,6 +290,10 @@
 (use-package org :ensure t
   :mode ("\\.org\\'" . org-mode)
   :config
+  (despot-def
+    :states 'normal
+    :keymaps 'org-mode-map
+    "t" 'org-todo)
   (setq org-agenda-files '("~/Nextcloud/orgs")
 	org-directory "~/Nextcloud/orgs"
 	org-startup-indented t
@@ -320,13 +324,33 @@
 			    (flyspell-mode t)))
 )
 
+;; Iedit: edit multiple regions simultaneously
+(use-package iedit :ensure t
+  :commands iedit-mode
+  :general
+  (tyrant-def
+    "i"  '(:ignore t :which-key "iedit")
+    "ie" 'iedit-mode
+    "iq" 'iedit-quit)
+  (general-define-key
+   :keymaps 'iedit-mode-keymap
+   :states 'normal
+   "n" 'iedit-next-occurrence
+   "N" 'iedit-prev-occurrence))
+
 ;; Evil extensions
 (use-package evil-magit :ensure t
   :after evil magit
   :hook (magit-mode . evil-magit-init))
 (use-package evil-org :ensure t
   :after evil org
-  :ghook 'org-mode)
+  :config
+  (add-hook 'org-mode-hook 'evil-org-mode)
+  (add-hook 'evil-org-mode-hook
+	    (lambda ()
+	      (evil-org-set-key-theme)))
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
 (use-package evil-surround :ensure t
   :after evil
   :config (global-evil-surround-mode))
@@ -357,6 +381,8 @@
   ('normal
    "<C-tab>" 'clang-format-region)
   (tyrant-def
+    :states 'normal
+    :keymaps 'c-mode-base-map
     "cf" 'clang-format-buffer))
 
 ;; Irony: backend for company and flycheck
