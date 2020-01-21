@@ -3,5 +3,6 @@
 # Do not ignore these
 !.gitignore
 !init.el
+!README.org
 !/snippets
 !/snippets/*

@@ -1,0 +1,41 @@
+#+TITLE: Emacs Configuration
+
+This repository hosts my custom Emacs configuration.
+
+* Intent
+The basic goals of this configuration are the following:
+- Modal editing: this is achieved with the [[https://github.com/emacs-evil/evil][Evil]] package;
+- Fast startup: most packages in =init.el= are lazily loaded through [[https://github.com/jwiegley/use-package][use-package]];
+- Oriented towards C++ and Python: with a variety of packages.
+
+*Note*: these three goals are probably sub-optimally achieved here compared to larger, more involved projects like [[https://www.spacemacs.org/][Spacemacs]] or [[https://github.com/hlissner/doom-emacs][Doom-Emacs]]. I have used Spacemacs in the past, but wanted to make my own (relatively vanilla) configuration, and to keep it simple.
+
+** Core packages
+There are four core packages which define most of the UX with Emacs in this configuration:
+- [[https://github.com/jwiegley/use-package][use-package]] is central to the configuration itself,
+- [[https://github.com/emacs-evil/evil][Evil]] (et al.) defines the editing experience,
+- [[https://github.com/noctuid/general.el][general.el]] is used to define all shortcuts in a vim/leader fashion (similar to [[https://www.spacemacs.org/][Spacemacs]]),
+- [[https://github.com/emacs-helm/helm][helm]] for auto-completion/fuzzy finding on anything.
+
+These packages, with a couple of minor QOL packages ([[https://github.com/justbur/emacs-which-key][which-key]] and [[https://savannah.nongnu.org/projects/delight][delight]]), are the only packages unconditionally loaded at startup, making it rather fast.
+
+** IDE Features for C++ and Python
+There are three important packages on which most others (e.g. [[https://company-mode.github.io/][company]] and [[http://www.flycheck.org/en/latest/][flycheck]]) rely:
+- [[https://github.com/Sarcasm/irony-mode][irony-mode]] to improve C++ experience,
+- [[https://github.com/Andersbakken/rtags][rtags]] to index C++ files,
+- [[https://github.com/tkf/emacs-jedi][jedi]] to improve python experience.
+
+All three of these packages rely on a server program running in the background. I've had mixed experiences in the past with installing these via MELPA, particularly with rtags and jedi. I therefore recommend installing these three packages /via/ your package manager. I run on Debian Buster and these work nicely.
+
+* Installation
+Simply clone this git repository:
+#+BEGIN_SRC bash
+git clone https://github.com/prs513rosewood/dotemacs.git $HOME/.emacs.d
+#+END_SRC
+
+*Disclaimer*: If you are going to use this configuration, I highly suggest going through the =Sane Defaults= part of the configuration and decide for yourself if some opinionated settings are good for you. Likewise, you should go over the keybindings. They should all be defined within their respective packages under the =:general= tag.
+
+* Inspiration
+This configuration was established with inspiration from:
+- [[https://sam217pa.github.io/2016/09/02/how-to-build-your-own-spacemacs/][How to build your own Spacemacs]] by Samuel Barreto,
+- [[https://www.youtube.com/watch?v=6INMXmsCCC8][Spin your own Spacemacs-lite]] by Suyash Bire and [[https://github.com/suyashbire1/emacs.d][his config]].
