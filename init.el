@@ -407,7 +407,7 @@
   (rtags-rc-binary-name "rtags-rc")
   (rtags-rdm-binary-name "rtags-rdm")
   :general
-  (tyrant-def
+  (despot-def
     :keymaps 'c-mode-base-map
     "r"  '(:ignore t :which-key "rtags")
     "rf" 'rtags-find-symbol-at-point
