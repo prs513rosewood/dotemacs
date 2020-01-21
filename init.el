@@ -169,6 +169,7 @@
 
    "lp" 'list-packages
 
+   "e" '(:ignore t :which-key "edit")
    "ev" '((lambda ()
 	  (interactive)
 	  (find-file (locate-user-emacs-file "init.el")))
@@ -328,9 +329,8 @@
   :commands iedit-mode
   :general
   (tyrant-def
-    "i"  '(:ignore t :which-key "iedit")
-    "ie" 'iedit-mode
-    "iq" 'iedit-quit)
+    "ei" 'iedit-mode
+    "eq" 'iedit-quit)
   (general-define-key
    :keymaps 'iedit-mode-keymap
    :states 'normal
