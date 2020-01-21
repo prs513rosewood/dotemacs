@@ -369,7 +369,13 @@
   :ghook ('python-mode-hook
 	  (lambda () (jedi:setup) (add-to-list 'company-backends 'company-jedi)))
   :custom
-  (jedi:complete-on-dot t))
+  (jedi:complete-on-dot t)
+  :general
+  (despot-def
+    :keymaps 'python-mode-map
+    :states 'normal
+    "?" 'jedi:show-doc
+    "." 'jedi:goto-definition))
 
 ;; clang-format: cool
 (use-package clang-format :ensure t
