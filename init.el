@@ -222,6 +222,15 @@
 
 ;; ----------- QOL packages -----------
 
+;; Dashboard
+(use-package dashboard :ensure t
+  :config
+  (dashboard-setup-startup-hook)
+  :custom
+  (initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+  (dashboard-startub-banner 'official)
+  (dashboard-center-content t))
+
 ;; Magit: git made awesome
 (use-package magit :ensure t
   :commands (magit-status)
@@ -266,40 +275,23 @@
   (tyrant-def
    "p" 'helm-projectile))
 
-;; Flycheck: on-the-fly syntax checking
-(use-package flycheck :ensure t
-  :init
-  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-  (setq-default flycheck-flake8-maximum-line-length 80)
-  :custom
-  (flycheck-gcc-openmp t "Activate OpenMP awareness")
-  :ghook ('(prog-mode-hook tex-mode-hook))
-  :config
-  (global-flycheck-mode)
-  :general
-  (tyrant-def
-   "cn" #'flycheck-next-error
-   "cb" #'flycheck-previous-error)
-  :delight)
-
-;; Helm extension for flycheck
-(use-package helm-flycheck :ensure t
-  :commands helm-flycheck)
-
 ;; Org-mode: it's org-mode
 (use-package org :ensure t
   :mode ("\\.org\\'" . org-mode)
-  :config
+  :general
   (despot-def
     :states 'normal
     :keymaps 'org-mode-map
     "t" 'org-todo)
-  (setq org-agenda-files '("~/Nextcloud/orgs")
-	org-directory "~/Nextcloud/orgs"
-	org-startup-indented t
-	org-startup-truncated nil
-	org-src-fontify-natively t
-	org-latex-pdf-process (quote ("latexmk %f")))
+  :custom
+  (org-agenda-files '("~/Nextcloud/orgs"))
+  (org-directory "~/Nextcloud/orgs")
+  (org-startup-indented t)
+  (org-startup-truncated nil)
+  (org-src-fontify-natively t)
+  (org-latex-pdf-process (quote ("latexmk %f")))
+  (org-log-done 'time)
+  :config
   (org-babel-do-load-languages 'org-babel-load-languages
 			       '((python . t)))
   (with-eval-after-load 'ox-latex (add-to-list 'org-latex-classes
@@ -335,7 +327,8 @@
    :keymaps 'iedit-mode-keymap
    :states 'normal
    "n" 'iedit-next-occurrence
-   "N" 'iedit-prev-occurrence))
+   "N" 'iedit-prev-occurrence
+   "M-H" 'iedit-restrict-function))
 
 ;; Evil extensions
 (use-package evil-magit :ensure t
@@ -377,6 +370,10 @@
     "?" 'jedi:show-doc
     "." 'jedi:goto-definition))
 
+;; pyvenv: managing virtualenv in emacs
+(use-package pyvenv :ensure t
+  :ghook 'python-mode-hook)
+
 ;; clang-format: cool
 (use-package clang-format :ensure t
   :commands clang-format-region
@@ -390,35 +387,41 @@
     :keymaps 'c-mode-base-map
     "cf" 'clang-format-buffer))
 
-;; Irony: backend for company and flycheck
-(use-package irony :ensure t
-  :ghook 'c-mode-common-hook
-  :gfhook ('irony-mode-hook #'irony-cdb-autosetup-compile-options))
-
-;; Company-Irony
-(use-package company-irony :ensure t
-  :after irony company
-  :config
-  (add-to-list 'company-backends 'company-irony))
-
-;; Flycheck-Irony
-(use-package flycheck-irony :ensure t
-  :after irony flycheck
-  :ghook ('irony-mode-hook 'flycheck-irony-setup))
-
-;; RTags: tag system
-(use-package rtags :ensure t
-  :ghook ('c-mode-common-hook 'rtags-start-process-unless-running)
+;; lsp-mode: Language Server Protocol glue
+(use-package lsp-mode :ensure t
+  :ghook ('prog-mode-hook 'lsp-deferred)
   :custom
-  (rtags-rc-binary-name "rtags-rc")
-  (rtags-rdm-binary-name "rtags-rdm")
+  (lsp-clients-clangd-executable "clangd-7")
+  (lsp-keymap-prefix "s-l")
+  (lsp-prefer-flymake nil))
+
+;; lsp-ui: integration to flycheck
+(use-package lsp-ui :ensure t
+  :ghook ('lsp-mode-hook 'lsp-ui-mode))
+
+;; company-lsp: integration with company
+(use-package company-lsp :ensure t
+  :ghook ('company-mode-hook (lambda () (push 'company-lsp company-backends))))
+
+;; Flycheck: on-the-fly syntax checking
+(use-package flycheck :ensure t
+  :init
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+  (setq-default flycheck-flake8-maximum-line-length 80)
+  :custom
+  (flycheck-gcc-openmp t "Activate OpenMP awareness")
+  :ghook ('(lsp-ui-mode-hook tex-mode-hook))
+  :config
+  (global-flycheck-mode)
   :general
-  (despot-def
-    :keymaps 'c-mode-base-map
-    "r"  '(:ignore t :which-key "rtags")
-    "rf" 'rtags-find-symbol-at-point
-    "rv" 'rtags-find-virtuals-at-point
-    "ri" 'rtags-imenu))
+  (tyrant-def
+   "cn" #'flycheck-next-error
+   "cb" #'flycheck-previous-error)
+  :delight)
+
+;; Helm extension for flycheck
+(use-package helm-flycheck :ensure t
+  :commands helm-flycheck)
 
 ;; Better C++ syntax highlighting
 (use-package modern-cpp-font-lock :ensure t
@@ -444,7 +447,7 @@
 (use-package avy :ensure t
   :general
   (tyrant-def
-   "SPC" #'avy-goto-char))
+   "SPC" #'avy-goto-word))
 
 ;; Flyspell
 (use-package flyspell :ensure t
