@@ -464,7 +464,8 @@
 
 ;; Vi fringe
 (use-package vi-tilde-fringe :ensure t
-  :ghook 'prog-mode-hook)
+  :ghook 'prog-mode-hook
+  :delight)
 
 ;; Spaceline
 (use-package spaceline :ensure t
@@ -496,6 +497,10 @@
   :delight)
 
 (use-package yasnippet-snippets :ensure t)
+
+;; SLIME: Common Lisp things
+(use-package slime :ensure t
+  :commands slime)
 
 ;; ----------- LaTeX related packages -----------
 
