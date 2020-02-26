@@ -358,6 +358,7 @@
 
 ;; Company extension for python
 (use-package company-jedi :ensure t
+  :disabled
   :after company
   :ghook ('python-mode-hook
 	  (lambda () (jedi:setup) (add-to-list 'company-backends 'company-jedi)))
@@ -501,6 +502,14 @@
 ;; SLIME: Common Lisp things
 (use-package slime :ensure t
   :commands slime)
+
+;; LAMMPS Mode
+(use-package lammps-mode :ensure t
+  :init
+  (setq auto-mode-alist (append auto-mode-alist
+			      '(("in\\." . lammps-mode))
+                              '(("\\.lmp\\'" . lammps-mode))))
+  :commands lammps-mode)
 
 ;; ----------- LaTeX related packages -----------
 
