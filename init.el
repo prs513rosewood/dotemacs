@@ -356,21 +356,6 @@
   :gfhook ('org-mode-hook (lambda () (company-mode -1)))
   :delight)
 
-;; Company extension for python
-(use-package company-jedi :ensure t
-  :disabled
-  :after company
-  :ghook ('python-mode-hook
-	  (lambda () (jedi:setup) (add-to-list 'company-backends 'company-jedi)))
-  :custom
-  (jedi:complete-on-dot t)
-  :general
-  (despot-def
-    :keymaps 'python-mode-map
-    :states 'normal
-    "?" 'jedi:show-doc
-    "." 'jedi:goto-definition))
-
 ;; pyvenv: managing virtualenv in emacs
 (use-package pyvenv :ensure t
   :ghook 'python-mode-hook)
