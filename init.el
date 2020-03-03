@@ -94,37 +94,36 @@
 
 ;; ----------- Package configuration -----------
 
-(require 'package)
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-;; Archives
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
-
-(setq package-enable-at-startup nil) ; do not load packages before startup
-(package-initialize)
-
-;; Install use-package
-(unless (package-installed-p 'use-package) ; unless it is already installed
-  (package-refresh-contents) ; updage packages archive
-  (package-install 'use-package)) ; and install the most recent version of use-package
-
-(require 'use-package)
+(setq straight-use-package-by-default t)
+(straight-use-package 'use-package)
 
 ;; ----------- Core packages -----------
 
 ;; Delight: change mode description in mode line
-(use-package delight :ensure t
+(use-package delight
   :commands delight
   :config (delight 'undo-tree-mode "" "undo-tree"))
 
 ;; Which-key: describes key shortcuts on-the-fly
-(use-package which-key :ensure t
+(use-package which-key
   :config (which-key-mode 1)
   :delight)
 
 ;; General.el: keybindings definition
-(use-package general :ensure t
+(use-package general
   :after which-key
   :config
   (general-override-mode 1)
@@ -186,7 +185,7 @@
    ))
 
 ;; Helm: global completion
-(use-package helm :ensure t
+(use-package helm
   :after general
   :config
   (helm-mode 1)
@@ -206,7 +205,7 @@
   :delight)
 
 ;; Evil mode
-(use-package evil :ensure t
+(use-package evil
   :hook (after-init . evil-mode)
   :custom
   (evil-ex-search-vim-style-regexp t "Regex in vim search")
@@ -223,7 +222,7 @@
 ;; ----------- QOL packages -----------
 
 ;; Dashboard
-(use-package dashboard :ensure t
+(use-package dashboard
   :config
   (dashboard-setup-startup-hook)
   :custom
@@ -232,7 +231,7 @@
   (dashboard-center-content t))
 
 ;; Magit: git made awesome
-(use-package magit :ensure t
+(use-package magit
   :commands (magit-status)
   :general
   (tyrant-def
@@ -241,7 +240,7 @@
    "gr" 'magit-file-delete))
 
 ;; Projectile: project management
-(use-package projectile :ensure t
+(use-package projectile
   :commands
   (helm-projectile
    projectile-find-file
@@ -259,7 +258,7 @@
   :delight '(:eval (concat " " (projectile-project-name))))
 
 ;; Ripgrep: faster and project aware grep
-(use-package projectile-ripgrep :ensure t
+(use-package projectile-ripgrep
   :commands projectile-ripgrep
   :general
   (general-define-key
@@ -267,7 +266,7 @@
    "<f8>" #'projectile-ripgrep))
 
 ;; Helm-projectile: helm extenstion to projectile
-(use-package helm-projectile :ensure t
+(use-package helm-projectile
   :commands helm-projectile
   :config
   (helm-projectile-on)
@@ -276,7 +275,7 @@
    "p" 'helm-projectile))
 
 ;; Org-mode: it's org-mode
-(use-package org :ensure t
+(use-package org
   :mode ("\\.org\\'" . org-mode)
   :general
   (despot-def
@@ -317,7 +316,7 @@
 )
 
 ;; Iedit: edit multiple regions simultaneously
-(use-package iedit :ensure t
+(use-package iedit
   :commands iedit-mode
   :general
   (tyrant-def
@@ -331,10 +330,10 @@
    "M-H" 'iedit-restrict-function))
 
 ;; Evil extensions
-(use-package evil-magit :ensure t
+(use-package evil-magit
   :after evil magit
   :hook (magit-mode . evil-magit-init))
-(use-package evil-org :ensure t
+(use-package evil-org
   :after evil org
   :config
   (add-hook 'org-mode-hook 'evil-org-mode)
@@ -343,25 +342,25 @@
 	      (evil-org-set-key-theme)))
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
-(use-package evil-surround :ensure t
+(use-package evil-surround
   :after evil
   :config (global-evil-surround-mode))
-(use-package evil-snipe :ensure t
+(use-package evil-snipe
   :after evil
   :config (evil-snipe-override-mode 1))
 
 ;; Company: global auto-completion
-(use-package company :ensure t
+(use-package company
   :config (global-company-mode)
   :gfhook ('org-mode-hook (lambda () (company-mode -1)))
   :delight)
 
 ;; pyvenv: managing virtualenv in emacs
-(use-package pyvenv :ensure t
+(use-package pyvenv
   :ghook 'python-mode-hook)
 
 ;; clang-format: cool
-(use-package clang-format :ensure t
+(use-package clang-format
   :commands clang-format-region
   :init
   (fset 'c-indent-region 'clang-format-region)
@@ -374,7 +373,7 @@
     "cf" 'clang-format-buffer))
 
 ;; lsp-mode: Language Server Protocol glue
-(use-package lsp-mode :ensure t
+(use-package lsp-mode
   :ghook ('prog-mode-hook 'lsp-deferred)
   :custom
   (lsp-clients-clangd-executable "clangd-7")
@@ -382,15 +381,15 @@
   (lsp-prefer-flymake nil))
 
 ;; lsp-ui: integration to flycheck
-(use-package lsp-ui :ensure t
+(use-package lsp-ui
   :ghook ('lsp-mode-hook 'lsp-ui-mode))
 
 ;; company-lsp: integration with company
-(use-package company-lsp :ensure t
+(use-package company-lsp
   :ghook ('company-mode-hook (lambda () (push 'company-lsp company-backends))))
 
 ;; Flycheck: on-the-fly syntax checking
-(use-package flycheck :ensure t
+(use-package flycheck
   :init
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
   (setq-default flycheck-flake8-maximum-line-length 80)
@@ -406,42 +405,42 @@
   :delight)
 
 ;; Helm extension for flycheck
-(use-package helm-flycheck :ensure t
+(use-package helm-flycheck
   :commands helm-flycheck)
 
 ;; Better C++ syntax highlighting
-(use-package modern-cpp-font-lock :ensure t
+(use-package modern-cpp-font-lock
   :ghook ('c++-mode-hook #'modern-c++-font-lock-mode)
   :delight modern-c++-font-lock-mode)
 
 ;; Eldoc: documentation for elisp
-(use-package eldoc :ensure t
+(use-package eldoc
   :config
   (eldoc-mode t)
   :delight)
 
 ;; Irony-eldoc: irony extension for eldoc
-(use-package irony-eldoc :ensure t
+(use-package irony-eldoc
   :after eldoc irony
   :ghook ('irony-mode-hook #'irony-eldoc))
 
 ;; Rainbow delimiters
-(use-package rainbow-delimiters :ensure t
+(use-package rainbow-delimiters
   :ghook ('(prog-mode-hook LaTeX-mode-hook)))
 
 ;; Avy
-(use-package avy :ensure t
+(use-package avy
   :general
   (tyrant-def
    "SPC" #'avy-goto-word))
 
 ;; Flyspell
-(use-package flyspell :ensure t
+(use-package flyspell
   :ghook ('(text-mode LaTeX-mode-hook))
   :ghook ('prog-mode 'flyspell-prog-mode))
 
 ;; Helm extension for flyspell
-(use-package helm-flyspell :ensure t
+(use-package helm-flyspell
   :general
   (tyrant-def
     "s" '(:ignore t :which-key "spell")
@@ -449,32 +448,33 @@
     "sn" 'flyspell-goto-next-error))
 
 ;; Vi fringe
-(use-package vi-tilde-fringe :ensure t
+(use-package vi-tilde-fringe
   :ghook 'prog-mode-hook
   :delight)
 
 ;; Spaceline
-(use-package spaceline :ensure t
+(use-package spaceline
   :config (spaceline-spacemacs-theme)
   :gfhook ('after-load-theme-hook 'powerline-reset))
 
 ;; Base16 theme
-(use-package base16-theme :ensure t)
+(use-package base16-theme)
 
 ;; Markdown
-(use-package markdown-mode :ensure t
+(use-package markdown-mode
   :mode "\\.md\\'")
 
 ;; Fic-mode: show TODO, FIXME, etc.
-(use-package fic-mode :ensure t
+(use-package fic-mode
   :ghook ('(prog-mode-hook tex-mode-hook)))
 
 ;; Magit-todos: shows TODO in git window
-(use-package magit-todos :ensure t
+(use-package magit-todos
   :ghook 'magit-status)
 
 ;; Snippets
-(use-package yasnippet :ensure t
+(use-package yasnippet-snippets)
+(use-package yasnippet
   :config (yas-reload-all)
   :custom (yas-snippet-dirs
 	   '("~/.emacs.d/snippets"
@@ -482,14 +482,12 @@
   :ghook ('prog-mode-hook #'yas-minor-mode)
   :delight)
 
-(use-package yasnippet-snippets :ensure t)
-
 ;; SLIME: Common Lisp things
-(use-package slime :ensure t
+(use-package slime
   :commands slime)
 
 ;; LAMMPS Mode
-(use-package lammps-mode :ensure t
+(use-package lammps-mode
   :init
   (setq auto-mode-alist (append auto-mode-alist
 			      '(("in\\." . lammps-mode))
@@ -499,7 +497,7 @@
 ;; ----------- LaTeX related packages -----------
 
 ;; AUCTeX
-(use-package tex-mode :ensure auctex
+(use-package tex-mode :straight auctex
   :mode ("\\.tex\\'" . LaTeX-mode)
   :config
   (setq-default TeX-master nil)
@@ -529,7 +527,7 @@
     "cc" 'TeX-command-master))
 
 ;; Reftex for reference management
-(use-package reftex :ensure t
+(use-package reftex
   :ghook ('LaTeX-mode-hook 'turn-on-reftex)
   :custom
   (reftex-plug-into-AUCTex t)
@@ -544,13 +542,13 @@
     "rt" 'reftex-toc))
 
 ;; Couple AUCTeX w/ latexmk
-(use-package auctex-latexmk :ensure t
+(use-package auctex-latexmk
   :ghook ('LaTeX-mode-hook 'auctex-latexmk-setup)
   :custom
   (auctex-latexmk-inherit-TeX-PDF-mode t))
 
 ;; Completion for references
-(use-package company-reftex :ensure t
+(use-package company-reftex
   :defer t
   :init
   (general-add-hook 'reftex-mode-hook
@@ -560,7 +558,7 @@
 
 
 ;; Completion for bibtex
-(use-package company-bibtex :ensure t
+(use-package company-bibtex
   :defer t
   :init
   (general-add-hook 'LaTeX-mode-hook
