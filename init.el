@@ -94,15 +94,16 @@
 
 ;; ----------- Package configuration -----------
 
+;; Straight.el is used here instead of built-in package.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
       (bootstrap-version 5))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
+	(url-retrieve-synchronously
+	 "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+	 'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
@@ -150,42 +151,70 @@
   (tyrant-def
    "" nil
 
-   "f"  '(:ignore t :which-key "files")
-   "fo" 'ff-find-other-file
+   "X"   #'execute-extended-command
 
-   "c"  '(:ignore t :which-key "compile")
-   "cc" 'compile
-   "cr" 'recompile
-   "ck" 'kill-compilation
-   "cq" '((lambda ()
-	  (interactive)
-	  (kill-buffer "*compilation*"))
-	  :which-key "Kill compile buffer")
+   "f"   #'(:ignore t :which-key "files")
+   "ff"  #'find-file
+   "fr"  #'recentf-open-files
+   "fo"  #'ff-find-other-file
 
-   "/" 'comment-or-uncomment-region
-   "TAB" 'mode-line-other-buffer
-   "d" 'dired
+   "b"   #'switch-to-buffer-other-window
+   "B"   #'ibuffer-other-window
+   "h"   #'help
 
-   "lp" 'list-packages
+   "c"   '(:ignore t :which-key "compile")
+   "cc"  #'compile
+   "cr"  #'recompile
+   "ck"  #'kill-compilation
+   "cq"  #'((lambda ()
+	      (interactive)
+	      (kill-buffer "*compilation*"))
+	    :which-key "Kill compile buffer")
 
-   "e" '(:ignore t :which-key "edit")
-   "ev" '((lambda ()
-	  (interactive)
-	  (find-file (locate-user-emacs-file "init.el")))
-	  :which-key "Edit config file")
-   "sv" '((lambda () "Source config file"
-	  (interactive)
-	  (eval (locate-user-emacs-file "init.el")))
-	  :which-key "Source config file")
+   "/"   #'comment-or-uncomment-region
+   "TAB" #'mode-line-other-buffer
+   "d"   #'dired
 
-   "fm" 'make-frame
-   "fk" 'delete-frame
-   "q"  '(:ignore t :which-key "quit")
-   "qs" 'server-shutdown
+   "e"   #'(:ignore t :which-key "edit")
+   "ev"  #'((lambda ()
+	      (interactive)
+	      (find-file (locate-user-emacs-file "init.el")))
+	    :which-key "Edit config file")
+   "sv"  #'((lambda () "Source config file"
+	      (interactive)
+	      (eval (locate-user-emacs-file "init.el")))
+	    :which-key "Source config file")
+
+   "wc"  #'whitespace-cleanup
+
+   "F"   #'(:ignore t :which-key "frames")
+   "Fm"  #'make-frame
+   "Fk"  #'delete-frame
+   "q"   #'(:ignore t :which-key "quit")
+   "qs"  #'server-shutdown
    ))
+
+;; Selectrum: simpler global completion
+(use-package selectrum
+  :straight (selectrum :host github :repo "raxod502/selectrum")
+  :config
+  (selectrum-mode +1))
+
+;; Prescient: better completion algo for selectrum
+(use-package prescient
+  :straight (prescient :host github :repo "raxod502/prescient.el"))
+(use-package selectrum-prescient
+  :after prescient
+  :straight (prescient
+	     :host github
+	     :repo "raxod502/prescient.el"
+	     :file ("selectrum-prescient.el"))
+  :config
+  (selectrum-prescient-mode))
 
 ;; Helm: global completion
 (use-package helm
+  :disabled
   :after general
   :config
   (helm-mode 1)
@@ -209,6 +238,8 @@
   :hook (after-init . evil-mode)
   :custom
   (evil-ex-search-vim-style-regexp t "Regex in vim search")
+  :config
+  (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
   :general
   (general-define-key
    :states 'normal
@@ -253,8 +284,11 @@
   (projectile-mode 1)
   :general
   (tyrant-def
-    "cp" #'projectile-compile-project
-    "fp" #'projectile-find-file)
+    "p"  '(:ignore t :which-key "projectile")
+    "pc" #'projectile-compile-project
+    "pf" #'projectile-find-file
+    "pb" #'projectile-switch-to-buffer-other-window
+    "pB" #'projectile-ibuffer)
   :delight '(:eval (concat " " (projectile-project-name))))
 
 ;; Ripgrep: faster and project aware grep
@@ -267,6 +301,7 @@
 
 ;; Helm-projectile: helm extenstion to projectile
 (use-package helm-projectile
+  :disabled
   :commands helm-projectile
   :config
   (helm-projectile-on)
@@ -406,6 +441,7 @@
 
 ;; Helm extension for flycheck
 (use-package helm-flycheck
+  :disabled
   :commands helm-flycheck)
 
 ;; Better C++ syntax highlighting
@@ -439,8 +475,16 @@
   :ghook ('(text-mode LaTeX-mode-hook))
   :ghook ('prog-mode 'flyspell-prog-mode))
 
+;; Flyspell-correct: interactive correction
+(use-package flyspell-correct
+  :commands flyspell-correct-wrapper
+  :general
+  (tyrant-def
+   "ss" #'flyspell-correct-wrapper))
+
 ;; Helm extension for flyspell
 (use-package helm-flyspell
+  :disabled
   :general
   (tyrant-def
     "s" '(:ignore t :which-key "spell")
@@ -491,7 +535,7 @@
   :init
   (setq auto-mode-alist (append auto-mode-alist
 			      '(("in\\." . lammps-mode))
-                              '(("\\.lmp\\'" . lammps-mode))))
+			      '(("\\.lmp\\'" . lammps-mode))))
   :commands lammps-mode)
 
 ;; ----------- LaTeX related packages -----------
