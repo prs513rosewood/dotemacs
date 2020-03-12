@@ -467,21 +467,22 @@
 
 ;; Avy
 (use-package avy
-  :general
-  (tyrant-def
-   "SPC" #'avy-goto-word))
+  :commands avy-goto-word-1
+  :general (tyrant-def "SPC" #'avy-goto-word-1))
 
 ;; Flyspell
 (use-package flyspell
   :ghook ('(text-mode LaTeX-mode-hook))
-  :ghook ('prog-mode 'flyspell-prog-mode))
+  :ghook ('prog-mode 'flyspell-prog-mode)
+  :general
+  (tyrant-def
+    "s" '(:ignore t :which-key "spell")
+    "sn" #'flyspell-goto-next-error))
 
 ;; Flyspell-correct: interactive correction
 (use-package flyspell-correct
   :commands flyspell-correct-wrapper
-  :general
-  (tyrant-def
-   "ss" #'flyspell-correct-wrapper))
+  :general (tyrant-def "ss" #'flyspell-correct-wrapper))
 
 ;; Helm extension for flyspell
 (use-package helm-flyspell
