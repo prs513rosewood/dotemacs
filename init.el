@@ -533,11 +533,14 @@
 
 ;; LAMMPS Mode
 (use-package lammps-mode
-  :init
-  (setq auto-mode-alist (append auto-mode-alist
-			      '(("in\\." . lammps-mode))
-			      '(("\\.lmp\\'" . lammps-mode))))
-  :commands lammps-mode)
+  :mode "\\(in\\.\\|\\.lmp\\'\\)"
+  :gfhook
+  ('lammps-mode-hook
+   (lambda ()
+     (set (make-local-variable 'compile-command)
+	  (concat "mpirun -np 4 lmp -in "
+		  (if buffer-file-name
+		      (shell-quote-argument buffer-file-name)))))))
 
 ;; ----------- LaTeX related packages -----------
 
