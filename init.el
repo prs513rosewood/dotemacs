@@ -59,8 +59,9 @@
 (setenv "SHELL" "/bin/bash")
 (setq shell-file-name "/bin/bash")
 
-;; Setting PYTHONPATH
+;; Setting some environment variables
 (setenv "PYTHONPATH" (shell-command-to-string "$SHELL --login -c 'echo -n $PYTHONPATH'"))
+(setenv "LC_ALL" "en_US.UTF-8")
 
 ;; Displaying ansi colors
 (require 'ansi-color)
