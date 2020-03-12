@@ -11,6 +11,9 @@
 
 ;; ----------- Sane defalts -----------
 
+;; Garbage collection threshould to 100MB
+(setq gc-cons-threshold 100000000)
+
 ;; Backups
 ; (setq my-backup-dir (concat user-emacs-directory "backup_files"))
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup_files"))) ;
