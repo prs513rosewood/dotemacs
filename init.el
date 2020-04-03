@@ -460,11 +460,19 @@
 
 ;; Spaceline
 (use-package spaceline
+  :disabled t
   :config (spaceline-spacemacs-theme)
   :gfhook ('after-load-theme-hook 'powerline-reset))
 
 ;; Base16 theme
 (use-package base16-theme)
+
+;; Doom themes
+(use-package doom-themes)
+
+;; Doom modeline
+(use-package doom-modeline
+  :gfhook ('after-load-theme-hook 'doom-modeline-mode))
 
 ;; Markdown
 (use-package markdown-mode
@@ -472,7 +480,9 @@
 
 ;; Fic-mode: show TODO, FIXME, etc.
 (use-package fic-mode
-  :ghook ('(prog-mode-hook tex-mode-hook)))
+  :ghook
+  'prog-mode-hook
+  'tex-mode-hook)
 
 ;; Magit-todos: shows TODO in git window
 (use-package magit-todos
@@ -578,7 +588,8 @@
 ;; ----------- Themes Management -----------
 ;; based on: https://emacs.stackexchange.com/a/26981
 
-(setq ivan/themes '(base16-tomorrow-night base16-tomorrow))
+;; (setq ivan/themes '(base16-tomorrow-night base16-tomorrow))
+(setq ivan/themes '(doom-one doom-one-light))
 (setq ivan/themes-index 0)
 
 (defun ivan/cycle-theme ()
