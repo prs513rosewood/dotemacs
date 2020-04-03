@@ -210,43 +210,9 @@
    "qs"  #'server-shutdown
    ))
 
-;; Selectrum: simpler global completion
-(use-package selectrum
-  :straight (selectrum :host github :repo "raxod502/selectrum")
-  :config
-  (selectrum-mode +1))
-
-;; Prescient: better completion algo for selectrum
-(use-package prescient
-  :straight (prescient :host github :repo "raxod502/prescient.el"))
-(use-package selectrum-prescient
-  :after prescient
-  :straight (prescient
-	     :host github
-	     :repo "raxod502/prescient.el"
-	     :file ("selectrum-prescient.el"))
-  :config
-  (selectrum-prescient-mode))
-
-;; Helm: global completion
-(use-package helm
-  :disabled
-  :after general
-  :config
-  (helm-mode 1)
-  :bind (("M-x" . helm-M-x)
-	 ("C-x C-f" . helm-find-files)
-	 :map helm-map
-	 ("<tab>" . helm-execute-persistent-action)
-	 ("C-z" . helm-select-action))
-  :general
-  (tyrant-def
-    "x"  'helm-M-x
-    "X"  'execute-extended-command
-    "ff" 'helm-find-files
-    "fr" 'helm-recentf
-    "b" #'helm-buffers-list
-    "h" #'helm-mini)
+;; Ivy
+(use-package ivy
+  :config (ivy-mode 1)
   :delight)
 
 ;; Evil mode
@@ -313,16 +279,6 @@
   (general-define-key
    :states 'normal
    "<f8>" #'projectile-ripgrep))
-
-;; Helm-projectile: helm extenstion to projectile
-(use-package helm-projectile
-  :disabled
-  :commands helm-projectile
-  :config
-  (helm-projectile-on)
-  :general
-  (tyrant-def
-   "p" 'helm-projectile))
 
 ;; Org-mode: it's org-mode
 (use-package org
@@ -454,15 +410,15 @@
    "cb" #'flycheck-previous-error)
   :delight)
 
-;; Helm extension for flycheck
-(use-package helm-flycheck
-  :disabled
-  :commands helm-flycheck)
-
 ;; Better C++ syntax highlighting
 (use-package modern-cpp-font-lock
-  :ghook ('c++-mode-hook #'modern-c++-font-lock-mode)
+  :ghook ('(c++-mode-hook modern-c++-font-lock-mode))
   :delight modern-c++-font-lock-mode)
+
+;; Fill column indicator
+(use-package fill-column-indicator
+  :ghook ('prog-mode-hook #'fci-mode)
+  :delight fci-mode)
 
 ;; Eldoc: documentation for elisp
 (use-package eldoc
@@ -470,14 +426,11 @@
   (eldoc-mode t)
   :delight)
 
-;; Irony-eldoc: irony extension for eldoc
-(use-package irony-eldoc
-  :after eldoc irony
-  :ghook ('irony-mode-hook #'irony-eldoc))
-
 ;; Rainbow delimiters
 (use-package rainbow-delimiters
-  :ghook ('(prog-mode-hook LaTeX-mode-hook)))
+  :ghook
+  'prog-mode-hook
+  'LaTeX-mode-hook)
 
 ;; Avy
 (use-package avy
@@ -499,15 +452,6 @@
 (use-package flyspell-correct
   :commands flyspell-correct-wrapper
   :general (tyrant-def "ss" #'flyspell-correct-wrapper))
-
-;; Helm extension for flyspell
-(use-package helm-flyspell
-  :disabled
-  :general
-  (tyrant-def
-    "s" '(:ignore t :which-key "spell")
-    "ss" 'helm-flyspell-correct
-    "sn" 'flyspell-goto-next-error))
 
 ;; Vi fringe
 (use-package vi-tilde-fringe
