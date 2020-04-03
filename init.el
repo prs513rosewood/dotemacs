@@ -63,7 +63,8 @@
 (setq shell-file-name "/bin/bash")
 
 ;; Setting some environment variables
-(setenv "PYTHONPATH" (shell-command-to-string "$SHELL --login -c 'echo -n $PYTHONPATH'"))
+(setenv "PYTHONPATH"
+	(shell-command-to-string "$SHELL --login -c 'echo -n $PYTHONPATH'"))
 (setenv "LC_ALL" "en_US.UTF-8")
 
 ;; Displaying ansi colors
@@ -96,12 +97,23 @@
 ;; Consider a single space for the end of sentences
 (setf sentence-end-double-space nil)
 
+;; Sane indent defaults
+(setq-default tab-width 2
+              tab-always-indent t
+              indent-tabs-mode nil
+              fill-column 80)
+
+;; Fill in text mode
+(add-hook 'text-mode-hook #'auto-fill-mode)
+
+
 ;; ----------- Package configuration -----------
 
 ;; Straight.el is used here instead of built-in package.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+       (expand-file-name "straight/repos/straight.el/bootstrap.el"
+			 user-emacs-directory))
       (bootstrap-version 5))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
@@ -277,8 +289,7 @@
 ;; Projectile: project management
 (use-package projectile
   :commands
-  (helm-projectile
-   projectile-find-file
+  (projectile-find-file
    projectile-compile)
   :init
   (put 'projectile-project-compilation-cmd 'safe-local-variable
@@ -475,8 +486,10 @@
 
 ;; Flyspell
 (use-package flyspell
-  :ghook ('(text-mode LaTeX-mode-hook))
-  :ghook ('prog-mode 'flyspell-prog-mode)
+  :ghook
+  'text-mode
+  'LaTeX-mode-hook
+  :ghook ('prog-mode-hook 'flyspell-prog-mode)
   :general
   (tyrant-def
     "s" '(:ignore t :which-key "spell")
@@ -657,18 +670,20 @@
 
 
 ;; Set compile command for python scripts
-(general-add-hook 'python-mode-hook
-	  (lambda ()
-	    (set (make-local-variable 'compile-command)
-		 (concat "python3 " (if buffer-file-name
-				       (shell-quote-argument buffer-file-name))))))
+(general-add-hook
+ 'python-mode-hook
+ (lambda ()
+   (set (make-local-variable 'compile-command)
+	(concat "python3 " (if buffer-file-name
+			       (shell-quote-argument buffer-file-name))))))
 
 ;; Set compile command for latex documents
-(general-add-hook 'latex-mode-hook
-	  (lambda ()
-	    (set (make-local-variable 'compile-command)
-		 (concat "latexmk -g " (if buffer-file-name
-					   (shell-quote-argument buffer-file-name))))))
+(general-add-hook
+ 'latex-mode-hook
+ (lambda ()
+   (set (make-local-variable 'compile-command)
+	(concat "latexmk -g " (if buffer-file-name
+				  (shell-quote-argument buffer-file-name))))))
 
 ;; Add .cu files to c++-mode
 (add-to-list 'auto-mode-alist '("\\.cu\\'" . c++-mode))
