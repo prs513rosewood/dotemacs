@@ -380,7 +380,7 @@
 
 ;; lsp-mode: Language Server Protocol glue
 (use-package lsp-mode
-  :ghook ('prog-mode-hook 'lsp-deferred)
+  :ghook ('prog-mode-hook #'lsp-deferred)
   :custom
   (lsp-clients-clangd-executable "clangd-7")
   (lsp-keymap-prefix "s-l")
@@ -388,7 +388,7 @@
 
 ;; lsp-ui: integration to flycheck
 (use-package lsp-ui
-  :ghook ('lsp-mode-hook 'lsp-ui-mode))
+  :ghook ('lsp-mode-hook #'lsp-ui-mode))
 
 ;; company-lsp: integration with company
 (use-package company-lsp
@@ -401,7 +401,9 @@
   (setq-default flycheck-flake8-maximum-line-length 80)
   :custom
   (flycheck-gcc-openmp t "Activate OpenMP awareness")
-  :ghook ('(lsp-ui-mode-hook tex-mode-hook))
+  :ghook
+  'lsp-ui-mode-hook
+  'tex-mode-hook
   :config
   (global-flycheck-mode)
   :general
@@ -412,7 +414,7 @@
 
 ;; Better C++ syntax highlighting
 (use-package modern-cpp-font-lock
-  :ghook ('(c++-mode-hook modern-c++-font-lock-mode))
+  :ghook ('c++-mode-hook #'modern-c++-font-lock-mode)
   :delight modern-c++-font-lock-mode)
 
 ;; Fill column indicator
@@ -442,7 +444,7 @@
   :ghook
   'text-mode
   'LaTeX-mode-hook
-  :ghook ('prog-mode-hook 'flyspell-prog-mode)
+  :ghook ('prog-mode-hook #'flyspell-prog-mode)
   :general
   (tyrant-def
     "s" '(:ignore t :which-key "spell")
@@ -465,14 +467,15 @@
   :gfhook ('after-load-theme-hook 'powerline-reset))
 
 ;; Base16 theme
-(use-package base16-theme)
+(use-package base16-theme
+  :disabled t)
 
 ;; Doom themes
 (use-package doom-themes)
 
 ;; Doom modeline
 (use-package doom-modeline
-  :gfhook ('after-load-theme-hook 'doom-modeline-mode))
+  :ghook 'after-load-theme-hook)
 
 ;; Markdown
 (use-package markdown-mode
@@ -483,10 +486,6 @@
   :ghook
   'prog-mode-hook
   'tex-mode-hook)
-
-;; Magit-todos: shows TODO in git window
-(use-package magit-todos
-  :ghook 'magit-status)
 
 ;; Snippets
 (use-package yasnippet-snippets)
