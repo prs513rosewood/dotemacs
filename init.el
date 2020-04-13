@@ -63,7 +63,8 @@
 (setq shell-file-name "/bin/bash")
 
 ;; Setting some environment variables
-(setenv "PYTHONPATH" (shell-command-to-string "$SHELL --login -c 'echo -n $PYTHONPATH'"))
+(setenv "PYTHONPATH"
+	(shell-command-to-string "$SHELL --login -c 'echo -n $PYTHONPATH'"))
 (setenv "LC_ALL" "en_US.UTF-8")
 
 ;; Displaying ansi colors
@@ -96,12 +97,23 @@
 ;; Consider a single space for the end of sentences
 (setf sentence-end-double-space nil)
 
+;; Sane indent defaults
+(setq-default tab-width 2
+              tab-always-indent t
+              indent-tabs-mode nil
+              fill-column 80)
+
+;; Fill in text mode
+(add-hook 'text-mode-hook #'auto-fill-mode)
+
+
 ;; ----------- Package configuration -----------
 
 ;; Straight.el is used here instead of built-in package.el
 (defvar bootstrap-version)
 (let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+       (expand-file-name "straight/repos/straight.el/bootstrap.el"
+			 user-emacs-directory))
       (bootstrap-version 5))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
@@ -166,14 +178,14 @@
    "B"   #'ibuffer-other-window
    "h"   #'help
 
-   "c"   '(:ignore t :which-key "compile")
+   "c"   #'(:ignore t :which-key "compile")
    "cc"  #'compile
    "cr"  #'recompile
    "ck"  #'kill-compilation
    "cq"  #'((lambda ()
-	      (interactive)
-	      (kill-buffer "*compilation*"))
-	    :which-key "Kill compile buffer")
+              (interactive)
+              (kill-buffer "*compilation*"))
+            :which-key "Kill compile buffer")
 
    "/"   #'comment-or-uncomment-region
    "TAB" #'mode-line-other-buffer
@@ -181,13 +193,13 @@
 
    "e"   #'(:ignore t :which-key "edit")
    "ev"  #'((lambda ()
-	      (interactive)
-	      (find-file (locate-user-emacs-file "init.el")))
-	    :which-key "Edit config file")
+              (interactive)
+              (find-file (locate-user-emacs-file "init.el")))
+            :which-key "Edit config file")
    "sv"  #'((lambda () "Source config file"
-	      (interactive)
-	      (eval (locate-user-emacs-file "init.el")))
-	    :which-key "Source config file")
+              (interactive)
+              (eval (locate-user-emacs-file "init.el")))
+            :which-key "Source config file")
 
    "wc"  #'whitespace-cleanup
 
@@ -195,46 +207,14 @@
    "Fm"  #'make-frame
    "Fk"  #'delete-frame
    "q"   #'(:ignore t :which-key "quit")
-   "qs"  #'server-shutdown
-   ))
+   "qs"  #'server-shutdown))
 
-;; Selectrum: simpler global completion
-(use-package selectrum
-  :straight (selectrum :host github :repo "raxod502/selectrum")
+;; Ivy
+(use-package ivy
   :config
-  (selectrum-mode +1))
-
-;; Prescient: better completion algo for selectrum
-(use-package prescient
-  :straight (prescient :host github :repo "raxod502/prescient.el"))
-(use-package selectrum-prescient
-  :after prescient
-  :straight (prescient
-	     :host github
-	     :repo "raxod502/prescient.el"
-	     :file ("selectrum-prescient.el"))
-  :config
-  (selectrum-prescient-mode))
-
-;; Helm: global completion
-(use-package helm
-  :disabled
-  :after general
-  :config
-  (helm-mode 1)
-  :bind (("M-x" . helm-M-x)
-	 ("C-x C-f" . helm-find-files)
-	 :map helm-map
-	 ("<tab>" . helm-execute-persistent-action)
-	 ("C-z" . helm-select-action))
-  :general
-  (tyrant-def
-    "x"  'helm-M-x
-    "X"  'execute-extended-command
-    "ff" 'helm-find-files
-    "fr" 'helm-recentf
-    "b" #'helm-buffers-list
-    "h" #'helm-mini)
+  (setq ivy-re-builders-alist
+        '((t . ivy--regex-ignore-order)))
+  (ivy-mode 1)
   :delight)
 
 ;; Evil mode
@@ -247,12 +227,11 @@
   :general
   (general-define-key
    :states 'normal
-   "é" #'evil-ex
-   ";" #'evil-ex
+   "é"   #'evil-ex
+   ";"   #'evil-ex
    "C-u" #'evil-scroll-up
-   "TAB" #'indent-for-tab-command
-   "j" 'evil-next-visual-line
-   "k" 'evil-previous-visual-line))
+   "j"   #'evil-next-visual-line
+   "k"   #'evil-previous-visual-line))
 
 ;; ----------- QOL packages -----------
 
@@ -270,15 +249,14 @@
   :commands (magit-status)
   :general
   (tyrant-def
-   "g" '(:ignore t :which-key "git")
-   "gs" 'magit-status
-   "gr" 'magit-file-delete))
+   "g"  #'(:ignore t :which-key "git")
+   "gs" #'magit-status
+   "gr" #'magit-file-delete))
 
 ;; Projectile: project management
 (use-package projectile
   :commands
-  (helm-projectile
-   projectile-find-file
+  (projectile-find-file
    projectile-compile)
   :init
   (put 'projectile-project-compilation-cmd 'safe-local-variable
@@ -292,7 +270,8 @@
     "pc" #'projectile-compile-project
     "pf" #'projectile-find-file
     "pb" #'projectile-switch-to-buffer-other-window
-    "pB" #'projectile-ibuffer)
+    "pB" #'projectile-ibuffer
+    "pr" #'projectile-recentf)
   :delight '(:eval (concat " " (projectile-project-name))))
 
 ;; Ripgrep: faster and project aware grep
@@ -302,16 +281,6 @@
   (general-define-key
    :states 'normal
    "<f8>" #'projectile-ripgrep))
-
-;; Helm-projectile: helm extenstion to projectile
-(use-package helm-projectile
-  :disabled
-  :commands helm-projectile
-  :config
-  (helm-projectile-on)
-  :general
-  (tyrant-def
-   "p" 'helm-projectile))
 
 ;; Org-mode: it's org-mode
 (use-package org
@@ -413,15 +382,17 @@
 
 ;; lsp-mode: Language Server Protocol glue
 (use-package lsp-mode
-  :ghook ('prog-mode-hook 'lsp-deferred)
+  :ghook ('prog-mode-hook #'lsp-deferred)
   :custom
+  (lsp-log-io t)
   (lsp-clients-clangd-executable "clangd-7")
+  (lsp-clients-clangd-args '("--log=verbose"))
   (lsp-keymap-prefix "s-l")
   (lsp-prefer-flymake nil))
 
 ;; lsp-ui: integration to flycheck
 (use-package lsp-ui
-  :ghook ('lsp-mode-hook 'lsp-ui-mode))
+  :ghook ('lsp-mode-hook #'lsp-ui-mode))
 
 ;; company-lsp: integration with company
 (use-package company-lsp
@@ -434,7 +405,9 @@
   (setq-default flycheck-flake8-maximum-line-length 80)
   :custom
   (flycheck-gcc-openmp t "Activate OpenMP awareness")
-  :ghook ('(lsp-ui-mode-hook tex-mode-hook))
+  :ghook
+  'lsp-ui-mode-hook
+  'tex-mode-hook
   :config
   (global-flycheck-mode)
   :general
@@ -443,15 +416,17 @@
    "cb" #'flycheck-previous-error)
   :delight)
 
-;; Helm extension for flycheck
-(use-package helm-flycheck
-  :disabled
-  :commands helm-flycheck)
-
 ;; Better C++ syntax highlighting
 (use-package modern-cpp-font-lock
   :ghook ('c++-mode-hook #'modern-c++-font-lock-mode)
   :delight modern-c++-font-lock-mode)
+
+;; Fill column indicator
+(use-package hl-fill-column
+  :ghook
+  'prog-mode-hook
+  'text-mode-hook
+  :delight)
 
 ;; Eldoc: documentation for elisp
 (use-package eldoc
@@ -459,14 +434,11 @@
   (eldoc-mode t)
   :delight)
 
-;; Irony-eldoc: irony extension for eldoc
-(use-package irony-eldoc
-  :after eldoc irony
-  :ghook ('irony-mode-hook #'irony-eldoc))
-
 ;; Rainbow delimiters
 (use-package rainbow-delimiters
-  :ghook ('(prog-mode-hook LaTeX-mode-hook)))
+  :ghook
+  'prog-mode-hook
+  'LaTeX-mode-hook)
 
 ;; Avy
 (use-package avy
@@ -475,8 +447,10 @@
 
 ;; Flyspell
 (use-package flyspell
-  :ghook ('(text-mode LaTeX-mode-hook))
-  :ghook ('prog-mode 'flyspell-prog-mode)
+  :ghook
+  'text-mode
+  'LaTeX-mode-hook
+  :ghook ('prog-mode-hook #'flyspell-prog-mode)
   :general
   (tyrant-def
     "s" '(:ignore t :which-key "spell")
@@ -487,15 +461,6 @@
   :commands flyspell-correct-wrapper
   :general (tyrant-def "ss" #'flyspell-correct-wrapper))
 
-;; Helm extension for flyspell
-(use-package helm-flyspell
-  :disabled
-  :general
-  (tyrant-def
-    "s" '(:ignore t :which-key "spell")
-    "ss" 'helm-flyspell-correct
-    "sn" 'flyspell-goto-next-error))
-
 ;; Vi fringe
 (use-package vi-tilde-fringe
   :ghook 'prog-mode-hook
@@ -503,11 +468,20 @@
 
 ;; Spaceline
 (use-package spaceline
+  :disabled t
   :config (spaceline-spacemacs-theme)
   :gfhook ('after-load-theme-hook 'powerline-reset))
 
 ;; Base16 theme
-(use-package base16-theme)
+(use-package base16-theme
+  :disabled t)
+
+;; Doom themes
+(use-package doom-themes)
+
+;; Doom modeline
+(use-package doom-modeline
+  :ghook 'after-load-theme-hook)
 
 ;; Markdown
 (use-package markdown-mode
@@ -515,11 +489,9 @@
 
 ;; Fic-mode: show TODO, FIXME, etc.
 (use-package fic-mode
-  :ghook ('(prog-mode-hook tex-mode-hook)))
-
-;; Magit-todos: shows TODO in git window
-(use-package magit-todos
-  :ghook 'magit-status)
+  :ghook
+  'prog-mode-hook
+  'tex-mode-hook)
 
 ;; Snippets
 (use-package yasnippet-snippets)
@@ -538,7 +510,7 @@
 
 ;; LAMMPS Mode
 (use-package lammps-mode
-  :mode "\\(in\\.\\|\\.lmp\\'\\)"
+  :mode "\\(^in\\.\\|\\.lmp\\'\\)"
   :gfhook
   ('lammps-mode-hook
    (lambda ()
@@ -546,6 +518,9 @@
 	  (concat "mpirun -np 4 lmp -in "
 		  (if buffer-file-name
 		      (shell-quote-argument buffer-file-name)))))))
+
+;; Groovy Mode
+(use-package groovy-mode)
 
 ;; ----------- LaTeX related packages -----------
 
@@ -622,7 +597,8 @@
 ;; ----------- Themes Management -----------
 ;; based on: https://emacs.stackexchange.com/a/26981
 
-(setq ivan/themes '(base16-tomorrow-night base16-tomorrow))
+;; (setq ivan/themes '(base16-tomorrow-night base16-tomorrow))
+(setq ivan/themes '(doom-one doom-one-light))
 (setq ivan/themes-index 0)
 
 (defun ivan/cycle-theme ()
@@ -658,18 +634,20 @@
 
 
 ;; Set compile command for python scripts
-(general-add-hook 'python-mode-hook
-	  (lambda ()
-	    (set (make-local-variable 'compile-command)
-		 (concat "python3 " (if buffer-file-name
-				       (shell-quote-argument buffer-file-name))))))
+(general-add-hook
+ 'python-mode-hook
+ (lambda ()
+   (set (make-local-variable 'compile-command)
+	(concat "python3 " (if buffer-file-name
+			       (shell-quote-argument buffer-file-name))))))
 
 ;; Set compile command for latex documents
-(general-add-hook 'latex-mode-hook
-	  (lambda ()
-	    (set (make-local-variable 'compile-command)
-		 (concat "latexmk -g " (if buffer-file-name
-					   (shell-quote-argument buffer-file-name))))))
+(general-add-hook
+ 'latex-mode-hook
+ (lambda ()
+   (set (make-local-variable 'compile-command)
+	(concat "latexmk -g " (if buffer-file-name
+				  (shell-quote-argument buffer-file-name))))))
 
 ;; Add .cu files to c++-mode
 (add-to-list 'auto-mode-alist '("\\.cu\\'" . c++-mode))
