@@ -178,14 +178,14 @@
    "B"   #'ibuffer-other-window
    "h"   #'help
 
-   "c"   '(:ignore t :which-key "compile")
+   "c"   #'(:ignore t :which-key "compile")
    "cc"  #'compile
    "cr"  #'recompile
    "ck"  #'kill-compilation
    "cq"  #'((lambda ()
-	      (interactive)
-	      (kill-buffer "*compilation*"))
-	    :which-key "Kill compile buffer")
+              (interactive)
+              (kill-buffer "*compilation*"))
+            :which-key "Kill compile buffer")
 
    "/"   #'comment-or-uncomment-region
    "TAB" #'mode-line-other-buffer
@@ -193,13 +193,13 @@
 
    "e"   #'(:ignore t :which-key "edit")
    "ev"  #'((lambda ()
-	      (interactive)
-	      (find-file (locate-user-emacs-file "init.el")))
-	    :which-key "Edit config file")
+              (interactive)
+              (find-file (locate-user-emacs-file "init.el")))
+            :which-key "Edit config file")
    "sv"  #'((lambda () "Source config file"
-	      (interactive)
-	      (eval (locate-user-emacs-file "init.el")))
-	    :which-key "Source config file")
+              (interactive)
+              (eval (locate-user-emacs-file "init.el")))
+            :which-key "Source config file")
 
    "wc"  #'whitespace-cleanup
 
@@ -225,12 +225,11 @@
   :general
   (general-define-key
    :states 'normal
-   "é" #'evil-ex
-   ";" #'evil-ex
+   "é"   #'evil-ex
+   ";"   #'evil-ex
    "C-u" #'evil-scroll-up
-   "TAB" #'indent-for-tab-command
-   "j" 'evil-next-visual-line
-   "k" 'evil-previous-visual-line))
+   "j"   #'evil-next-visual-line
+   "k"   #'evil-previous-visual-line))
 
 ;; ----------- QOL packages -----------
 
@@ -248,9 +247,9 @@
   :commands (magit-status)
   :general
   (tyrant-def
-   "g" '(:ignore t :which-key "git")
-   "gs" 'magit-status
-   "gr" 'magit-file-delete))
+   "g"  #'(:ignore t :which-key "git")
+   "gs" #'magit-status
+   "gr" #'magit-file-delete))
 
 ;; Projectile: project management
 (use-package projectile
@@ -269,7 +268,8 @@
     "pc" #'projectile-compile-project
     "pf" #'projectile-find-file
     "pb" #'projectile-switch-to-buffer-other-window
-    "pB" #'projectile-ibuffer)
+    "pB" #'projectile-ibuffer
+    "pr" #'projectile-recentf)
   :delight '(:eval (concat " " (projectile-project-name))))
 
 ;; Ripgrep: faster and project aware grep
@@ -418,9 +418,11 @@
   :delight modern-c++-font-lock-mode)
 
 ;; Fill column indicator
-(use-package fill-column-indicator
-  :ghook ('prog-mode-hook #'fci-mode)
-  :delight fci-mode)
+(use-package hl-fill-column
+  :ghook
+  'prog-mode-hook
+  'text-mode-hook
+  :delight)
 
 ;; Eldoc: documentation for elisp
 (use-package eldoc
@@ -503,7 +505,7 @@
 
 ;; LAMMPS Mode
 (use-package lammps-mode
-  :mode "\\(in\\.\\|\\.lmp\\'\\)"
+  :mode "\\(^in\\.\\|\\.lmp\\'\\)"
   :gfhook
   ('lammps-mode-hook
    (lambda ()
@@ -511,6 +513,9 @@
 	  (concat "mpirun -np 4 lmp -in "
 		  (if buffer-file-name
 		      (shell-quote-argument buffer-file-name)))))))
+
+;; Groovy Mode
+(use-package groovy-mode)
 
 ;; ----------- LaTeX related packages -----------
 
