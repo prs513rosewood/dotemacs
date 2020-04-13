@@ -207,12 +207,14 @@
    "Fm"  #'make-frame
    "Fk"  #'delete-frame
    "q"   #'(:ignore t :which-key "quit")
-   "qs"  #'server-shutdown
-   ))
+   "qs"  #'server-shutdown))
 
 ;; Ivy
 (use-package ivy
-  :config (ivy-mode 1)
+  :config
+  (setq ivy-re-builders-alist
+        '((t . ivy--regex-ignore-order)))
+  (ivy-mode 1)
   :delight)
 
 ;; Evil mode
