@@ -384,7 +384,9 @@
 (use-package lsp-mode
   :ghook ('prog-mode-hook #'lsp-deferred)
   :custom
+  (lsp-log-io t)
   (lsp-clients-clangd-executable "clangd-7")
+  (lsp-clients-clangd-args '("--log=verbose"))
   (lsp-keymap-prefix "s-l")
   (lsp-prefer-flymake nil))
 
