@@ -505,6 +505,7 @@
 
 ;; SLIME: Common Lisp things
 (use-package slime
+  :straight nil  ; Do not install via straight.el
   :commands slime)
 
 ;; LAMMPS Mode
