@@ -14,6 +14,9 @@
 ;; Garbage collection threshould to 100MB
 (setq gc-cons-threshold 100000000)
 
+;; Case insensitive completion
+(setq completion-ignore-case t)
+
 ;; Backups
 ; (setq my-backup-dir (concat user-emacs-directory "backup_files"))
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup_files"))) ;
@@ -66,6 +69,9 @@
 (setenv "PYTHONPATH"
 	(shell-command-to-string "$SHELL --login -c 'echo -n $PYTHONPATH'"))
 (setenv "LC_ALL" "en_US.UTF-8")
+
+;; Tramp default method
+(setq tramp-default-method "ssh")
 
 ;; Displaying ansi colors
 (require 'ansi-color)
@@ -130,9 +136,9 @@
 ;; ----------- Core packages -----------
 
 ;; Delight: change mode description in mode line
-(use-package delight
-  :commands delight
-  :config (delight 'undo-tree-mode "" "undo-tree"))
+;;(use-package delight
+;;  :commands delight
+;;  :config (delight 'undo-tree-mode "" "undo-tree"))
 
 ;; Which-key: describes key shortcuts on-the-fly
 (use-package which-key
@@ -211,6 +217,7 @@
 
 ;; Ivy
 (use-package ivy
+  :disabled t
   :config
   (setq ivy-re-builders-alist
         '((t . ivy--regex-ignore-order)))
@@ -251,7 +258,8 @@
   (tyrant-def
    "g"  #'(:ignore t :which-key "git")
    "gs" #'magit-status
-   "gr" #'magit-file-delete))
+   "gr" #'magit-file-delete
+   "gb" #'magit-blame))
 
 ;; Projectile: project management
 (use-package projectile
@@ -268,7 +276,7 @@
   (tyrant-def
     "p"  '(:ignore t :which-key "projectile")
     "pc" #'projectile-compile-project
-    "pf" #'projectile-find-file
+    "pf" #'projectile-find-file-other-window
     "pb" #'projectile-switch-to-buffer-other-window
     "pB" #'projectile-ibuffer
     "pr" #'projectile-recentf)
@@ -382,8 +390,12 @@
 
 ;; lsp-mode: Language Server Protocol glue
 (use-package lsp-mode
-  :ghook ('prog-mode-hook #'lsp-deferred)
+  :defer t
+  :gfhook ('lsp-mode-hook #'lsp-enable-which-key-integration)
+  :general
+  (tyrant-def "l" #'lsp)
   :custom
+  (lsp-server-trace t)
   (lsp-log-io t)
   (lsp-clients-clangd-executable "clangd-7")
   (lsp-clients-clangd-args '("--log=verbose"))
@@ -392,10 +404,12 @@
 
 ;; lsp-ui: integration to flycheck
 (use-package lsp-ui
+  :after lsp-mode
   :ghook ('lsp-mode-hook #'lsp-ui-mode))
 
 ;; company-lsp: integration with company
 (use-package company-lsp
+  :disabled t
   :ghook ('company-mode-hook (lambda () (push 'company-lsp company-backends))))
 
 ;; Flycheck: on-the-fly syntax checking
@@ -450,11 +464,11 @@
   :ghook
   'text-mode
   'LaTeX-mode-hook
-  :ghook ('prog-mode-hook #'flyspell-prog-mode)
   :general
   (tyrant-def
     "s" '(:ignore t :which-key "spell")
-    "sn" #'flyspell-goto-next-error))
+    "sn" #'flyspell-goto-next-error
+    "sp" #'flyspell-prog-mode))
 
 ;; Flyspell-correct: interactive correction
 (use-package flyspell-correct
@@ -598,17 +612,18 @@
 (use-package elfeed
   :commands elfeed
   :custom
-  (elfeed-db-directory "~/Nextcloud/feeds/elfeed")
+  (elfeed-db-directory "~/.config/elfeed")
   (elfeed-search-filter "@1-week-ago +unread")
   :general
   (tyrant-def
     "af" #'elfeed)
   (despot-def
-   :keymaps 'elfeed-search-mode-map
+    :keymaps 'elfeed-search-mode-map
     "s" #'elfeed-search-live-filter
+    "R" #'elfeed-update
 
     "RET" #'elfeed-search-show-entry
-    "S-RET" #'elfeed-search-browse-url
+    "S-<return>" #'elfeed-search-browse-url
 
     "u" #'elfeed-search-untag-all-unread
     "U" #'elfeed-search-tag-all-unread))
@@ -651,6 +666,20 @@
    (c-set-offset 'innamespace [0]))
 (general-add-hook 'c++-mode-hook 'my-c-setup)
 
+;; Snippet below from https://github.com/garyo
+;; https://github.com/SCons/scons/wiki/IDEIntegration#emacs-and-xemacs
+;; SCons builds into a 'build' subdir, but we want to find the errors
+;; in the regular source dir.  So we remove build/XXX/YYY/{dbg,final}/ from the
+;; filenames.
+(defun process-error-filename (filename)
+  (let ((case-fold-search t))
+    (setq f (replace-regexp-in-string
+             "[Ss]?[Bb]uild[\\/].*\\(final\\|dbg\\)[^\\/]*[\\/]" "" filename))
+    (cond ((file-exists-p f)
+           f)
+          (t filename))))
+
+(setq compilation-parse-errors-filename-function 'process-error-filename)
 
 ;; Set compile command for python scripts
 (general-add-hook
