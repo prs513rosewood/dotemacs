@@ -224,11 +224,15 @@
   (ivy-mode 1)
   :delight)
 
+;; Undo package
+(use-package undo-fu)
+
 ;; Evil mode
 (use-package evil
   :hook (after-init . evil-mode)
   :custom
   (evil-ex-search-vim-style-regexp t "Regex in vim search")
+  (evil-undo-system 'undo-fu)
   :config
   (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
   :general
