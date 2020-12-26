@@ -381,6 +381,7 @@
 
 ;; clang-format: cool
 (use-package clang-format
+  :disabled
   :commands clang-format-region
   :init
   (fset 'c-indent-region 'clang-format-region)
@@ -397,19 +398,29 @@
   :defer t
   :gfhook ('lsp-mode-hook #'lsp-enable-which-key-integration)
   :general
-  (tyrant-def "l" #'lsp)
+  (tyrant-def
+    "l"  #'lsp
+    "cf" #'lsp-format-buffer
+    "m"  #'(:ignore t :which-key "lsp")
+    "md" #'lsp-find-definition
+    "mm" #'lsp-ui-imenu
+    "mp" #'lsp-ui-peek-find-references)
   :custom
+  (lsp-modeline-code-actions-enable t)
+  (lsp-headerline-breadcrumb-enable nil)
   (lsp-server-trace t)
   (lsp-log-io t)
   (lsp-clients-clangd-executable "clangd-7")
   (lsp-clients-clangd-args '("--log=verbose"))
-  (lsp-keymap-prefix "s-l")
-  (lsp-prefer-flymake nil))
+  (lsp-prefer-flymake nil)
+  (lsp-pyls-configuration-sources ["flake8"]))
 
 ;; lsp-ui: integration to flycheck
 (use-package lsp-ui
   :after lsp-mode
-  :ghook ('lsp-mode-hook #'lsp-ui-mode))
+  :ghook ('lsp-mode-hook #'lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-delay 5))
 
 ;; company-lsp: integration with company
 (use-package company-lsp
