@@ -413,7 +413,7 @@
 
 ;; company-lsp: integration with company
 (use-package company-lsp
-  :disabled t
+  :disabled
   :ghook ('company-mode-hook (lambda () (push 'company-lsp company-backends))))
 
 ;; Flycheck: on-the-fly syntax checking
@@ -486,13 +486,13 @@
 
 ;; Spaceline
 (use-package spaceline
-  :disabled t
+  :disabled
   :config (spaceline-spacemacs-theme)
   :gfhook ('after-load-theme-hook 'powerline-reset))
 
 ;; Base16 theme
 (use-package base16-theme
-  :disabled t)
+  :disabled)
 
 ;; Doom themes
 (use-package doom-themes)
@@ -512,8 +512,8 @@
   'tex-mode-hook)
 
 ;; Snippets
-(use-package yasnippet-snippets)
-(use-package yasnippet
+(use-package yasnippet-snippets :disabled)
+(use-package yasnippet :disabled
   :config (yas-reload-all)
   :custom (yas-snippet-dirs
 	   '("~/.emacs.d/snippets"
