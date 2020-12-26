@@ -217,11 +217,31 @@
 
 ;; Ivy
 (use-package ivy
-  :disabled t
+  :disabled
   :config
   (setq ivy-re-builders-alist
         '((t . ivy--regex-ignore-order)))
   (ivy-mode 1)
+  :delight)
+
+;; Helm: global completion
+(use-package helm
+  :after general
+  :config
+  (helm-mode 1)
+  :bind (("M-x" . helm-M-x)
+         ("C-x C-f" . helm-find-files)
+         :map helm-map
+         ("<tab>" . helm-execute-persistent-action)
+         ("C-z" . helm-select-action))
+  :general
+  (tyrant-def
+    "x"  #'helm-M-x
+    "X"  #'execute-extended-command
+    "ff" #'helm-find-files
+    "fr" #'helm-recentf
+    "b"  #'helm-buffers-list
+    "h"  #'helm-mini)
   :delight)
 
 ;; Undo package
