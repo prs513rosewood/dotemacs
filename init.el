@@ -415,16 +415,21 @@
 
 ;; lsp-mode: Language Server Protocol glue
 (use-package lsp-mode
-  :defer t
+  :commands lsp
   :gfhook ('lsp-mode-hook #'lsp-enable-which-key-integration)
   :general
+  (tyrant-def "l"  #'lsp)
   (tyrant-def
-    "l"  #'lsp
-    "cf" #'lsp-format-buffer
-    "m"  #'(:ignore t :which-key "lsp")
-    "md" #'lsp-find-definition
-    "mm" #'lsp-ui-imenu
-    "mp" #'lsp-ui-peek-find-references)
+    :keymaps 'c-mode-base-map
+    "cf" #'lsp-format-buffer)
+  (despot-def
+    :states 'normal
+    :keymaps 'prog-mode-map
+    "d" #'lsp-find-definition
+    "m" #'lsp-ui-imenu
+    "p" #'lsp-ui-peek-find-references)
+  :config
+  (evil-define-key 'normal lsp-mode-map (kbd "\\") lsp-command-map)
   :custom
   (lsp-modeline-code-actions-enable t)
   (lsp-headerline-breadcrumb-enable nil)
