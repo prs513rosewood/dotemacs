@@ -191,7 +191,7 @@
    "cq"  #'((lambda ()
               (interactive)
               (kill-buffer "*compilation*"))
-            :which-key "Kill compile buffer")
+            :which-key "kill-compile-buffer")
 
    "/"   #'comment-or-uncomment-region
    "TAB" #'mode-line-other-buffer
@@ -201,11 +201,11 @@
    "ev"  #'((lambda ()
               (interactive)
               (find-file (locate-user-emacs-file "init.el")))
-            :which-key "Edit config file")
+            :which-key "edit-emacs-config")
    "sv"  #'((lambda () "Source config file"
               (interactive)
               (eval (locate-user-emacs-file "init.el")))
-            :which-key "Source config file")
+            :which-key "eval-emacs-config")
 
    "wc"  #'whitespace-cleanup
 
@@ -256,13 +256,15 @@
   :config
   (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
   :general
-  (general-define-key
-   :states 'normal
+  ('normal
    "é"   #'evil-ex
    ";"   #'evil-ex
    "C-u" #'evil-scroll-up
    "j"   #'evil-next-visual-line
-   "k"   #'evil-previous-visual-line))
+   "k"   #'evil-previous-visual-line
+   "gG"  #'mode-line-other-buffer
+   "gb"  #'next-buffer
+   "gB"  #'previous-buffer))
 
 ;; ----------- QOL packages -----------
 
@@ -310,9 +312,7 @@
 (use-package projectile-ripgrep
   :commands projectile-ripgrep
   :general
-  (general-define-key
-   :states 'normal
-   "<f8>" #'projectile-ripgrep))
+  ('normal "<f8>" #'projectile-ripgrep))
 
 ;; Org-mode: it's org-mode
 (use-package org
@@ -321,7 +321,7 @@
   (despot-def
     :states 'normal
     :keymaps 'org-mode-map
-    "t" 'org-todo)
+    "t" #'org-todo)
   :custom
   (org-agenda-files '("~/Nextcloud/orgs"))
   (org-directory "~/Nextcloud/orgs")
@@ -360,14 +360,14 @@
   :commands iedit-mode
   :general
   (tyrant-def
-    "ei" 'iedit-mode
-    "eq" 'iedit-quit)
+    "ei" #'iedit-mode
+    "eq" #'iedit-quit)
   (general-define-key
    :keymaps 'iedit-mode-keymap
    :states 'normal
-   "n" 'iedit-next-occurrence
-   "N" 'iedit-prev-occurrence
-   "M-H" 'iedit-restrict-function))
+   "n"   #'iedit-next-occurrence
+   "N"   #'iedit-prev-occurrence
+   "M-H" #'iedit-restrict-function))
 
 ;; Evil extensions
 (use-package evil-magit
@@ -387,7 +387,9 @@
   :config (global-evil-surround-mode))
 (use-package evil-snipe
   :after evil
-  :config (evil-snipe-override-mode 1))
+  :config (evil-snipe-override-mode 1)
+  :general
+  ('normal ":" #'evil-snipe-repeat))
 
 ;; Company: global auto-completion
 (use-package company
