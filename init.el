@@ -268,18 +268,28 @@
 
 ;; ----------- QOL packages -----------
 
+;; Helper for regexp
+(use-package re-builder
+  :custom
+  (reb-re-syntax 'string))
+
+;; Nice icons
+;; - remember to run all-the-icons-install-fonts
+(use-package all-the-icons)
+
 ;; Dashboard
 (use-package dashboard
   :config
   (dashboard-setup-startup-hook)
   :custom
-  (initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+  ;; For emacsclient
+  ;; (initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
   (dashboard-startub-banner 'official)
   (dashboard-center-content t))
 
 ;; Magit: git made awesome
 (use-package magit
-  :commands (magit-status)
+  :commands magit-status
   :general
   (tyrant-def
    "g"  #'(:ignore t :which-key "git")
@@ -289,9 +299,7 @@
 
 ;; Projectile: project management
 (use-package projectile
-  :commands
-  (projectile-find-file
-   projectile-compile)
+  :commands (projectile-find-file projectile-compile)
   :init
   (put 'projectile-project-compilation-cmd 'safe-local-variable
        (lambda (a) (and (stringp a) (or (not (boundp 'compilation-read-command))
@@ -318,6 +326,9 @@
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :general
+  (tyrant-def
+    "o"  #'(:ignore t :which-key "org")
+    "oa" #'org-agenda)
   (despot-def
     :states 'normal
     :keymaps 'org-mode-map
@@ -576,7 +587,8 @@
 		      (shell-quote-argument buffer-file-name)))))))
 
 ;; Groovy Mode
-(use-package groovy-mode)
+(use-package groovy-mode
+  :mode "Jenkinsfile")
 
 ;; ----------- LaTeX related packages -----------
 
@@ -618,12 +630,13 @@
   (reftex-label-alist '(AMSTeX))
   (reftex-include-file-commands '("include" "input" "myimport"))
   :general
-  (despot-def TeX-mode-map
-    "r"  '(:ignore t :which-key "reftex")
-    "rl" 'reftex-label
-    "rc" 'reftex-citation
-    "rr" 'reftex-reference
-    "rt" 'reftex-toc))
+  (despot-def
+    :keymaps 'TeX-mode-map
+    "r"  #'(:ignore t :which-key "reftex")
+    "rl" #'reftex-label
+    "rc" #'reftex-citation
+    "rr" #'reftex-reference
+    "rt" #'reftex-toc))
 
 ;; Couple AUCTeX w/ latexmk
 (use-package auctex-latexmk
@@ -708,6 +721,9 @@
    (c-set-offset 'innamespace [0]))
 (general-add-hook 'c++-mode-hook 'my-c-setup)
 
+;; Add .cu files to c++-mode
+(add-to-list 'auto-mode-alist '("\\.cu\\'" . c++-mode))
+
 ;; Snippet below from https://github.com/garyo
 ;; https://github.com/SCons/scons/wiki/IDEIntegration#emacs-and-xemacs
 ;; SCons builds into a 'build' subdir, but we want to find the errors
@@ -731,13 +747,3 @@
 	(concat "python3 " (if buffer-file-name
 			       (shell-quote-argument buffer-file-name))))))
 
-;; Set compile command for latex documents
-(general-add-hook
- 'latex-mode-hook
- (lambda ()
-   (set (make-local-variable 'compile-command)
-	(concat "latexmk -g " (if buffer-file-name
-				  (shell-quote-argument buffer-file-name))))))
-
-;; Add .cu files to c++-mode
-(add-to-list 'auto-mode-alist '("\\.cu\\'" . c++-mode))
