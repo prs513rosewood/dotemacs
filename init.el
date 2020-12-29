@@ -735,7 +735,7 @@
 (defun process-error-filename (filename)
   (let ((case-fold-search t))
     (setq f (replace-regexp-in-string
-             "[Ss]?[Bb]uild[\\/].*\\(final\\|dbg\\)[^\\/]*[\\/]" "" filename))
+             "[Ss]?[Bb]uild[-_]\\(release\\|debug\\)/" "" filename))
     (cond ((file-exists-p f)
            f)
           (t filename))))
