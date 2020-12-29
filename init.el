@@ -314,6 +314,9 @@
     "pb" #'projectile-switch-to-buffer-other-window
     "pB" #'projectile-ibuffer
     "pr" #'projectile-recentf)
+  (general-define-key
+   :keymaps 'c-mode-base-map
+   [remap compile] #'projectile-compile-project)
   :delight '(:eval (concat " " (projectile-project-name))))
 
 ;; Ripgrep: faster and project aware grep
@@ -612,15 +615,15 @@
   (despot-def
     :states 'normal
     :keymaps 'TeX-mode-map
-    "TAB" 'LaTeX-fill-section
-    "p" 'preview-section
-    "i" '(:ignore t :whick-key "insert")
-    "ie" 'LaTeX-environment
-    "is" 'LaTeX-section
-    "im" 'TeX-insert-macro)
-  (tyrant-def
-    :keymaps 'TeX-mode-map
-    "cc" 'TeX-command-master))
+    "TAB" #'LaTeX-fill-section
+    "p"   #'preview-section
+    "i"   #'(:ignore t :whick-key "insert")
+    "ie"  #'LaTeX-environment
+    "is"  #'LaTeX-section
+    "im"  #'TeX-insert-macro)
+  (general-define-key
+   :keymaps 'TeX-mode-map
+   [remap compile] #'TeX-command-master))
 
 ;; Reftex for reference management
 (use-package reftex
