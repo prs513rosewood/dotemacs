@@ -112,6 +112,9 @@
 ;; Fill in text mode
 (add-hook 'text-mode-hook #'auto-fill-mode)
 
+;; Main typeface
+(if (find-font (font-spec :name "Roboto Mono"))
+    (set-frame-font "Roboto Mono 10" nil t))
 
 ;; ----------- Package configuration -----------
 
@@ -451,7 +454,7 @@
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-server-trace t)
   (lsp-log-io t)
-  (lsp-clients-clangd-executable "clangd-7")
+  (lsp-clients-clangd-executable "clangd")
   (lsp-clients-clangd-args '("--log=verbose"))
   (lsp-prefer-flymake nil)
   (lsp-pyls-configuration-sources ["flake8"]))
