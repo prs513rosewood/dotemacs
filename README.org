@@ -23,7 +23,7 @@ These packages, with a couple of minor QOL packages ([[https://github.com/justbu
 I use [[https://github.com/emacs-lsp/lsp-mode/][lsp-mode]] to interface with [[https://clangd.llvm.org/][clangd]] and [[https://github.com/palantir/python-language-server][python-language-server]]. Due to
 performance concerns, LSP is not automatically loaded when a code file is
 opened. The =SPC l= keystroke turns LSP on. In =prog-mode=, commands under =SPC
-m= run LSP functions I use commonly.
+m= run LSP functions I commonly use.
 
 Keystrokes in =SPC c= generally refer to compilation. In =c-base-mode=, the
 =compile= function (=SPC c c=) is remapped to the =projectile-compile=, which is
@@ -36,7 +36,7 @@ LaTeX support is done through [[https://www.gnu.org/software/auctex/][AUCTeX]], 
 
 ** Extras
 =<f12>= cycles through dark/light themes, =<f8>= runs [[https://github.com/BurntSushi/ripgrep][ripgrep]] on the current
-project (with [[https://github.com/nlamirault/ripgrep.el][=projectile-ripgrep=]]). [[https://magit.vc/][Magit]] is used for git management, with
+project (with [[https://github.com/nlamirault/ripgrep.el][projectile-ripgrep]]). [[https://magit.vc/][Magit]] is used for git management, with
 commands under =SPC g=. [[https://orgmode.org/][Org-mode]] is there as well :wink:.
 
 * Installation
