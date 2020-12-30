@@ -6,7 +6,7 @@ This repository hosts my custom Emacs configuration.
 The basic goals of this configuration are the following:
 - Modal editing: this is achieved with the [[https://github.com/emacs-evil/evil][Evil]] package;
 - Fast startup: most packages in =init.el= are lazily loaded through [[https://github.com/jwiegley/use-package][use-package]];
-- Oriented towards C++ and Python: with a variety of packages.
+- Oriented towards C++, Python and LaTeX: with a variety of packages.
 
 *Note*: these three goals are probably sub-optimally achieved here compared to larger, more involved projects like [[https://www.spacemacs.org/][Spacemacs]] or [[https://github.com/hlissner/doom-emacs][Doom-Emacs]]. I have used Spacemacs in the past, but wanted to make my own (relatively vanilla) configuration, and to keep it simple.
 
@@ -20,12 +20,24 @@ There are four core packages which define most of the UX with Emacs in this conf
 These packages, with a couple of minor QOL packages ([[https://github.com/justbur/emacs-which-key][which-key]] and [[https://savannah.nongnu.org/projects/delight][delight]]), are the only packages unconditionally loaded at startup, making it rather fast.
 
 ** IDE Features for C++ and Python
-There are three important packages on which most others (e.g. [[https://company-mode.github.io/][company]] and [[http://www.flycheck.org/en/latest/][flycheck]]) rely:
-- [[https://github.com/Sarcasm/irony-mode][irony-mode]] to improve C++ experience,
-- [[https://github.com/Andersbakken/rtags][rtags]] to index C++ files,
-- [[https://github.com/tkf/emacs-jedi][jedi]] to improve python experience.
+I use [[https://github.com/emacs-lsp/lsp-mode/][lsp-mode]] to interface with [[https://clangd.llvm.org/][clangd]] and [[https://github.com/palantir/python-language-server][python-language-server]]. Due to
+performance concerns, LSP is not automatically loaded when a code file is
+opened. The =SPC l= keystroke turns LSP on. In =prog-mode=, commands under =SPC
+m= run LSP functions I use commonly.
 
-All three of these packages rely on a server program running in the background. I've had mixed experiences in the past with installing these via MELPA, particularly with rtags and jedi. I therefore recommend installing these three packages /via/ your package manager. I run on Debian Buster and these work nicely.
+Keystrokes in =SPC c= generally refer to compilation. In =c-base-mode=, the
+=compile= function (=SPC c c=) is remapped to the =projectile-compile=, which is
+build system aware.
+
+** LaTeX
+LaTeX support is done through [[https://www.gnu.org/software/auctex/][AUCTeX]], with [[https://github.com/tom-tan/auctex-latexmk/][auctex-latexmk]] to interface with
+[[https://mg.readthedocs.io/latexmk.html][latexmk]], and with [[https://mg.readthedocs.io/latexmk.html][reftex]] to manage references. LaTeX specific commands are under
+=SPC m=, and =SPC c c= is remapped to AUCTeX's compile.
+
+** Extras
+=<f12>= cycles through dark/light themes, =<f8>= runs [[https://github.com/BurntSushi/ripgrep][ripgrep]] on the current
+project (with [[https://github.com/nlamirault/ripgrep.el][=projectile-ripgrep=]]). [[https://magit.vc/][Magit]] is used for git management, with
+commands under =SPC g=. [[https://orgmode.org/][Org-mode]] is there as well :wink:.
 
 * Installation
 Simply clone this git repository:
