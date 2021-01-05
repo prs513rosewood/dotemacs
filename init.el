@@ -303,6 +303,19 @@
    "gs" #'magit-status
    "gr" #'magit-file-delete
    "gb" #'magit-blame))
+(use-package magit-todos
+  :after magit
+  :general
+  (general-define-key
+   :keymaps '(magit-todos-section-map magit-todos-item-section-map)
+   "jT" nil
+   "jl" nil
+   "j" nil)
+  :config
+  (magit-todos-mode)
+  (custom-set-variables
+   '(magit-todos-keyword-suffix "")
+   '(magit-todos-keywords '("TODO" "FIXME"))))
 
 ;; Projectile: project management
 (use-package projectile
@@ -558,7 +571,7 @@
 (use-package markdown-mode
   :mode "\\.md\\'")
 
-;; Fic-mode: show TODO, FIXME, etc.
+;; Fic-mode: show todo, fixme, etc.
 (use-package fic-mode
   :ghook
   'prog-mode-hook
