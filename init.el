@@ -247,6 +247,20 @@
     "h"  #'helm-mini)
   :delight)
 
+(use-package ido
+  :disabled
+  :config
+  (ido-mode 1)
+  ;; http://ergoemacs.org/emacs/emacs_ido_setup.html
+  (if (version< emacs-version "25")
+      (progn (make-local-variable 'ido-separator)
+             (setq ido-separator "\n"))
+    (progn (make-local-variable 'ido-decorations)
+           (setf (nth 2 ido-decorations) "\n")))
+  :custom
+  (ido-enable-flex-matching t)
+  (ido-everywhere t))
+
 ;; Undo package
 (use-package undo-fu)
 
