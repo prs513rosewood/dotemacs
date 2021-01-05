@@ -356,7 +356,12 @@
     :states 'normal
     :keymaps 'org-mode-map
     "t" #'org-todo
-    "T" #'org-set-tags-command)
+    "T" #'org-set-tags-command
+    "e" #'org-export-dispatch
+    "/" #'org-sparse-tree
+    "." #'org-time-stamp
+    "s" #'org-schedule
+    "l" #'org-insert-link)
   :custom
   (org-agenda-files '("~/Nextcloud/orgs"))
   (org-directory "~/Nextcloud/orgs")
