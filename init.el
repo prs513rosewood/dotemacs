@@ -18,8 +18,8 @@
 (setq completion-ignore-case t)
 
 ;; Backups
-; (setq my-backup-dir (concat user-emacs-directory "backup_files"))
-(setq backup-directory-alist '(("." . "~/.emacs.d/backup_files"))) ;
+(setq backup-directory-alist
+      '(("." . "~/.emacs.d/backup_files")))
 (setq delete-old-versions -1)		; delete excess backup versions silently
 
 ;; Version control for backups
@@ -32,7 +32,7 @@
 (setq-default vc-follow-symlinks t)
 
 ;; Put custom variables elsewhere
-(setq custom-file (concat user-emacs-directory "custom.el"))
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file 'noerror)
 
 ;; Restore dead keys because of input method-after
@@ -62,8 +62,8 @@
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Setting shell to bash
-(setenv "SHELL" "/bin/bash")
 (setq shell-file-name "/bin/bash")
+(setenv "SHELL" shell-file-name)
 
 ;; Setting some environment variables
 (setenv "PYTHONPATH"
@@ -89,9 +89,9 @@
 ;; Running a hook after a theme loads
 (defvar after-load-theme-hook nil
     "Hook run after a color theme is loaded using `load-theme'.")
-  (defadvice load-theme (after run-after-load-theme-hook activate)
-    "Run `after-load-theme-hook'."
-    (run-hooks 'after-load-theme-hook))
+(defadvice load-theme (after run-after-load-theme-hook activate)
+  "Run `after-load-theme-hook'."
+  (run-hooks 'after-load-theme-hook))
 
 ;; Gracefully shutdown emacs server
 (defun server-shutdown ()
@@ -167,10 +167,9 @@
 
   ;; Define ESC <-> C-g only in GUI
   (when (display-graphic-p)
-    (progn
-      (general-define-key
-       :keymaps 'key-translation-map
-       "ESC" (kbd "C-g"))))
+    (general-define-key
+     :keymaps 'key-translation-map
+     "ESC" (kbd "C-g")))
 
   ;; Definition of general shortcuts and categories
   (tyrant-def
@@ -506,7 +505,7 @@
 (use-package flycheck
   :init
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-  (setq-default flycheck-flake8-maximum-line-length 80)
+  (setq-default flycheck-flake8-maximum-line-length fill-column)
   :custom
   (flycheck-gcc-openmp t "Activate OpenMP awareness")
   :ghook
@@ -602,8 +601,8 @@
 (use-package yasnippet :disabled
   :config (yas-reload-all)
   :custom (yas-snippet-dirs
-	   '("~/.emacs.d/snippets"
-	     yasnippet-snippets-dir))
+           '((expand-file-name "snippets" user-emacs-directory)
+             yasnippet-snippets-dir))
   :ghook ('prog-mode-hook #'yas-minor-mode)
   :delight)
 
@@ -770,8 +769,7 @@
   (let ((case-fold-search t))
     (setq f (replace-regexp-in-string
              "[Ss]?[Bb]uild[-_]\\(release\\|debug\\)/" "" filename))
-    (cond ((file-exists-p f)
-           f)
+    (cond ((file-exists-p f) f)
           (t filename))))
 
 (setq compilation-parse-errors-filename-function 'process-error-filename)
@@ -783,4 +781,15 @@
    (set (make-local-variable 'compile-command)
 	(concat "python3 " (if buffer-file-name
 			       (shell-quote-argument buffer-file-name))))))
+
+;; https://emacs.stackexchange.com/questions/21378/spell-check-with-multiple-dictionaries
+;(setq debug-on-error t)
+;(with-eval-after-load "ispell"
+;  (setenv "LANG" "en_US")
+;  (setq ispell-program-name "hunspell")
+;  (setq ispell-dictionary "en_US,fr_FR")
+;  ;; ispell-set-spellchecker-params has to be called
+;  ;; before ispell-hunspell-add-multi-dic will work
+;  (ispell-set-spellchecker-params)
+;  (ispell-hunspell-add-multi-dic "en_US,fr_FR"))
 
