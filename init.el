@@ -355,7 +355,8 @@
   (despot-def
     :states 'normal
     :keymaps 'org-mode-map
-    "t" #'org-todo)
+    "t" #'org-todo
+    "T" #'org-set-tags-command)
   :custom
   (org-agenda-files '("~/Nextcloud/orgs"))
   (org-directory "~/Nextcloud/orgs")
