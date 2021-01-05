@@ -113,7 +113,7 @@
 (add-hook 'text-mode-hook #'auto-fill-mode)
 
 ;; Main typeface
-(if (find-font (font-spec :name "Roboto Mono"))
+(when (find-font (font-spec :name "Roboto Mono"))
     (set-frame-font "Roboto Mono 10" nil t))
 
 ;; ----------- Package configuration -----------
@@ -288,7 +288,11 @@
   ;; For emacsclient
   ;; (initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
   (dashboard-startub-banner 'official)
-  (dashboard-center-content t))
+  (dashboard-center-content t)
+  (dashboard-set-heading-icons t)
+  (dashboard-set-file-icons t)
+  (dashboard-set-navigator t)
+  (dashboard-items '((recents . 5)(projects . 5)(agenda . 5))))
 
 ;; Magit: git made awesome
 (use-package magit
@@ -404,9 +408,7 @@
   :config (global-evil-surround-mode))
 (use-package evil-snipe
   :after evil
-  :config (evil-snipe-override-mode 1)
-  :general
-  ('normal ":" #'evil-snipe-repeat))
+  :config (evil-snipe-override-mode 1))
 
 ;; Company: global auto-completion
 (use-package company
@@ -420,7 +422,6 @@
 
 ;; clang-format: cool
 (use-package clang-format
-  :disabled
   :commands clang-format-region
   :init
   (fset 'c-indent-region 'clang-format-region)
@@ -438,9 +439,6 @@
   :gfhook ('lsp-mode-hook #'lsp-enable-which-key-integration)
   :general
   (tyrant-def "l"  #'lsp)
-  (tyrant-def
-    :keymaps 'c-mode-base-map
-    "cf" #'lsp-format-buffer)
   (despot-def
     :states 'normal
     :keymaps 'prog-mode-map
