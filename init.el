@@ -779,17 +779,23 @@
  'python-mode-hook
  (lambda ()
    (set (make-local-variable 'compile-command)
-	(concat "python3 " (if buffer-file-name
-			       (shell-quote-argument buffer-file-name))))))
+        (concat "python3 " (if buffer-file-name
+                               (shell-quote-argument buffer-file-name))))))
 
+;; Spellchecking with multiple dictionaries
 ;; https://emacs.stackexchange.com/questions/21378/spell-check-with-multiple-dictionaries
-;(setq debug-on-error t)
-;(with-eval-after-load "ispell"
-;  (setenv "LANG" "en_US")
-;  (setq ispell-program-name "hunspell")
-;  (setq ispell-dictionary "en_US,fr_FR")
-;  ;; ispell-set-spellchecker-params has to be called
-;  ;; before ispell-hunspell-add-multi-dic will work
-;  (ispell-set-spellchecker-params)
-;  (ispell-hunspell-add-multi-dic "en_US,fr_FR"))
+;; http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs.html
+(with-eval-after-load "ispell"
+ (setenv "LANG" "en_US")
+ (setq ispell-program-name (executable-find "hunspell")
+       ispell-skip-html t
+       ispell-local-dictionary-alist
+       '(("en_US,fr" "[[:alpha:]]" "[^[:alpha:]]" "[']"
+          nil ("-d" "en_US,fr") nil utf-8))
+       ispell-dictionary "en_US,fr"))
+ ;; ispell-set-spellchecker-params has to be called
+ ;; before ispell-hunspell-add-multi-dic will work
+ ;; NOTE: the code below fails
+ ;(ispell-set-spellchecker-params)
+ ;(ispell-hunspell-add-multi-dic "en_US,fr_FR"))
 
