@@ -269,6 +269,7 @@
   :custom
   (evil-ex-search-vim-style-regexp t "Regex in vim search")
   (evil-undo-system 'undo-fu)
+  (evil-want-Y-yank-to-eol t)
   :config
   (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
   :general
