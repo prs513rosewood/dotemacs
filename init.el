@@ -444,9 +444,9 @@
   (org-latex-pdf-process (quote ("latexmk %f")))
   (org-log-done 'time)
   (org-capture-templates
-   '(("t" "Todo"
+   `(("t" "Todo"
       entry (file+headline org-default-notes-file "Tasks")
-      "* TODO %?\n  %i\n  %a")
+      ,(concat "* TO" "DO %?\n  %i\n  %a"))  ; breaking keyword
      ("j" "Journal"
       entry (file+olp+datetree org-default-notes-file "Journal")
       "* %?\nEntered on %U\n  %i\n  %a")))
