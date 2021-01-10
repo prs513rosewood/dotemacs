@@ -363,50 +363,94 @@
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :general
-  (tyrant-def
+  (tyrant-def  ; global org commands
     "o"  #'(:ignore t :which-key "org")
-    "oa" #'org-agenda)
-  (despot-def
-    :states 'normal
+    "oa" #'org-agenda
+    "oc" #'org-capture)
+  (despot-def  ; org-mode commands
     :keymaps 'org-mode-map
-    "t" #'org-todo
-    "T" #'org-set-tags-command
-    "e" #'org-export-dispatch
-    "/" #'org-sparse-tree
-    "." #'org-time-stamp
-    "s" #'org-schedule
-    "l" #'org-insert-link)
+    "t"  #'org-todo
+    "T"  #'org-set-tags-command
+    "e"  #'org-export-dispatch
+    "/"  #'org-sparse-tree
+    "."  #'org-time-stamp
+    "s"  #'org-schedule
+    "l"  #'org-insert-link
+    "w"  #'org-refile
+
+    "c"  #'(:ignore t :which-key "clock")
+    "ci" #'org-clock-in
+    "co" #'org-clock-out
+    "cs" #'org-timer-set-timer
+    "c." #'org-timer-pause-or-continue
+    "c_" #'org-timer-stop)
+
+  ;; org-capture keybindings
+  (general-define-key
+   :keymaps 'org-capture-mode-map
+   [remap evil-save-and-close]          'org-capture-finalize
+   [remap evil-save-modified-and-close] 'org-capture-finalize
+   [remap evil-quit]                    'org-capture-kill)
+  (despot-def
+    :keymaps 'org-capture-mode-map
+    "c" #'org-capture-finalize
+    "w" #'org-capture-refile
+    "k" #'org-capture-kill)
+
+  :config
+  (add-to-list 'org-modules 'org-timer)
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               '((python . t)))
+  ;; Custom latex classes
+  (general-with-eval-after-load 'ox-latex
+    (prog
+     (add-to-list 'org-latex-classes
+                  '("talk"
+                    "\\documentclass{talk}
+                    [NO-DEFAULT-PACKAGES]
+                    [PACKAGES]
+                    [EXTRA]"
+                    ("\\section{%s}" . "\\section*{%s}")))
+     (add-to-list 'org-latex-classes
+                  '("mythesis"
+                    "\\documentclass{mythesis}
+                    [NO-DEFAULT-PACKAGES]
+                    [PACKAGES]
+                    [EXTRA]"
+                    ("\\chapter{%s}" . "\\chapter*{%s}")
+                    ("\\section{%s}" . "\\section*{%s}")
+                    ("\\subsection{%s}" . "\\subsection*{%s}")
+			              ("\\subsubsection{%s}" . "\subsubsection*{%s}")))))
+
+  :gfhook
+  ('org-mode-hook
+   (lambda ()
+     (visual-line-mode t)
+     (flyspell-mode t)))
+  ('org-clock-in-hook
+   (lambda () (org-timer-set-timer 'org-timer-default-timer)))
+  ('org-clock-out-hook
+   (lambda () (org-timer-stop)))
+
   :custom
-  (org-agenda-files '("~/Nextcloud/orgs"))
   (org-directory "~/Nextcloud/orgs")
+  (org-agenda-files (list org-directory))
+  (org-refile-targets '((nil :maxlevel . 2)
+                        (org-agenda-files :maxlevel . 1)))
+  (org-default-notes-file (expand-file-name "notes.org" org-directory))
   (org-startup-indented t)
   (org-startup-truncated nil)
   (org-src-fontify-natively t)
   (org-latex-pdf-process (quote ("latexmk %f")))
   (org-log-done 'time)
-  :config
-  (org-babel-do-load-languages 'org-babel-load-languages
-			       '((python . t)))
-  (with-eval-after-load 'ox-latex (add-to-list 'org-latex-classes
-			 '("talk"
-			   "\\documentclass{talk}
-			    [NO-DEFAULT-PACKAGES]
-			    [PACKAGES]
-			    [EXTRA]"
-			   ("\\section{%s}" . "\\section*{%s}"))))
-  (with-eval-after-load 'ox-latex (add-to-list 'org-latex-classes
-			 '("mythesis"
-			   "\\documentclass{mythesis}
-			    [NO-DEFAULT-PACKAGES]
-			    [PACKAGES]
-			    [EXTRA]"
-			   ("\\chapter{%s}" . "\\chapter*{%s}")
-			   ("\\section{%s}" . "\\section*{%s}")
-			   ("\\subsection{%s}" . "\\subsection*{%s}")
-			   ("\\subsubsection{%s}" . "\subsubsection*{%s}"))))
-  :gfhook ('org-mode-hook (lambda ()
-			    (visual-line-mode t)
-			    (flyspell-mode t)))
+  (org-capture-templates
+   '(("t" "Todo"
+      entry (file+headline org-default-notes-file "Tasks")
+      "* TODO %?\n  %i\n  %a")
+     ("j" "Journal"
+      entry (file+olp+datetree org-default-notes-file "Journal")
+      "* %?\nEntered on %U\n  %i\n  %a")))
+  (org-timer-default-timer 25)
 )
 
 ;; Iedit: edit multiple regions simultaneously
@@ -786,7 +830,7 @@
 ;; Spellchecking with multiple dictionaries
 ;; https://emacs.stackexchange.com/questions/21378/spell-check-with-multiple-dictionaries
 ;; http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs.html
-(with-eval-after-load "ispell"
+(general-with-eval-after-load "ispell"
  (setenv "LANG" "en_US")
  (setq ispell-program-name (executable-find "hunspell")
        ispell-skip-html t
