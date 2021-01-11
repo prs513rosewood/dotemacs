@@ -116,6 +116,9 @@
 (when (find-font (font-spec :name "Roboto Mono"))
     (set-frame-font "Roboto Mono 10" nil t))
 
+;; Visible bell
+(setq visible-bell t)
+
 ;; ----------- Package configuration -----------
 
 ;; Straight.el is used here instead of built-in package.el
