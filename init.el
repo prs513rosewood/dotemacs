@@ -383,6 +383,7 @@
   (despot-def  ; org-mode commands
     :keymaps 'org-mode-map
     "t"  #'org-todo
+    "d"  #'org-deadline
     "T"  #'org-set-tags-command
     "e"  #'org-export-dispatch
     "/"  #'org-sparse-tree
@@ -416,24 +417,23 @@
                                '((python . t)))
   ;; Custom latex classes
   (general-with-eval-after-load 'ox-latex
-    (prog
-     (add-to-list 'org-latex-classes
-                  '("talk"
-                    "\\documentclass{talk}
+    (progn
+      (add-to-list 'org-latex-classes
+                   '("talk"
+                     "\\documentclass{talk}
                     [NO-DEFAULT-PACKAGES]
                     [PACKAGES]
                     [EXTRA]"
-                    ("\\section{%s}" . "\\section*{%s}")))
-     (add-to-list 'org-latex-classes
-                  '("mythesis"
-                    "\\documentclass{mythesis}
+                     ("\\section{%s}" . "\\section*{%s}")))
+      (add-to-list 'org-latex-classes
+                   '("essay"
+                     "\\documentclass{essay}
                     [NO-DEFAULT-PACKAGES]
                     [PACKAGES]
                     [EXTRA]"
-                    ("\\chapter{%s}" . "\\chapter*{%s}")
-                    ("\\section{%s}" . "\\section*{%s}")
-                    ("\\subsection{%s}" . "\\subsection*{%s}")
-			              ("\\subsubsection{%s}" . "\subsubsection*{%s}")))))
+                     ("\\section{%s}" . "\\section*{%s}")
+                     ("\\subsection{%s}" . "\\subsection*{%s}")
+                     ("\\subsubsection{%s}" . "\subsubsection*{%s}")))))
 
   :gfhook
   ('org-mode-hook
@@ -444,6 +444,8 @@
    (lambda () (org-timer-set-timer 'org-timer-default-timer)))
   ('org-clock-out-hook
    (lambda () (org-timer-stop)))
+  ('org-timer-done-hook
+   (lambda () (call-process "beep")))
 
   :custom
   (org-directory "~/Nextcloud/orgs")
