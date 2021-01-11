@@ -172,11 +172,21 @@
   (when (display-graphic-p)
     (general-define-key
      :keymaps 'key-translation-map
-     "ESC" (kbd "C-g")))
+     "ESC" "C-g"))
+
+  ;; Binding M-: to eval-region in visual mode
+  (general-define-key
+   :state 'visual
+   :keymaps 'evil-visual-state-map
+   "M-:"  #'eval-region)
+
+  (general-define-key
+   "C-h b" #'general-describe-keybindings
+   "C-h B" #'describe-bindings)
 
   ;; Definition of general shortcuts and categories
   (tyrant-def
-   "" nil
+   ""    nil
 
    "X"   #'execute-extended-command
 
