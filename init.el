@@ -163,7 +163,7 @@
     :prefix "SPC"
     :non-normal-prefix "C-SPC")
   (general-create-definer despot-def
-    :states '(normal visual motion emacs)
+    :states '(normal visual insert motion emacs)
     :keymaps 'override
     :prefix "SPC m"
     :non-normal-prefix "C-SPC m")
