@@ -849,7 +849,10 @@
        ispell-local-dictionary-alist
        '(("en_US,fr" "[[:alpha:]]" "[^[:alpha:]]" "[']"
           nil ("-d" "en_US,fr") nil utf-8))
-       ispell-dictionary "en_US,fr"))
+       ispell-dictionary "en_US,fr"
+       ispell-personal-dictionary "~/.config/hunspell_personal")
+ (unless (file-exists-p ispell-personal-dictionary)
+   (write-region "" nil ispell-personal-dictionary nil 0)))
  ;; ispell-set-spellchecker-params has to be called
  ;; before ispell-hunspell-add-multi-dic will work
  ;; NOTE: the code below fails
