@@ -436,16 +436,12 @@
                      ("\\subsubsection{%s}" . "\subsubsection*{%s}")))))
 
   :gfhook
-  ('org-mode-hook
-   (lambda ()
-     (visual-line-mode t)
-     (flyspell-mode t)))
+  ('org-mode-hook #'visual-line-mode)
   ('org-clock-in-hook
-   (lambda () (org-timer-set-timer 'org-timer-default-timer)))
-  ('org-clock-out-hook
-   (lambda () (org-timer-stop)))
+   (lambda () (unless org-timer-countdown-timer (org-timer-set-timer))))
   ('org-timer-done-hook
-   (lambda () (call-process "beep")))
+   (lambda () (when (executable-find "beep")
+                (start-process "beep" nil "beep"))))
 
   :custom
   (org-directory "~/Nextcloud/orgs")
@@ -613,6 +609,7 @@
   :ghook
   'text-mode
   'LaTeX-mode-hook
+  'org-mode-hook
   :general
   (tyrant-def
     "s" '(:ignore t :which-key "spell")
@@ -633,7 +630,7 @@
 (use-package spaceline
   :disabled
   :config (spaceline-spacemacs-theme)
-  :gfhook ('after-load-theme-hook 'powerline-reset))
+  :gfhook ('after-load-theme-hook #'powerline-reset))
 
 ;; Base16 theme
 (use-package base16-theme
