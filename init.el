@@ -391,6 +391,7 @@
     "s"  #'org-schedule
     "l"  #'org-insert-link
     "w"  #'org-refile
+    "|"  #'org-table-create-or-convert-from-region
 
     "c"  #'(:ignore t :which-key "clock")
     "ci" #'org-clock-in
@@ -691,6 +692,7 @@
   :config
   (setq-default TeX-master nil)
   (turn-on-auto-fill)
+  (bibtex-set-dialect 'biblatex)
   :custom
   (TeX-auto-save t)
   (TeX-parse-self t)
@@ -701,6 +703,8 @@
   (LaTeX-figure-label "fig:")
   (TeX-view-program-selection '((output-pdf "xdg-open")))
   (TeX-command-default "LatexMk")
+  (LaTeX-biblatex-use-Biber t)
+  (TeX-command-BibTex "Biber")
   :general
   (despot-def
     :states 'normal
@@ -710,7 +714,8 @@
     "i"   #'(:ignore t :whick-key "insert")
     "ie"  #'LaTeX-environment
     "is"  #'LaTeX-section
-    "im"  #'TeX-insert-macro)
+    "im"  #'TeX-insert-macro
+    "v"   #'TeX-view)
   (general-define-key
    :keymaps 'TeX-mode-map
    [remap compile] #'TeX-command-master))
