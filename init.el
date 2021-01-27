@@ -182,7 +182,10 @@
 
   (general-define-key
    "C-h b" #'general-describe-keybindings
-   "C-h B" #'describe-bindings)
+   "C-h B" #'describe-bindings
+   ;; Increase/decrease text size with mouse wheel
+   "<C-mouse-4>" (lambda () (interactive) (text-scale-increase 1))
+   "<C-mouse-5>" (lambda () (interactive) (text-scale-decrease 1)))
 
   ;; Definition of general shortcuts and categories
   (tyrant-def
