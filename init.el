@@ -225,7 +225,9 @@
               (eval (locate-user-emacs-file "init.el")))
             :which-key "eval-emacs-config")
 
+   "w"   #'(:ignore t :which-key "whitespace")
    "wc"  #'whitespace-cleanup
+   "wm"  #'whitespace-mode
 
    "F"   #'(:ignore t :which-key "frames")
    "Fm"  #'make-frame
