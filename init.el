@@ -468,7 +468,11 @@
       entry (file+olp+datetree org-default-notes-file "Journal")
       "* %?\nEntered on %U\n  %i\n  %a")))
   (org-timer-default-timer 25)
-)
+  (org-file-apps '((auto-mode . emacs)
+                   (directory . emacs)
+                   ("\\.mm\\'" . default)
+                   ("\\.x?html?\\'" . default)
+                   ("\\.pdf\\'" . "xdg-open \"%s\""))))
 
 ;; Iedit: edit multiple regions simultaneously
 (use-package iedit
@@ -590,7 +594,6 @@
 (use-package hl-fill-column
   :ghook
   'prog-mode-hook
-  'text-mode-hook
   :delight)
 
 ;; Eldoc: documentation for elisp
