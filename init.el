@@ -311,6 +311,7 @@
 ;; Nice icons
 ;; - remember to run all-the-icons-install-fonts
 (use-package all-the-icons)
+(use-package emojify)
 
 ;; Dashboard
 (use-package dashboard
@@ -517,6 +518,10 @@
 ;; pyvenv: managing virtualenv in emacs
 (use-package pyvenv
   :ghook 'python-mode-hook)
+
+;; YAML mode
+(use-package yaml-mode
+  :mode "\\.yml\\'")
 
 ;; clang-format: cool
 (use-package clang-format
@@ -771,10 +776,14 @@
 
 ;; RSS feeds
 (use-package elfeed
+  :disabled
   :commands elfeed
   :custom
   (elfeed-db-directory "~/.config/elfeed")
   (elfeed-search-filter "@1-week-ago +unread")
+  (elfeed-feeds
+   '("https://www.gamingonlinux.com/article_rss.php"
+     "https://www.debian.org/News/news"))
   :general
   (tyrant-def
     "af" #'elfeed)
