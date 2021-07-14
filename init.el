@@ -545,9 +545,10 @@
   (despot-def
     :states 'normal
     :keymaps 'prog-mode-map
-    "d" #'lsp-find-definition
-    "m" #'lsp-ui-imenu
-    "p" #'lsp-ui-peek-find-references)
+    "d"  #'lsp-find-definition
+    "m"  #'lsp-ui-imenu
+    "p"  #'lsp-ui-peek-find-references
+    "fb" #'lsp-format-buffer)
   :config
   (evil-define-key 'normal lsp-mode-map (kbd "\\") lsp-command-map)
   :custom
@@ -557,8 +558,7 @@
   (lsp-log-io t)
   (lsp-clients-clangd-executable "clangd")
   (lsp-clients-clangd-args '("--log=verbose"))
-  (lsp-prefer-flymake nil)
-  (lsp-pyls-configuration-sources ["flake8"]))
+  (lsp-prefer-flymake nil))
 
 ;; lsp-ui: integration to flycheck
 (use-package lsp-ui
@@ -571,6 +571,11 @@
 (use-package company-lsp
   :disabled
   :ghook ('company-mode-hook (lambda () (push 'company-lsp company-backends))))
+
+;; lsp-pyright: type checker for Python
+(use-package lsp-pyright
+  :disabled
+  :after lsp-mode)
 
 ;; Flycheck: on-the-fly syntax checking
 (use-package flycheck
