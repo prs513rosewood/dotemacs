@@ -283,7 +283,8 @@
 
 ;; Evil mode
 (use-package evil
-  :hook (after-init . evil-mode)
+  :init
+  (add-hook 'after-init-hook #'evil-mode)
   :custom
   (evil-ex-search-vim-style-regexp t "Regex in vim search")
   (evil-undo-system 'undo-fu)
@@ -293,6 +294,7 @@
   :general
   ('normal
    "é"   #'evil-ex
+   "ö"   #'evil-ex
    ";"   #'evil-ex
    "C-u" #'evil-scroll-up
    "j"   #'evil-next-visual-line
@@ -494,6 +496,7 @@
   :after evil magit
   :hook (magit-mode . evil-magit-init))
 (use-package evil-org
+  :disabled
   :after evil org
   :config
   (add-hook 'org-mode-hook 'evil-org-mode)
@@ -885,4 +888,3 @@
  ;; NOTE: the code below fails
  ;(ispell-set-spellchecker-params)
  ;(ispell-hunspell-add-multi-dic "en_US,fr_FR"))
-
