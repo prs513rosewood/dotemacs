@@ -526,6 +526,10 @@
 (use-package yaml-mode
   :mode "\\.yml\\'")
 
+;; Snakemake mode
+(use-package snakemake-mode
+  :mode "Snakefile\\'")
+
 ;; clang-format: cool
 (use-package clang-format
   :commands clang-format-region
