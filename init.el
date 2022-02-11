@@ -198,8 +198,8 @@
    "fr"  #'recentf-open-files
    "fo"  #'ff-find-other-file
 
-   "b"   #'switch-to-buffer-other-window
-   "B"   #'ibuffer-other-window
+   "b"   #'switch-to-buffer
+   "B"   #'ibuffer
    "h"   #'help
 
    "c"   #'(:ignore t :which-key "compile")
@@ -289,6 +289,7 @@
   (evil-ex-search-vim-style-regexp t "Regex in vim search")
   (evil-undo-system 'undo-fu)
   (evil-want-Y-yank-to-eol t)
+  (evil-want-keybinding nil)
   :config
   (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
   :general
@@ -365,8 +366,8 @@
   (tyrant-def
     "p"  '(:ignore t :which-key "projectile")
     "pc" #'projectile-compile-project
-    "pf" #'projectile-find-file-other-window
-    "pb" #'projectile-switch-to-buffer-other-window
+    "pf" #'projectile-find-file
+    "pb" #'projectile-switch-to-buffer
     "pB" #'projectile-ibuffer
     "pr" #'projectile-recentf)
   (general-define-key
@@ -492,9 +493,10 @@
    "M-H" #'iedit-restrict-function))
 
 ;; Evil extensions
-(use-package evil-magit
-  :after evil magit
-  :hook (magit-mode . evil-magit-init))
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
 (use-package evil-org
   :disabled
   :after evil org
