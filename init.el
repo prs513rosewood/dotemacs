@@ -383,6 +383,7 @@
 
 ;; Org-mode: it's org-mode
 (use-package org
+  :straight ; (:type built-in)
   :mode ("\\.org\\'" . org-mode)
   :general
   (tyrant-def  ; global org commands
@@ -483,8 +484,7 @@
   :commands iedit-mode
   :general
   (tyrant-def
-    "ei" #'iedit-mode
-    "eq" #'iedit-quit)
+    "ei" #'iedit-mode)
   (general-define-key
    :keymaps 'iedit-mode-keymap
    :states 'normal
@@ -567,7 +567,11 @@
   (lsp-log-io t)
   (lsp-clients-clangd-executable "clangd")
   (lsp-clients-clangd-args '("--log=verbose"))
-  (lsp-prefer-flymake nil))
+  (lsp-prefer-flymake nil)
+  (lsp-pylsp-configuration-sources "flake8")
+  (lsp-pylsp-plugins-mccabe-enabled nil)
+  (lsp-pylsp-plugins-yapf-enabled t)
+  (lsp-pylsp-plugins-pydocstyle-enabled nil))
 
 ;; lsp-ui: integration to flycheck
 (use-package lsp-ui
@@ -575,16 +579,6 @@
   :ghook ('lsp-mode-hook #'lsp-ui-mode)
   :custom
   (lsp-ui-doc-delay 5))
-
-;; company-lsp: integration with company
-(use-package company-lsp
-  :disabled
-  :ghook ('company-mode-hook (lambda () (push 'company-lsp company-backends))))
-
-;; lsp-pyright: type checker for Python
-(use-package lsp-pyright
-  :disabled
-  :after lsp-mode)
 
 ;; Flycheck: on-the-fly syntax checking
 (use-package flycheck
