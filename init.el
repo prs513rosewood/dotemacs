@@ -40,13 +40,13 @@
 
 ;; Wrap lines in text mode
 (add-hook 'text-mode-hook (lambda ()
-			    (visual-line-mode t)))
+          (visual-line-mode t)))
 
 ;; Display relative line numbers (Emacs 26.1+)
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (with-eval-after-load 'display-line-numbers
   (setq display-line-numbers-type 'relative
-	display-line-numbers-width-start t))
+        display-line-numbers-width-start t))
 
 ;; Recentf mode
 (require 'recentf)
@@ -67,7 +67,7 @@
 
 ;; Setting some environment variables
 (setenv "PYTHONPATH"
-	(shell-command-to-string "$SHELL --login -c 'echo -n $PYTHONPATH'"))
+  (shell-command-to-string "$SHELL --login -c 'echo -n $PYTHONPATH'"))
 (setenv "LC_ALL" "en_US.UTF-8")
 
 ;; Tramp default method
@@ -125,13 +125,13 @@
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el"
-			 user-emacs-directory))
+       user-emacs-directory))
       (bootstrap-version 5))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
-	(url-retrieve-synchronously
-	 "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	 'silent 'inhibit-cookies)
+  (url-retrieve-synchronously
+   "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+   'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
@@ -228,6 +228,10 @@
    "w"   #'(:ignore t :which-key "whitespace")
    "wc"  #'whitespace-cleanup
    "wm"  #'whitespace-mode
+
+   "t"   #'tab-new
+   "gt"  #'tab-next
+   "gT"  #'tab-previous
 
    "F"   #'(:ignore t :which-key "frames")
    "Fm"  #'make-frame
@@ -359,7 +363,7 @@
   :init
   (put 'projectile-project-compilation-cmd 'safe-local-variable
        (lambda (a) (and (stringp a) (or (not (boundp 'compilation-read-command))
-					compilation-read-command))))
+          compilation-read-command))))
   :config
   (projectile-mode 1)
   :general
@@ -503,8 +507,8 @@
   :config
   (add-hook 'org-mode-hook 'evil-org-mode)
   (add-hook 'evil-org-mode-hook
-	    (lambda ()
-	      (evil-org-set-key-theme)))
+      (lambda ()
+        (evil-org-set-key-theme)))
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
 (use-package evil-surround
@@ -538,8 +542,6 @@
   :init
   (fset 'c-indent-region 'clang-format-region)
   :general
-  ('normal
-   "<C-tab>" 'clang-format-region)
   (tyrant-def
     :states 'normal
     :keymaps 'c-mode-base-map
@@ -548,7 +550,8 @@
 ;; lsp-mode: Language Server Protocol glue
 (use-package lsp-mode
   :commands lsp
-  :gfhook ('lsp-mode-hook #'lsp-enable-which-key-integration)
+  :gfhook
+  ('lsp-mode-hook #'lsp-enable-which-key-integration)
   :general
   (tyrant-def "l"  #'lsp)
   (despot-def
@@ -572,6 +575,7 @@
   (lsp-pylsp-plugins-mccabe-enabled nil)
   (lsp-pylsp-plugins-yapf-enabled t)
   (lsp-pylsp-plugins-pydocstyle-enabled nil))
+
 
 ;; lsp-ui: integration to flycheck
 (use-package lsp-ui
@@ -697,9 +701,9 @@
   ('lammps-mode-hook
    (lambda ()
      (set (make-local-variable 'compile-command)
-	  (concat "mpirun -np 4 lmp -in "
-		  (if buffer-file-name
-		      (shell-quote-argument buffer-file-name)))))))
+    (concat "mpirun lmp -in "
+      (if buffer-file-name
+          (shell-quote-argument buffer-file-name)))))))
 
 ;; Groovy Mode
 (use-package groovy-mode
@@ -768,9 +772,9 @@
   :defer t
   :init
   (general-add-hook 'reftex-mode-hook
-		    (lambda () (add-to-list 'company-backends
-					    '(company-reftex-citations
-					      company-reftext-labels)))))
+        (lambda () (add-to-list 'company-backends
+              '(company-reftex-citations
+                company-reftext-labels)))))
 
 
 ;; Completion for bibtex
@@ -778,9 +782,9 @@
   :defer t
   :init
   (general-add-hook 'LaTeX-mode-hook
-		    (lambda ()
-		      (add-to-list 'company-backends
-				   'company-bibtex))))
+        (lambda ()
+          (add-to-list 'company-backends
+           'company-bibtex))))
 
 ;; RSS feeds
 (use-package elfeed
