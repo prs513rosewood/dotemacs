@@ -530,7 +530,12 @@
 
 ;; pyvenv: managing virtualenv in emacs
 (use-package pyvenv
-  :ghook 'python-mode-hook)
+  :ghook 'python-mode-hook
+  :general
+  (despot-def
+    :states 'normal
+    :keymaps 'python-mode-map
+    "a" #'pyvenv-activate))
 
 ;; YAML mode
 (use-package yaml-mode
