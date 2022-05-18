@@ -320,6 +320,10 @@
 (use-package all-the-icons)
 (use-package emojify)
 
+(when (member "Noto Color Emoji" (font-family-list))
+  (set-fontset-font
+    t 'symbol (font-spec :family "Noto Color Emoji") nil 'prepend))
+
 ;; Dashboard
 (use-package dashboard
   :config
