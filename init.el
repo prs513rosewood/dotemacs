@@ -294,6 +294,8 @@
   (evil-undo-system 'undo-fu)
   (evil-want-Y-yank-to-eol t)
   (evil-want-keybinding nil)
+  (evil-shift-width 4)
+  (evil-symbol-word-search t)
   :config
   (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
   :general
