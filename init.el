@@ -68,7 +68,7 @@
 ;; Setting some environment variables
 (setenv "PYTHONPATH"
   (shell-command-to-string "$SHELL --login -c 'echo -n $PYTHONPATH'"))
-(setenv "LC_ALL" "en_US.UTF-8")
+(setenv "LC_ALL" "C.UTF-8")
 
 ;; Tramp default method
 (setq tramp-default-method "ssh")
