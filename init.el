@@ -69,6 +69,10 @@
 (setenv "PYTHONPATH"
   (shell-command-to-string "$SHELL --login -c 'echo -n $PYTHONPATH'"))
 (setenv "LC_ALL" "C.UTF-8")
+(setenv
+ "SCONSFLAGS"
+ (concat "-j " (number-to-string
+                (/ (string-to-number (shell-command-to-string "nproc")) 2))))
 
 ;; Tramp default method
 (setq tramp-default-method "ssh")
@@ -250,6 +254,7 @@
 
 ;; Helm: global completion
 (use-package helm
+  :straight (:type git :tag "v3.8.5")
   :after general
   :config
   (helm-mode 1)
