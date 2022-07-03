@@ -61,9 +61,10 @@
 (scroll-bar-mode 0)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-;; Setting shell to bash
-(setq shell-file-name "/bin/bash")
-(setenv "SHELL" shell-file-name)
+;; Setting shell to bash / skip windows
+(when (not (eq system-type 'windows-nt))
+      (progn (setq shell-file-name "/bin/bash")
+             (setenv "SHELL" shell-file-name)))
 
 ;; Setting some environment variables
 (setenv "PYTHONPATH"
