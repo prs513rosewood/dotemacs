@@ -417,6 +417,10 @@
     "l"  #'org-insert-link
     "w"  #'org-refile
     "|"  #'org-table-create-or-convert-from-region
+    "a"  #'org-archive-subtree-default-with-confirmation
+
+    "b"  #'(:ignore t :which-key "beamer")
+    "be" #'org-beamer-select-environment
 
     "c"  #'(:ignore t :which-key "clock")
     "ci" #'org-clock-in
@@ -449,8 +453,7 @@
                      "\\documentclass{talk}
                     [NO-DEFAULT-PACKAGES]
                     [PACKAGES]
-                    [EXTRA]"
-                     ("\\section{%s}" . "\\section*{%s}")))
+                    [EXTRA]"))
       (add-to-list 'org-latex-classes
                    '("essay"
                      "\\documentclass{essay}
@@ -474,12 +477,16 @@
   (org-agenda-files (list org-directory))
   (org-refile-targets '((nil :maxlevel . 2)
                         (org-agenda-files :maxlevel . 1)))
+  (org-archive-location "archive.org::* From %s")
   (org-default-notes-file (expand-file-name "notes.org" org-directory))
   (org-startup-indented t)
   (org-startup-truncated nil)
   (org-src-fontify-natively t)
   (org-latex-pdf-process (quote ("latexmk %f")))
   (org-log-done 'time)
+  (org-beamer-environments-extra
+   `(("tikzpicture" "T" "\\begin{tikzpicture}%a%o" "\\end{tikzpicture}")
+     ("onlyenv" "O" "\\begin{onlyenv}%a" "\\end{onlyenv}")))
   (org-capture-templates
    `(("t" "Todo"
       entry (file+headline org-default-notes-file "Tasks")
@@ -513,7 +520,6 @@
   :config
   (evil-collection-init))
 (use-package evil-org
-  :disabled
   :after evil org
   :config
   (add-hook 'org-mode-hook 'evil-org-mode)
