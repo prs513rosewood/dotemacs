@@ -9,6 +9,14 @@
 ;; This should be removed with Emascs 26.3
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
+;; ----------- Constants --------------
+
+(defconst on-windows (eq system-type 'windows-nt)
+  "True if on windows system")
+
+(defconst completion "helm"
+  "Your choice of completion system")
+
 ;; ----------- Sane defalts -----------
 
 ;; Garbage collection threshould to 100MB
@@ -123,6 +131,10 @@
 
 ;; Visible bell
 (setq visible-bell t)
+
+;; Accent substitution
+(defun my/merge-accents ()
+  (evil-ex-substitute "%" "è" "è" "g"))
 
 ;; ----------- Package configuration -----------
 
@@ -242,11 +254,14 @@
    "Fm"  #'make-frame
    "Fk"  #'delete-frame
    "q"   #'(:ignore t :which-key "quit")
-   "qs"  #'server-shutdown))
+   "qs"  #'server-shutdown)
+
+  ;; Mode specific keymaps (native emacs modes)
+)
 
 ;; Ivy
 (use-package ivy
-  :disabled
+  :if (string-equal completion "ivy")
   :config
   (setq ivy-re-builders-alist
         '((t . ivy--regex-ignore-order)))
@@ -255,7 +270,8 @@
 
 ;; Helm: global completion
 (use-package helm
-  :straight (:type git :tag "v3.8.5")
+  :if (string-equal completion "helm")
+  ;; :straight (:type git :tag "v3.8.5")
   :after general
   :config
   (helm-mode 1)
@@ -275,7 +291,7 @@
   :delight)
 
 (use-package ido
-  :disabled
+  :if (string-equal completion "ido")
   :config
   (ido-mode 1)
   ;; http://ergoemacs.org/emacs/emacs_ido_setup.html
@@ -286,7 +302,13 @@
            (setf (nth 2 ido-decorations) "\n")))
   :custom
   (ido-enable-flex-matching t)
-  (ido-everywhere t))
+  (ido-everywhere t)
+  (ido-create-new-buffer 'always))
+
+(use-package ido-completing-read+
+  :after ido
+  :config
+  (ido-ubiquitous-mode 1))
 
 ;; Undo package
 (use-package undo-fu)
@@ -304,6 +326,7 @@
   (evil-symbol-word-search t)
   :config
   (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
+  ; (evil-ex-define-cmd "merge-accents" #'my/merge-accents)
   :general
   ('normal
    "é"   #'evil-ex
@@ -445,7 +468,7 @@
   :config
   (add-to-list 'org-modules 'org-timer)
   (org-babel-do-load-languages 'org-babel-load-languages
-                               '((python . t)))
+                               '((python . t) (C .t)))
   ;; Custom latex classes
   (general-with-eval-after-load 'ox-latex
     (progn
@@ -564,6 +587,7 @@
   :commands clang-format-region
   :init
   (fset 'c-indent-region 'clang-format-region)
+  :custom (clang-format-executable "clang-format-11")
   :general
   (tyrant-def
     :states 'normal
@@ -703,14 +727,18 @@
   'tex-mode-hook)
 
 ;; Snippets
-(use-package yasnippet-snippets :disabled)
 (use-package yasnippet :disabled
-  :config (yas-reload-all)
-  :custom (yas-snippet-dirs
-           '((expand-file-name "snippets" user-emacs-directory)
-             yasnippet-snippets-dir))
-  :ghook ('prog-mode-hook #'yas-minor-mode)
+  :commands yas-minor-mode
+  :config
+  (yas-reload-all)
+  :custom
+  (yas-snippet-dirs
+   `(,(expand-file-name "snippets" user-emacs-directory)))
   :delight)
+(use-package yasnippet-snippets :disabled
+  :after yasnippet
+  :config
+  (add-to-list 'yas-snippet-dirs yasnippet-snippets-dir t))
 
 ;; SLIME: Common Lisp things
 (use-package slime
@@ -728,9 +756,18 @@
       (if buffer-file-name
           (shell-quote-argument buffer-file-name)))))))
 
+;; Meson mode
+(use-package meson-mode
+  :mode "meson.build")
+
 ;; Groovy Mode
 (use-package groovy-mode
   :mode "Jenkinsfile")
+
+;; DocView mode
+(use-package doc-view
+  :gfhook
+  ('doc-view-minor-mode-hook #'doc-view-fit-height-to-window))
 
 ;; ----------- LaTeX related packages -----------
 
@@ -741,6 +778,10 @@
   (setq-default TeX-master nil)
   (turn-on-auto-fill)
   (bibtex-set-dialect 'biblatex)
+  (setq TeX-fold-env-spec-list
+        '(("[{1}:{2}]" ("frame"))))
+  :gfhook
+  ('TeX-mode-hook (lambda () (TeX-fold-mode 1)))
   :custom
   (TeX-auto-save t)
   (TeX-parse-self t)
@@ -763,14 +804,18 @@
     "ie"  #'LaTeX-environment
     "is"  #'LaTeX-section
     "im"  #'TeX-insert-macro
-    "v"   #'TeX-view)
+    "v"   #'TeX-view
+    "z"   #'TeX-fold-buffer
+    "Z"   #'TeX-fold-clearout-buffer
+    "C"   #'TeX-command-run-all
+    "h"   #'TeX-documentation-texdoc)
   (general-define-key
    :keymaps 'TeX-mode-map
    [remap compile] #'TeX-command-master))
 
 ;; Reftex for reference management
 (use-package reftex
-  :ghook ('LaTeX-mode-hook 'turn-on-reftex)
+  :ghook ('LaTeX-mode-hook #'turn-on-reftex)
   :custom
   (reftex-plug-into-AUCTex t)
   (reftex-label-alist '(AMSTeX))
@@ -786,7 +831,7 @@
 
 ;; Couple AUCTeX w/ latexmk
 (use-package auctex-latexmk
-  :ghook ('LaTeX-mode-hook 'auctex-latexmk-setup)
+  :ghook ('TeX-mode-hook #'auctex-latexmk-setup)
   :custom
   (auctex-latexmk-inherit-TeX-PDF-mode t))
 
