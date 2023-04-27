@@ -587,7 +587,7 @@
   :commands clang-format-region
   :init
   (fset 'c-indent-region 'clang-format-region)
-  :custom (clang-format-executable "clang-format-11")
+  :custom (clang-format-executable "clang-format")
   :general
   (tyrant-def
     :states 'normal
