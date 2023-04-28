@@ -944,14 +944,15 @@
 ;; Spellchecking with multiple dictionaries
 ;; https://emacs.stackexchange.com/questions/21378/spell-check-with-multiple-dictionaries
 ;; http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs.html
+;; /!\ Make sure to run locale-gen with the locales corresponding to the dicts
 (general-with-eval-after-load "ispell"
  (setenv "LANG" "en_US")
  (setq ispell-program-name (executable-find "hunspell")
        ispell-skip-html t
        ispell-local-dictionary-alist
-       '(("en_US,fr" "[[:alpha:]]" "[^[:alpha:]]" "[']"
-          nil ("-d" "en_US,fr") nil utf-8))
-       ispell-dictionary "en_US,fr"
+       '(("en_US,en_GB,fr" "[[:alpha:]]" "[^[:alpha:]]" "[']"
+          nil ("-d" "en_US,en_GB,fr") nil utf-8))
+       ispell-dictionary "en_US,en_GB,fr"
        ispell-personal-dictionary "~/.config/hunspell_personal")
  (unless (file-exists-p ispell-personal-dictionary)
    (write-region "" nil ispell-personal-dictionary nil 0)))
