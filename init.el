@@ -77,6 +77,8 @@
 ;; Setting some environment variables
 (setenv "PYTHONPATH"
   (shell-command-to-string "$SHELL --login -c 'echo -n $PYTHONPATH'"))
+(setenv "WORKON_HOME"
+  (shell-command-to-string "$SHELL --login -c 'echo -n $WORKON_HOME'"))
 (setenv "LC_ALL" "C.UTF-8")
 (setenv
  "SCONSFLAGS"
@@ -128,6 +130,7 @@
 ;; Main typeface
 (when (find-font (font-spec :name "Roboto Mono"))
     (set-frame-font "Roboto Mono 10" nil t))
+(set-face-attribute 'default nil :height 100)
 
 ;; Visible bell
 (setq visible-bell t)
@@ -766,6 +769,8 @@
 
 ;; DocView mode
 (use-package doc-view
+  :custom
+  (doc-view-resolution 300)
   :gfhook
   ('doc-view-minor-mode-hook #'doc-view-fit-height-to-window))
 
@@ -776,7 +781,7 @@
   :mode ("\\.tex\\'" . LaTeX-mode)
   :config
   (setq-default TeX-master nil)
-  (turn-on-auto-fill)
+  ; (turn-on-auto-fill)
   (bibtex-set-dialect 'biblatex)
   (setq TeX-fold-env-spec-list
         '(("[{1}:{2}]" ("frame"))))
