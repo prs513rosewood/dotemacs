@@ -129,8 +129,8 @@
 
 ;; Main typeface
 (when (find-font (font-spec :name "Roboto Mono"))
-    (set-frame-font "Roboto Mono 10" nil t))
-(set-face-attribute 'default nil :height 100)
+    (set-frame-font "Roboto Mono 12" nil t))
+(set-face-attribute 'default nil :height 125)
 
 ;; Visible bell
 (setq visible-bell t)
@@ -958,7 +958,8 @@
        '(("en_US,en_GB,fr" "[[:alpha:]]" "[^[:alpha:]]" "[']"
           nil ("-d" "en_US,en_GB,fr") nil utf-8))
        ispell-dictionary "en_US,en_GB,fr"
-       ispell-personal-dictionary "~/.config/hunspell_personal")
+       ispell-personal-dictionary "")
+       ; ispell-personal-dictionary "~/.config/hunspell_personal")
  (unless (file-exists-p ispell-personal-dictionary)
    (write-region "" nil ispell-personal-dictionary nil 0)))
  ;; ispell-set-spellchecker-params has to be called
