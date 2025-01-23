@@ -361,6 +361,7 @@
 
 ;; Dashboard
 (use-package dashboard
+  :disabled
   :config
   (dashboard-setup-startup-hook)
   :custom
@@ -528,6 +529,11 @@
                    ("\\.mm\\'" . default)
                    ("\\.x?html?\\'" . default)
                    ("\\.pdf\\'" . "xdg-open \"%s\""))))
+
+;(use-package org-ref
+;  :after org)
+;(use-package org-roam
+;  :after org)
 
 ;; Iedit: edit multiple regions simultaneously
 (use-package iedit
