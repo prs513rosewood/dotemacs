@@ -792,7 +792,9 @@
   (setq TeX-fold-env-spec-list
         '(("[{1}:{2}]" ("frame"))))
   :gfhook
-  ('TeX-mode-hook (lambda () (TeX-fold-mode 1)))
+  ('TeX-mode-hook (lambda ()
+                    (TeX-fold-mode 1)
+                    (auto-fill-mode 0)))
   :custom
   (TeX-auto-save t)
   (TeX-parse-self t)
@@ -805,6 +807,7 @@
   (TeX-command-default "LatexMk")
   (LaTeX-biblatex-use-Biber t)
   (TeX-command-BibTex "Biber")
+  (TeX-engine 'luatex)
   :general
   (despot-def
     :states 'normal
@@ -839,12 +842,6 @@
     "rc" #'reftex-citation
     "rr" #'reftex-reference
     "rt" #'reftex-toc))
-
-;; Couple AUCTeX w/ latexmk
-(use-package auctex-latexmk
-  :ghook ('TeX-mode-hook #'auctex-latexmk-setup)
-  :custom
-  (auctex-latexmk-inherit-TeX-PDF-mode t))
 
 ;; Completion for references
 (use-package company-reftex
