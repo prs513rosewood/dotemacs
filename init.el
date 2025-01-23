@@ -691,6 +691,7 @@
   'text-mode
   'LaTeX-mode-hook
   'org-mode-hook
+  'markdown-mode-hook
   :general
   (tyrant-def
     "s" '(:ignore t :which-key "spell")
@@ -726,7 +727,7 @@
 
 ;; Markdown
 (use-package markdown-mode
-  :mode "\\.md\\'")
+  :mode "\\(\\.md\\|\\.qmd\\'\\)")
 
 ;; Fic-mode: show todo, fixme, etc.
 (use-package fic-mode
