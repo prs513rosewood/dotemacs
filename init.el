@@ -862,30 +862,6 @@
           (add-to-list 'company-backends
            'company-bibtex))))
 
-;; RSS feeds
-(use-package elfeed
-  :disabled
-  :commands elfeed
-  :custom
-  (elfeed-db-directory "~/.config/elfeed")
-  (elfeed-search-filter "@1-week-ago +unread")
-  (elfeed-feeds
-   '("https://www.gamingonlinux.com/article_rss.php"
-     "https://www.debian.org/News/news"))
-  :general
-  (tyrant-def
-    "af" #'elfeed)
-  (despot-def
-    :keymaps 'elfeed-search-mode-map
-    "s" #'elfeed-search-live-filter
-    "R" #'elfeed-update
-
-    "RET" #'elfeed-search-show-entry
-    "S-<return>" #'elfeed-search-browse-url
-
-    "u" #'elfeed-search-untag-all-unread
-    "U" #'elfeed-search-tag-all-unread))
-
 ;; ----------- Themes Management -----------
 ;; based on: https://emacs.stackexchange.com/a/26981
 
