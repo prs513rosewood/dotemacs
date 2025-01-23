@@ -84,6 +84,7 @@
  "SCONSFLAGS"
  (concat "-j " (number-to-string
                 (/ (string-to-number (shell-command-to-string "nproc")) 2))))
+(setenv "PATH" "/opt/texlive/bin/x86_64-linux:$PATH" t)
 
 ;; Tramp default method
 (setq tramp-default-method "ssh")
