@@ -582,6 +582,10 @@
 (use-package yaml-mode
   :mode "\\.yml\\'")
 
+;; Rust mode
+(use-package rust-mode
+  :mode "\\.rs\\'")
+
 ;; Snakemake mode
 (use-package snakemake-mode
   :mode "Snakefile\\'")
