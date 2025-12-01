@@ -593,6 +593,14 @@
 (use-package rust-mode
   :mode "\\.rs\\'")
 
+;; Jinja mode
+(use-package jinja2-mode
+  :mode "\\.jinja2\\'")
+
+;; Typst mode
+(use-package typst-ts-mode
+  :mode "\\.typ\\'")
+
 ;; Snakemake mode
 (use-package snakemake-mode
   :mode "Snakefile\\'")
@@ -791,11 +799,12 @@
 
 ;; AUCTeX
 (use-package tex-mode :straight auctex
+  ;; :disabled
   :mode ("\\.tex\\'" . LaTeX-mode)
   :config
   (setq-default TeX-master nil)
   ; (turn-on-auto-fill)
-  (bibtex-set-dialect 'biblatex)
+  ; (bibtex-set-dialect 'biblatex)
   (setq TeX-fold-env-spec-list
         '(("[{1}:{2}]" ("frame"))))
   :gfhook
