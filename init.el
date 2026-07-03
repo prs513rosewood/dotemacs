@@ -448,6 +448,7 @@
     "w"  #'org-refile
     "|"  #'org-table-create-or-convert-from-region
     "a"  #'org-archive-subtree-default-with-confirmation
+    "p"  #'org-latex-preview
 
     "b"  #'(:ignore t :which-key "beamer")
     "be" #'org-beamer-select-environment
@@ -514,6 +515,10 @@
   (org-src-fontify-natively t)
   (org-latex-pdf-process (quote ("latexmk %f")))
   (org-log-done 'time)
+  (org-format-latex-options
+   '(:foreground default :background default :scale 2.0 :html-foreground "Black"
+                 :html-background "Transparent" :html-scale 1.0 :matchers
+                 ("begin" "$1" "$" "$$" "\\(" "\\[")))
   (org-beamer-environments-extra
    `(("tikzpicture" "T" "\\begin{tikzpicture}%a%o" "\\end{tikzpicture}")
      ("onlyenv" "O" "\\begin{onlyenv}%a" "\\end{onlyenv}")))
