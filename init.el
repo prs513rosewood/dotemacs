@@ -883,6 +883,10 @@
           (add-to-list 'company-backends
            'company-bibtex))))
 
+;; LLM
+(use-package gptel
+  :commands gptel-send)
+
 ;; ----------- Themes Management -----------
 ;; based on: https://emacs.stackexchange.com/a/26981
 
