@@ -885,7 +885,15 @@
 
 ;; LLM
 (use-package gptel
-  :commands gptel-send)
+  :commands (gptel-send gptel gptel-menu)
+  :config
+  (setq gptel-backend (gptel-make-anthropic "Claude" :stream t)
+        gptel-model 'claude-opus-4-8)
+  :general
+  (tyrant-def
+    "Ls" #'gptel-send
+    "Lm" #'gptel-menu
+    "Lb" #'gptel))
 
 ;; ----------- Themes Management -----------
 ;; based on: https://emacs.stackexchange.com/a/26981
