@@ -87,7 +87,7 @@
 (setenv
  "SCONSFLAGS"
  (concat "-j " (number-to-string
-                (/ (string-to-number (shell-command-to-string "nproc")) 2))))
+                (/ (string-to-number (shell-command-to-string "nproc --all")) 2))))
 (setenv "PATH" "/opt/texlive/bin/x86_64-linux:$PATH" t)
 
 ;; Tramp default method
