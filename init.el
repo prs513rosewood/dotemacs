@@ -167,9 +167,9 @@
 ;; ----------- Core packages -----------
 
 ;; Delight: change mode description in mode line
-;;(use-package delight
-;;  :commands delight
-;;  :config (delight 'undo-tree-mode "" "undo-tree"))
+(use-package delight
+  :commands delight
+  :config (delight 'undo-tree-mode "" "undo-tree"))
 
 ;; Which-key: describes key shortcuts on-the-fly
 (use-package which-key
