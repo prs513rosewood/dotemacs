@@ -639,10 +639,6 @@
             emacs-lisp-mode-hook) #'tree-sitter-hl-mode))
 (use-package tree-sitter-langs
   :after tree-sitter)
-;; Better C++ syntax highlighting
-(use-package modern-cpp-font-lock
-  :ghook ('c++-mode-hook #'modern-c++-font-lock-mode)
-  :delight modern-c++-font-lock-mode)
 
 ;; Fill column indicator
 (use-package hl-fill-column
