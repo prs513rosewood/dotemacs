@@ -644,6 +644,7 @@
 
 ;; Eldoc: documentation for elisp
 (use-package eldoc
+  :straight (:type built-in)
   :config
   (eldoc-mode t)
   :delight)
