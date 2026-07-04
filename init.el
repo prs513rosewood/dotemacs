@@ -36,6 +36,9 @@
 ;; No startup screen
 (setq inhibit-startup-screen t)
 
+;; Start on projects
+(setq initial-buffer-choice "~/Nextcloud/orgs/projects.org")
+
 ;; Tell emacs to always follow symbolic links
 (setq-default vc-follow-symlinks t)
 
