@@ -631,6 +631,14 @@
     "cn" #'flymake-goto-next-error
     "cb" #'flymake-goto-prev-error))
 
+;; Treesitter: syntax highlighting
+(use-package tree-sitter
+  :ghook ('(c-mode-hook
+            c++-mode-hook
+            python-mode-hook
+            emacs-lisp-mode-hook) #'tree-sitter-hl-mode))
+(use-package tree-sitter-langs
+  :after tree-sitter)
 ;; Better C++ syntax highlighting
 (use-package modern-cpp-font-lock
   :ghook ('c++-mode-hook #'modern-c++-font-lock-mode)
