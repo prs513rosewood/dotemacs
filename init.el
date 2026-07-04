@@ -605,29 +605,22 @@
 (use-package snakemake-mode
   :mode "Snakefile\\'")
 
-;; clang-format: cool
-(use-package clang-format
-  :commands clang-format-region
-  :init
-  (fset 'c-indent-region 'clang-format-region)
-  :custom (clang-format-executable "clang-format")
-  :general
-  (tyrant-def
-    :states 'normal
-    :keymaps 'c-mode-base-map
-    "cf" 'clang-format-buffer))
-
 ;; Built-in LSP client
 (use-package eglot
   :straight (:type built-in)
-  :commands eglot
+  :commands (eglot eglot-format-buffer)
   :general
   (tyrant-def "l" #'eglot)
   (despot-def
     :states 'normal
     :keymaps 'prog-mode-map
     "fb" #'eglot-format-buffer
-    "d"  #'eglot-find-declaration))
+    "d"  #'eglot-find-declaration)
+  ;; this clang-format shortcut is now muscle memory
+  (tyrant-def
+    :states 'normal
+    :keymaps 'c-mode-base-map
+    "cf" #'eglot-format-buffer))
 
 ;; Built-in on-the-fly syntax checking
 (use-package flymake
