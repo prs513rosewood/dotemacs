@@ -620,60 +620,25 @@
     :keymaps 'c-mode-base-map
     "cf" 'clang-format-buffer))
 
-;; lsp-mode: Language Server Protocol glue
-(use-package lsp-mode
-  :commands lsp
-  :gfhook
-  ('lsp-mode-hook #'lsp-enable-which-key-integration)
+;; Built-in LSP client
+(use-package eglot
+  :straight (:type built-in)
+  :commands eglot
   :general
-  (tyrant-def "l"  #'lsp)
+  (tyrant-def "l" #'eglot)
   (despot-def
     :states 'normal
     :keymaps 'prog-mode-map
-    "d"  #'lsp-find-definition
-    "m"  #'lsp-ui-imenu
-    "p"  #'lsp-ui-peek-find-references
-    "fb" #'lsp-format-buffer)
-  :config
-  (evil-define-key 'normal lsp-mode-map (kbd "\\") lsp-command-map)
-  :custom
-  (lsp-modeline-code-actions-enable t)
-  (lsp-headerline-breadcrumb-enable nil)
-  (lsp-server-trace t)
-  (lsp-log-io t)
-  (lsp-clients-clangd-executable "clangd")
-  (lsp-clients-clangd-args '("--log=verbose"))
-  (lsp-prefer-flymake nil)
-  (lsp-pylsp-configuration-sources "flake8")
-  (lsp-pylsp-plugins-mccabe-enabled nil)
-  (lsp-pylsp-plugins-yapf-enabled t)
-  (lsp-pylsp-plugins-pydocstyle-enabled nil))
+    "fb" #'eglot-format-buffer))
 
-
-;; lsp-ui: integration to flycheck
-(use-package lsp-ui
-  :after lsp-mode
-  :ghook ('lsp-mode-hook #'lsp-ui-mode)
-  :custom
-  (lsp-ui-doc-delay 5))
-
-;; Flycheck: on-the-fly syntax checking
-(use-package flycheck
-  :init
-  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-  (setq-default flycheck-flake8-maximum-line-length fill-column)
-  :custom
-  (flycheck-gcc-openmp t "Activate OpenMP awareness")
-  :ghook
-  'lsp-ui-mode-hook
-  'tex-mode-hook
-  :config
-  (global-flycheck-mode)
+;; Built-in on-the-fly syntax checking
+(use-package flymake
+  :straight (:type built-in)
+  :commands flymake-mode
   :general
   (tyrant-def
-   "cn" #'flycheck-next-error
-   "cb" #'flycheck-previous-error)
-  :delight)
+    "cn" #'flymake-goto-next-error
+    "cb" #'flymake-goto-prev-error))
 
 ;; Better C++ syntax highlighting
 (use-package modern-cpp-font-lock
