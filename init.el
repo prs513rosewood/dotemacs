@@ -931,9 +931,9 @@
  (setq ispell-program-name (executable-find "hunspell")
        ispell-skip-html t
        ispell-local-dictionary-alist
-       '(("en_US,en_GB,fr" "[[:alpha:]]" "[^[:alpha:]]" "[']"
-          nil ("-d" "en_US,en_GB,fr") nil utf-8))
-       ispell-dictionary "en_US,en_GB,fr"
+       '(("en_US,en_GB,fr_FR" "[[:alpha:]]" "[^[:alpha:]]" "[']"
+          nil ("-d" "en_US,en_GB,fr_FR") nil utf-8))
+       ispell-dictionary "en_US,en_GB,fr_FR"
        ispell-personal-dictionary "")
        ; ispell-personal-dictionary "~/.config/hunspell_personal")
  (unless (file-exists-p ispell-personal-dictionary)
