@@ -20,10 +20,10 @@ There are four core packages which define most of the UX with Emacs in this conf
 These packages, with a couple of minor QOL packages ([[https://github.com/justbur/emacs-which-key][which-key]] and [[https://savannah.nongnu.org/projects/delight][delight]]), are the only packages unconditionally loaded at startup, making it rather fast.
 
 ** IDE Features for C++ and Python
-I use [[https://github.com/emacs-lsp/lsp-mode/][lsp-mode]] to interface with [[https://clangd.llvm.org/][clangd]] and [[https://github.com/palantir/python-language-server][python-language-server]]. Due to
-performance concerns, LSP is not automatically loaded when a code file is
+I use [[https://www.gnu.org/software/emacs/manual/html_node/eglot/index.html][eglot]] as an LSP client to interface with [[https://clangd.llvm.org/][clangd]] and [[https://github.com/palantir/python-language-server][python-language-server]]. Due to
+performance concerns, the client is not automatically loaded when a code file is
 opened. The =SPC l= keystroke turns LSP on. In =prog-mode=, commands under =SPC
-m= run LSP functions I commonly use.
+m= run LSP functions I commonly use. [[https://www.gnu.org/software/emacs/manual/html_node/flymake/index.html][Flymake]] is use for syntax highlighting.
 
 Keystrokes in =SPC c= generally refer to compilation. In =c-base-mode=, the
 =compile= function (=SPC c c=) is remapped to the =projectile-compile=, which is
@@ -51,3 +51,4 @@ git clone https://github.com/prs513rosewood/dotemacs.git $HOME/.emacs.d
 This configuration was established with inspiration from:
 - [[https://sam217pa.github.io/2016/09/02/how-to-build-your-own-spacemacs/][How to build your own Spacemacs]] by Samuel Barreto,
 - [[https://www.youtube.com/watch?v=6INMXmsCCC8][Spin your own Spacemacs-lite]] by Suyash Bire and [[https://github.com/suyashbire1/emacs.d][his config]].
+- [[https://www.jamescherti.com/essential-emacs-packages/][Must-have Emacs packages]] by James Cherti
