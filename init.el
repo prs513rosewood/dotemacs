@@ -6,9 +6,6 @@
 ;; https://sam217pa.github.io/2016/09/02/how-to-build-your-own-spacemacs/
 ;; https://github.com/suyashbire1/emacs.d
 
-;; This should be removed with Emascs 26.3
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
-
 ;; ----------- Constants --------------
 
 (defconst on-windows (eq system-type 'windows-nt)
