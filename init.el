@@ -431,7 +431,7 @@
 
 ;; Org-mode: it's org-mode
 (use-package org
-  :straight ; (:type built-in)
+  :straight (:type built-in)
   :mode ("\\.org\\'" . org-mode)
   :general
   (tyrant-def  ; global org commands
@@ -538,11 +538,6 @@
                    ("\\.mm\\'" . default)
                    ("\\.x?html?\\'" . default)
                    ("\\.pdf\\'" . "xdg-open \"%s\""))))
-
-;(use-package org-ref
-;  :after org)
-;(use-package org-roam
-;  :after org)
 
 ;; Iedit: edit multiple regions simultaneously
 (use-package iedit
