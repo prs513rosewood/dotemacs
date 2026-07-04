@@ -24,7 +24,7 @@
 
 ;; Backups
 (setq backup-directory-alist
-      '(("." . "~/.emacs.d/backup_files")))
+      '(("." . (expand-file-name "backup_files" user-emacs-directory))))
 (setq delete-old-versions -1)		; delete excess backup versions silently
 
 ;; Version control for backups
@@ -42,6 +42,9 @@
 ;; Put custom variables elsewhere
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file 'noerror)
+
+;; Additional config files
+(setq additional-config (expand-file-name "config" user-emacs-directory))
 
 ;; Restore dead keys because of input method-after
 (require 'iso-transl)
@@ -576,89 +579,6 @@
   :gfhook ('org-mode-hook (lambda () (company-mode -1)))
   :delight)
 
-;; pyvenv: managing virtualenv in emacs
-(use-package pyvenv
-  :ghook 'python-mode-hook
-  :general
-  (despot-def
-    :states 'normal
-    :keymaps 'python-mode-map
-    "a" #'pyvenv-activate))
-
-;; YAML mode
-(use-package yaml-mode
-  :mode "\\.yml\\'")
-
-;; Rust mode
-(use-package rust-mode
-  :mode "\\.rs\\'")
-
-;; Jinja mode
-(use-package jinja2-mode
-  :mode "\\.jinja2\\'")
-
-;; Typst mode
-(use-package typst-ts-mode
-  :mode "\\.typ\\'")
-
-;; Snakemake mode
-(use-package snakemake-mode
-  :mode "Snakefile\\'")
-
-;; Built-in LSP client
-(use-package eglot
-  :straight (:type built-in)
-  :commands (eglot eglot-format-buffer)
-  :general
-  (tyrant-def "l" #'eglot)
-  (despot-def
-    :states 'normal
-    :keymaps 'prog-mode-map
-    "fb" #'eglot-format-buffer
-    "d"  #'eglot-find-declaration)
-  ;; this clang-format shortcut is now muscle memory
-  (tyrant-def
-    :states 'normal
-    :keymaps 'c-mode-base-map
-    "cf" #'eglot-format-buffer))
-
-;; Built-in on-the-fly syntax checking
-(use-package flymake
-  :straight (:type built-in)
-  :commands flymake-mode
-  :general
-  (tyrant-def
-    "cn" #'flymake-goto-next-error
-    "cb" #'flymake-goto-prev-error))
-
-;; Treesitter: syntax highlighting
-(use-package tree-sitter
-  :ghook ('(c-mode-hook
-            c++-mode-hook
-            python-mode-hook
-            emacs-lisp-mode-hook) #'tree-sitter-hl-mode))
-(use-package tree-sitter-langs
-  :after tree-sitter)
-
-;; Fill column indicator
-(use-package hl-fill-column
-  :ghook
-  'prog-mode-hook
-  :delight)
-
-;; Eldoc: documentation for elisp
-(use-package eldoc
-  :straight (:type built-in)
-  :config
-  (eldoc-mode t)
-  :delight)
-
-;; Rainbow delimiters
-(use-package rainbow-delimiters
-  :ghook
-  'prog-mode-hook
-  'LaTeX-mode-hook)
-
 ;; Avy
 (use-package avy
   :commands avy-goto-word-1
@@ -682,38 +602,6 @@
   :commands flyspell-correct-wrapper
   :general (tyrant-def "ss" #'flyspell-correct-wrapper))
 
-;; Vi fringe
-(use-package vi-tilde-fringe
-  :ghook 'prog-mode-hook
-  :delight)
-
-;; Spaceline
-(use-package spaceline
-  :disabled
-  :config (spaceline-spacemacs-theme)
-  :gfhook ('after-load-theme-hook #'powerline-reset))
-
-;; Base16 theme
-(use-package base16-theme
-  :disabled)
-
-;; Doom themes
-(use-package doom-themes)
-
-;; Doom modeline
-(use-package doom-modeline
-  :ghook 'after-load-theme-hook)
-
-;; Markdown
-(use-package markdown-mode
-  :mode "\\(\\.md\\|\\.qmd\\'\\)")
-
-;; Fic-mode: show todo, fixme, etc.
-(use-package fic-mode
-  :ghook
-  'prog-mode-hook
-  'tex-mode-hook)
-
 ;; Snippets
 (use-package yasnippet :disabled
   :commands yas-minor-mode
@@ -733,115 +621,6 @@
   :straight nil  ; Do not install via straight.el
   :commands slime)
 
-;; LAMMPS Mode
-(use-package lammps-mode
-  :mode "\\(^in\\.\\|\\.lmp\\'\\)"
-  :gfhook
-  ('lammps-mode-hook
-   (lambda ()
-     (set (make-local-variable 'compile-command)
-    (concat "mpirun lmp -in "
-      (if buffer-file-name
-          (shell-quote-argument buffer-file-name)))))))
-
-;; Meson mode
-(use-package meson-mode
-  :mode "meson.build")
-
-;; Groovy Mode
-(use-package groovy-mode
-  :mode "Jenkinsfile")
-
-;; DocView mode
-(use-package doc-view
-  :custom
-  (doc-view-resolution 300)
-  :gfhook
-  ('doc-view-minor-mode-hook #'doc-view-fit-height-to-window))
-
-;; ----------- LaTeX related packages -----------
-
-;; AUCTeX
-(use-package tex-mode :straight auctex
-  ;; :disabled
-  :mode ("\\.tex\\'" . LaTeX-mode)
-  :config
-  (setq-default TeX-master nil)
-  ; (turn-on-auto-fill)
-  ; (bibtex-set-dialect 'biblatex)
-  (setq TeX-fold-env-spec-list
-        '(("[{1}:{2}]" ("frame"))))
-  :gfhook
-  ('TeX-mode-hook (lambda ()
-                    (TeX-fold-mode 1)
-                    (auto-fill-mode 0)))
-  :custom
-  (TeX-auto-save t)
-  (TeX-parse-self t)
-  (TeX-save-query nil)
-  (TeX-PDF-mode t)
-  (LaTeX-amsmath-label "eqn:")
-  (LaTeX-equation-label "eqn:")
-  (LaTeX-figure-label "fig:")
-  (TeX-view-program-selection '((output-pdf "xdg-open")))
-  (TeX-command-default "LatexMk")
-  (LaTeX-biblatex-use-Biber t)
-  (TeX-command-BibTex "Biber")
-  (TeX-engine 'luatex)
-  :general
-  (despot-def
-    :states 'normal
-    :keymaps 'TeX-mode-map
-    "TAB" #'LaTeX-fill-section
-    "p"   #'preview-section
-    "i"   #'(:ignore t :whick-key "insert")
-    "ie"  #'LaTeX-environment
-    "is"  #'LaTeX-section
-    "im"  #'TeX-insert-macro
-    "v"   #'TeX-view
-    "z"   #'TeX-fold-buffer
-    "Z"   #'TeX-fold-clearout-buffer
-    "C"   #'TeX-command-run-all
-    "h"   #'TeX-documentation-texdoc)
-  (general-define-key
-   :keymaps 'TeX-mode-map
-   [remap compile] #'TeX-command-master))
-
-;; Reftex for reference management
-(use-package reftex
-  :ghook ('LaTeX-mode-hook #'turn-on-reftex)
-  :custom
-  (reftex-plug-into-AUCTex t)
-  (reftex-label-alist '(AMSTeX))
-  (reftex-include-file-commands '("include" "input" "myimport"))
-  :general
-  (despot-def
-    :keymaps 'TeX-mode-map
-    "r"  #'(:ignore t :which-key "reftex")
-    "rl" #'reftex-label
-    "rc" #'reftex-citation
-    "rr" #'reftex-reference
-    "rt" #'reftex-toc))
-
-;; Completion for references
-(use-package company-reftex
-  :defer t
-  :init
-  (general-add-hook 'reftex-mode-hook
-        (lambda () (add-to-list 'company-backends
-              '(company-reftex-citations
-                company-reftext-labels)))))
-
-
-;; Completion for bibtex
-(use-package company-bibtex
-  :defer t
-  :init
-  (general-add-hook 'LaTeX-mode-hook
-        (lambda ()
-          (add-to-list 'company-backends
-           'company-bibtex))))
-
 ;; LLM
 (use-package gptel
   :commands (gptel-send gptel gptel-menu)
@@ -854,33 +633,15 @@
     "Lm" #'gptel-menu
     "Lb" #'gptel))
 
-;; ----------- Themes Management -----------
-;; based on: https://emacs.stackexchange.com/a/26981
+;; Loading additional configs
+(defun include-config-file (name)
+  (load (expand-file-name name additional-config)))
 
-;; (setq ivan/themes '(base16-tomorrow-night base16-tomorrow))
-(setq ivan/themes '(doom-one doom-one-light))
-(setq ivan/themes-index 0)
+(include-config-file "file_types")
+(include-config-file "programming")
+(include-config-file "latex")
+(include-config-file "appearance")
 
-(defun ivan/cycle-theme ()
-  (interactive)
-  (setq ivan/themes-index (% (1+ ivan/themes-index) (length ivan/themes)))
-  (ivan/load-indexed-theme))
-
-(defun ivan/load-indexed-theme ()
-  (ivan/try-load-theme (nth ivan/themes-index ivan/themes)))
-
-(defun ivan/try-load-theme (theme)
-  (if (ignore-errors (load-theme theme :no-confirm))
-      (mapcar #'disable-theme (remove theme custom-enabled-themes))
-    (message "Unable to find theme file for ‘%s’" theme)))
-
-;; Load theme even when in terminal
-(ivan/load-indexed-theme)
-
-;; Shortcuts for theme management
-(general-define-key
- "<f12>" #'ivan/cycle-theme
- "M-<f12>" #'disable-theme)
 
 ;; ----------- Programming convenience -----------
 
