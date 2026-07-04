@@ -629,7 +629,8 @@
   (despot-def
     :states 'normal
     :keymaps 'prog-mode-map
-    "fb" #'eglot-format-buffer))
+    "fb" #'eglot-format-buffer
+    "d"  #'eglot-find-declaration))
 
 ;; Built-in on-the-fly syntax checking
 (use-package flymake
