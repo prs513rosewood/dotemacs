@@ -38,12 +38,14 @@
   :general
   (tyrant-def
     :states 'normal
-    "zo"  #'kirigami-open-fold
-    "zc"  #'kirigami-close-fold
-    "zO"  #'kirigami-open-fold-rec
-    "zC"  #'kirigami-close-fold-rec
-    "zao" #'kirigami-open-folds
-    "zac" #'kirigami-close-folds))
+    "z"     #'(:ignore t :which-key "fold")
+    "zo"    #'kirigami-open-fold
+    "zc"    #'kirigami-close-fold
+    "zO"    #'kirigami-open-fold-rec
+    "zC"    #'kirigami-close-fold-rec
+    "z TAB" #'kirigami-toggle-fold
+    "zao"   #'kirigami-open-folds
+    "zac"   #'kirigami-close-folds))
 
 ;; Folding based on outline
 (use-package outline
