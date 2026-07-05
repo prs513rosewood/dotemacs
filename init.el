@@ -24,7 +24,7 @@
 
 ;; Backups
 (setq backup-directory-alist
-      '(("." . (expand-file-name "backup_files" user-emacs-directory))))
+      `(("." . ,(expand-file-name "backup_files" user-emacs-directory))))
 (setq delete-old-versions -1)		; delete excess backup versions silently
 
 ;; Version control for backups
