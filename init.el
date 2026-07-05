@@ -537,7 +537,10 @@
                    (directory . emacs)
                    ("\\.mm\\'" . default)
                    ("\\.x?html?\\'" . default)
-                   ("\\.pdf\\'" . "xdg-open \"%s\""))))
+                   ("\\.pdf\\'" . "xdg-open \"%s\"")))
+  (org-agenda-custom-commands '(("t" "List of all TODO entries (no books)"
+                                 ((todo ""))
+                                 ((org-agenda-tag-filter-preset '("-books")))))))
 
 ;; Iedit: edit multiple regions simultaneously
 (use-package iedit
