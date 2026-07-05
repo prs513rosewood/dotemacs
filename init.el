@@ -605,25 +605,6 @@
   :commands flyspell-correct-wrapper
   :general (tyrant-def "ss" #'flyspell-correct-wrapper))
 
-;; Snippets
-(use-package yasnippet :disabled
-  :commands yas-minor-mode
-  :config
-  (yas-reload-all)
-  :custom
-  (yas-snippet-dirs
-   `(,(expand-file-name "snippets" user-emacs-directory)))
-  :delight)
-(use-package yasnippet-snippets :disabled
-  :after yasnippet
-  :config
-  (add-to-list 'yas-snippet-dirs yasnippet-snippets-dir t))
-
-;; SLIME: Common Lisp things
-(use-package slime
-  :straight nil  ; Do not install via straight.el
-  :commands slime)
-
 ;; LLM
 (use-package gptel
   :commands (gptel-send gptel gptel-menu)

@@ -95,3 +95,26 @@
     :states 'normal
     :keymaps 'python-mode-map
     "a" #'pyvenv-activate))
+
+;; Snippets
+(use-package yasnippet
+  :ghook ('(c-mode-hook
+            c++-mode-hook
+            python-mode-hook
+            latex-mode-hook) #'yas-minor-mode)
+  :config
+  (yas-reload-all)
+  :custom
+  (yas-snippet-dirs
+   `(,(expand-file-name "snippets" user-emacs-directory)))
+  :delight)
+
+(use-package yasnippet-snippets :disabled
+  :after yasnippet
+  :config
+  (add-to-list 'yas-snippet-dirs yasnippet-snippets-dir t))
+
+;; SLIME: Common Lisp things
+(use-package slime
+  :straight nil  ; Do not install via straight.el
+  :commands slime)

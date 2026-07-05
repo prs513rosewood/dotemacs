@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: @fig
+# key: @fig
+# --
+fig, ax = plt.subplots()
