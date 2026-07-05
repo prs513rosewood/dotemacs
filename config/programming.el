@@ -50,11 +50,11 @@
 ;; Folding based on outline
 (use-package outline
   :straight (:type built-in)
-  :ghook ('(emacs-lisp-mode-hook markdown-mode-hook) #'outline-minor-mode))
+  :ghook ('(markdown-mode-hook) #'outline-minor-mode))
 ;; Parsing-based folding
 (use-package hideshow
   :straight (:type built-in)
-  :ghook ('(c-mode-hook c++-mode-hook) #'hs-minor-mode))
+  :ghook ('(emacs-lisp-mode-hook c-mode-hook c++-mode-hook) #'hs-minor-mode))
 (use-package savefold
   :custom
   ;;  list of symbols indicating active backends. Default: '(outline)
