@@ -452,6 +452,7 @@
     "|"  #'org-table-create-or-convert-from-region
     "a"  #'org-archive-subtree-default-with-confirmation
     "p"  #'org-latex-preview
+    "n"  #'org-add-note
 
     "b"  #'(:ignore t :which-key "beamer")
     "be" #'org-beamer-select-environment
