@@ -67,9 +67,9 @@
 (setq ff-always-in-other-window t)
 
 ;; Remove useless GUI stuff
+(menu-bar-mode 0)
 (if (display-graphic-p)
     (progn (tool-bar-mode 0)
-           (menu-bar-mode 0)
            (scroll-bar-mode 0)
            (add-to-list 'default-frame-alist '(fullscreen . maximized))))
 
