@@ -46,6 +46,9 @@
 ;; Additional config files
 (setq additional-config (expand-file-name "config" user-emacs-directory))
 
+;; Use GPG for auth info
+(setq auth-sources (list "~/.authinfo.gpg"))
+
 ;; Restore dead keys because of input method-after
 (require 'iso-transl)
 
