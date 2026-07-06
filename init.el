@@ -46,6 +46,9 @@
 ;; Additional config files
 (setq additional-config (expand-file-name "config" user-emacs-directory))
 
+;; Use GPG for auth info
+(setq auth-sources (list "~/.authinfo.gpg"))
+
 ;; Restore dead keys because of input method-after
 (require 'iso-transl)
 
@@ -67,9 +70,9 @@
 (setq ff-always-in-other-window t)
 
 ;; Remove useless GUI stuff
+(menu-bar-mode 0)
 (if (display-graphic-p)
     (progn (tool-bar-mode 0)
-           (menu-bar-mode 0)
            (scroll-bar-mode 0)
            (add-to-list 'default-frame-alist '(fullscreen . maximized))))
 
