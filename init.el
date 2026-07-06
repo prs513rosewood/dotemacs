@@ -613,7 +613,9 @@
 (use-package gptel
   :commands (gptel-send gptel gptel-menu)
   :config
-  (setq gptel-backend (gptel-make-anthropic "Claude" :stream t)
+  (setq gptel-backend (gptel-make-anthropic "Claude"
+                        :stream t
+                        :key #'gptel-api-key-from-auth-source)
         gptel-model 'claude-opus-4-8)
   :general
   (tyrant-def
