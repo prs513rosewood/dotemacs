@@ -71,10 +71,9 @@
 
 ;; Remove useless GUI stuff
 (menu-bar-mode 0)
-(if (display-graphic-p)
-    (progn (tool-bar-mode 0)
-           (scroll-bar-mode 0)
-           (add-to-list 'default-frame-alist '(fullscreen . maximized))))
+(tool-bar-mode 0)
+(scroll-bar-mode 0)
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Setting shell to bash / skip windows
 (when (not (eq system-type 'windows-nt))
