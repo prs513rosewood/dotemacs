@@ -26,12 +26,12 @@
 
 ;; Treesitter: syntax highlighting
 (use-package tree-sitter
+  :commands tree-sitter-hl-mode)
+(use-package tree-sitter-langs
   :ghook ('(c-mode-hook
             c++-mode-hook
             python-mode-hook
             emacs-lisp-mode-hook) #'tree-sitter-hl-mode))
-(use-package tree-sitter-langs
-  :after tree-sitter)
 
 ;; Code folding
 (use-package kirigami
