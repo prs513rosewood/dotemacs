@@ -617,11 +617,25 @@
                         :stream t
                         :key #'gptel-api-key-from-auth-source)
         gptel-model 'claude-opus-4-8)
+  (require 'gptel-integrations)
   :general
   (tyrant-def
     "Ls" #'gptel-send
     "Lm" #'gptel-menu
     "Lb" #'gptel))
+
+;; MCP
+(use-package mcp
+  :after gptel
+  :custom
+  (mcp-hub-servers
+   `(("filesystem" .
+      (:command "npx" :args ("-y" "@modelcontextprotocol/server-filesystem")
+                :roots ("~/Documents/repos/tamaas")))))
+  :config
+  (require 'mcp-hub)
+  (mcp-hub-start-all-server))
+
 
 ;; Loading additional configs
 (defun include-config-file (name)
