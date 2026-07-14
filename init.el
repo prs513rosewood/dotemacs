@@ -439,7 +439,8 @@
   (tyrant-def  ; global org commands
     "o"  #'(:ignore t :which-key "org")
     "oa" #'org-agenda
-    "oc" #'org-capture)
+    "oc" #'org-capture
+    "ot" #'org-todo-list)
   (despot-def  ; org-mode commands
     :keymaps 'org-mode-map
     "t"  #'org-todo
