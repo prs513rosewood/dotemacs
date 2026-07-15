@@ -49,6 +49,9 @@
 ;; Use GPG for auth info
 (setq auth-sources (list "~/.authinfo.gpg"))
 
+;; Cache directory
+(setq cache-directory "~/.cache/emacs/")
+
 ;; Restore dead keys because of input method-after
 (require 'iso-transl)
 
@@ -525,6 +528,7 @@
    '(:foreground default :background default :scale 2.0 :html-foreground "Black"
                  :html-background "Transparent" :html-scale 1.0 :matchers
                  ("begin" "$1" "$" "$$" "\\(" "\\[")))
+  (org-preview-latex-image-directory (expand-file-name "ltximg" cache-directory))
   (org-beamer-environments-extra
    `(("tikzpicture" "T" "\\begin{tikzpicture}%a%o" "\\end{tikzpicture}")
      ("onlyenv" "O" "\\begin{onlyenv}%a" "\\end{onlyenv}")))
